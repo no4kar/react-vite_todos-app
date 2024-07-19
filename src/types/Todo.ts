@@ -10,8 +10,12 @@ export namespace TyTodo {
     userId: string;
     title: string;
     completed: boolean;
+    createdAt: string;
+    updatedAt: string;
   }
 
+  export type CreationAttributes = Omit<TyTodo.Item, 'id' | 'createdAt' | 'updatedAt'>;
+  
   export namespace Request {
     export interface GetQuery extends Partial<Omit<Item, 'id' | 'userId'>> {
       userId: Item['userId'],

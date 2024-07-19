@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import type { PayloadAction, AsyncThunk, AsyncThunkConfig } from '@reduxjs/toolkit';
+import type { PayloadAction, AsyncThunk } from '@reduxjs/toolkit';
 
 import { TyTodo } from '../types/Todo';
 import * as todosApi from '../api/todos';
@@ -18,40 +18,15 @@ const initialState: TodosState = {
   errorMsg: TyTodo.Error.NONE,
 };
 
-// Define the type for your thunk
-type FetchAllThunkType = AsyncThunk<
-  // ReturnType<typeof todosApi.getAll>, // The return type of the API call
+
+export const fetchAllThunk: AsyncThunk<
   TyTodo.Response.Get,
-  void, // The argument type for the thunk
-  Record<string, never> // Optional thunk API config (usually not needed)
->;
-
-export const fetchAllThunk: any
-  = createAsyncThunk(
-    `${sliceName}/fetchAllThunk`,
-    todosApi.getAll,
-  );
-
-// export const createThunk = createAsyncThunk(
-//   `${sliceName}/createThunk`,
-//   todosApi.create,
-// );
-
-// export const updateThunk = createAsyncThunk(
-//   `${sliceName}/updateThunk`,
-//   todosApi.update,
-// );
-
-// export const removeThunk = createAsyncThunk(
-//   `${sliceName}/removeThunk`,
-//   ({ removeProcessing, todoId }: { removeProcessing: (id: number) => void, todoId: number },
-//     { fulfillWithValue, rejectWithValue }) => {
-//     return todosApi.remove(todoId)
-//       .then((v) => fulfillWithValue(v))
-//       .catch((v) => rejectWithValue(v))
-//       .finally(() => removeProcessing(todoId));
-//   },
-// );
+  TyTodo.Request.GetQuery,
+  Record<string, never>
+> = createAsyncThunk(
+  `${sliceName}/fetchAllThunk`,
+  todosApi.getAll,
+);
 
 const todosSlice = createSlice({
   name: sliceName,
@@ -94,7 +69,7 @@ const todosSlice = createSlice({
         state.errorMsg = TyTodo.Error.NONE;
       })
       .addCase(fetchAllThunk.fulfilled, (state, action) => {
-        state.items = action.payload;
+        state.items = action.payload.content;
         state.loaded = true;
       })
       .addCase(fetchAllThunk.rejected, (state, action) => {

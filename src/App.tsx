@@ -25,18 +25,11 @@ function FuncComponent() {
   const dispatch = useReduxDispatch();
 
   const addTodo = () => {
-    const currentTime = (new Date()).toISOString();
-
-    const newTodo: TyTodo.Item = {
-      id: String(todos.length + 1),
+    dispatch(todosSlice.add({
       userId: USER_ID,
       title,
       completed: false,
-      createdAt: currentTime,
-      updatedAt: currentTime,
-    };
-
-    dispatch(todosSlice.add(newTodo));
+    }));
     setTitle('');
   };
 

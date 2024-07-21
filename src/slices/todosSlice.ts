@@ -49,9 +49,24 @@ const todosSlice = createSlice({
   name: sliceName,
   initialState,
   reducers: {
-    add(state, action: PayloadAction<TyTodo.Item>) {
-      state.items.push(action.payload);
+    add(state, action: PayloadAction<TyTodo.CreationAttributes>) {
+      const currentTime = (new Date()).toISOString();
+
+      const newTodo: TyTodo.Item = {
+        ...action.payload,
+        id: String(state.items.length + 1),
+        createdAt: currentTime,
+        updatedAt: currentTime,
+      };
+
+      state.items.push(newTodo);
     },
+
+    // someFunc(state) {
+    //   (new Promise((resolve, reject) => setTimeout(resolve, 1000)));
+
+    //   return state;
+    // },
 
     update(state, action: PayloadAction<TyTodo.Item>) {
       const index

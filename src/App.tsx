@@ -1,6 +1,9 @@
 import React from 'react';
-// import { useAppDispatch, useAppSelector } from './store/hooks';
-// import * as todosSlice from './slices/todosSlice';
+import { TyTodo } from './types/Todo';
+import { truncateString } from './utils/helpers';
+import { useReduxDispatch, useReduxSelector } from './store/hooks';
+import * as todosSlice from './slices/todosSlice';
+import { selectFromStore } from './store/store';
 
 // import { TodoHeader } from './components/TodoHeader';
 // import { TodoFooter } from './components/TodoFooter';
@@ -12,42 +15,44 @@ import React from 'react';
 // import { Filter } from './types/Filter';
 // import { getPraperedTodos } from './services/todos';
 
-// const USER_ID = '11967';
+const USER_ID = '11967';
 
 export const App = FuncComponent;
 
 function FuncComponent() {
-  const [todos, setTodos] = React.useState([
-    { id: 1, title: 'Task 1. This is my task one', completed: false },
-    { id: 2, title: 'Task 2. This is my task two', completed: true },
-    { id: 3, title: 'Task 3. This is my task three', completed: false },
-    { id: 4, title: 'Task 4. This is my task four', completed: false },
-  ]);
   const [title, setTitle] = React.useState('');
+  const { items: todos } = useReduxSelector(selectFromStore('todos'));
+  const dispatch = useReduxDispatch();
 
   const addTodo = () => {
-    const newTodo = {
-      id: todos.length + 1,
+    const currentTime = (new Date()).toISOString();
+
+    const newTodo: TyTodo.Item = {
+      id: String(todos.length + 1),
+      userId: USER_ID,
       title,
-      completed: false
+      completed: false,
+      createdAt: currentTime,
+      updatedAt: currentTime,
     };
-    setTodos([...todos, newTodo]);
+
+    dispatch(todosSlice.add(newTodo));
     setTitle('');
   };
 
-  const toggleComplete = (id: number) => {
-    setTodos(todos.map(todo => todo.id === id ? { ...todo, completed: !todo.completed } : todo));
+  const toggleComplete = (todo: TyTodo.Item) => {
+    dispatch(todosSlice.update({ ...todo, completed: !todo.completed }));
   };
 
-  const deleteTodo = (id: number) => {
-    setTodos(todos.filter(todo => todo.id !== id));
+  const deleteTodo = (todo: TyTodo.Item) => {
+    dispatch(todosSlice.remove(todo));
   };
 
   return (
     <div
-      className="min-h-screen bg-gray-800 text-white flex items-center justify-center">
+      className="min-h-screen bg-gray-800 text-white">
       <div className="custom-page-container">
-        <h1 className="text-3xl font-bold text-center mb-4">My Todos</h1>
+        <h1 className="text-3xl font-bold text-center mb-4">The Task Manager</h1>
         <div className="flex space-x-2 mb-4">
           <input
             type="text"
@@ -56,13 +61,6 @@ function FuncComponent() {
             onChange={(e) => setTitle(e.target.value)}
             className="flex-1 p-2 rounded bg-gray-700 text-white placeholder-gray-400"
           />
-          {/* <input
-            type="text"
-            placeholder="Description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            className="flex-1 p-2 rounded bg-gray-700 text-white placeholder-gray-400"
-          /> */}
           <button
             onClick={addTodo}
             className="bg-yellow-500 text-black px-4 py-2 rounded"
@@ -74,30 +72,43 @@ function FuncComponent() {
           {todos.map((todo) => (
             <div
               key={todo.id}
-              className={`flex justify-between items-center p-4 mb-2 rounded ${todo.completed ? 'bg-gray-600' : 'bg-gray-700'}`}
+              className={`flex flex-col space-y-6 p-4 mb-2 rounded ${todo.completed ? 'bg-gray-700' : 'bg-gray-600'}`}
             >
-              <div>
-                <h2 className={`text-xl font-bold ${todo.completed ? '' : 'line-through text-gray-400'}`}>
-                  {todo.title.slice(0, 10).concat('...')}
-                </h2>
-                <p className={`text-sm ${todo.completed ? '' : 'line-through text-gray-400'}`}>
-                  {todo.title}
-                </p>
-              </div>
-              <div className="flex space-x-2">
-                <button
-                  onClick={() => toggleComplete(todo.id)}
-                  className={`px-4 py-2 rounded ${todo.completed ? 'bg-gray-700 text-white' : 'bg-green-600 text-white'}`}
+              <div className="flex justify-between">
+                <div className='space-y-4'>
+                  <div className="flex flex-col">
+                    <h2 className={`text-xl font-bold ${todo.completed ? 'line-through text-gray-400' : ''}`}>
+                      {truncateString(todo.title, 7, '..')}
+                    </h2>
+
+                    <p className="text-sm font-light text-gray-400">
+                      {(new Date(todo.createdAt)).toLocaleString('ua-UA', { timeZone: 'UTC' })}
+                    </p>
+                  </div>
+                </div>
+
+                <div
+                  className="flex self-start flex-col gap-2 sm:flex-row"
                 >
-                  {todo.completed ? 'Incomplete' : 'Complete'}
-                </button>
-                <button
-                  onClick={() => deleteTodo(todo.id)}
-                  className="bg-red-500 text-white px-4 py-2 rounded"
-                >
-                  Delete
-                </button>
+                  <button
+                    onClick={() => toggleComplete(todo)}
+                    className={`px-4 py-2 rounded ${todo.completed ? 'bg-green-600 text-white' : 'bg-gray-700 text-white'}`}
+                  >
+                    {todo.completed ? 'Completed' : 'Todo'}
+                  </button>
+
+                  <button
+                    onClick={() => deleteTodo(todo)}
+                    className="bg-red-500 text-white px-4 py-2 rounded"
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
+
+              <p className={`text-sm ${todo.completed ? 'line-through text-gray-400' : ''}`}>
+                {todo.title}
+              </p>
             </div>
           ))}
         </div>

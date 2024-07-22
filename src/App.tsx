@@ -1,9 +1,13 @@
 import React from 'react';
 import { TyTodo } from './types/Todo';
-import { truncateString } from './utils/helpers';
+
 import { useReduxDispatch, useReduxSelector } from './store/hooks';
 import * as todosSlice from './slices/todosSlice';
 import { selectFromStore } from './store/store';
+
+import { TodoItem } from './components/TodoItem';
+import { TodoHeader } from './components/TodoHeader';
+import { AxiosResponse } from 'axios';
 
 // import { TodoHeader } from './components/TodoHeader';
 // import { TodoFooter } from './components/TodoFooter';
@@ -15,94 +19,58 @@ import { selectFromStore } from './store/store';
 // import { Filter } from './types/Filter';
 // import { getPraperedTodos } from './services/todos';
 
-const USER_ID = '11967';
-
-export const App = FuncComponent;
+export const App = React.memo(FuncComponent);
 
 function FuncComponent() {
-  const [title, setTitle] = React.useState('');
+  // const [title, setTitle] = React.useState('');
+  // const [processings, setProcessings] = React.useState<TyTodo.Item['id'][]>([]);
   const { items: todos } = useReduxSelector(selectFromStore('todos'));
+  const { id: userId } = useReduxSelector(selectFromStore('author'));
   const dispatch = useReduxDispatch();
 
-  const addTodo = () => {
-    dispatch(todosSlice.add({
-      userId: USER_ID,
-      title,
-      completed: false,
-    }));
-    setTitle('');
+  const addTodo = (newTodo: TyTodo.CreationAttributes) => {
+    return dispatch(todosSlice.createThunk(newTodo))
+      .then<TyTodo.Item>((response) => {
+
+        console.info(response.payload);
+
+        return (response.payload as AxiosResponse<TyTodo.Item, any>).data;
+      });
   };
 
-  const toggleComplete = (todo: TyTodo.Item) => {
-    dispatch(todosSlice.update({ ...todo, completed: !todo.completed }));
-  };
+  // const toggleComplete = (todo: TyTodo.Item) => {
+  //   dispatch(todosSlice.update({ ...todo, completed: !todo.completed }));
+  // };
 
-  const deleteTodo = (todo: TyTodo.Item) => {
-    dispatch(todosSlice.remove(todo));
-  };
+  const deleteTodo = React.useCallback(
+    async (todo: TyTodo.Item) => {
+      return dispatch(todosSlice.removeThunk(todo.id))
+        .then<void>((response) => {
+
+          console.info(response.payload);
+
+        });
+    }, [dispatch]);
+
+  React.useEffect(() => {
+    dispatch(todosSlice.getAllThunk({ userId }));
+  }, [dispatch, userId])
 
   return (
     <div
       className="min-h-screen bg-gray-800 text-white">
-      <div className="custom-page-container">
-        <h1 className="text-3xl font-bold text-center mb-4">The Task Manager</h1>
-        <div className="flex space-x-2 mb-4">
-          <input
-            type="text"
-            placeholder="title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            className="flex-1 p-2 rounded bg-gray-700 text-white placeholder-gray-400"
-          />
-          <button
-            onClick={addTodo}
-            className="bg-yellow-500 text-black px-4 py-2 rounded"
-          >
-            Add Todo
-          </button>
-        </div>
+      <div className="custom-page-container py-5">
+        <TodoHeader
+          onCreate={addTodo}
+        />
+
         <div>
           {todos.map((todo) => (
-            <div
+            <TodoItem
               key={todo.id}
-              className={`flex flex-col space-y-6 p-4 mb-2 rounded ${todo.completed ? 'bg-gray-700' : 'bg-gray-600'}`}
-            >
-              <div className="flex justify-between">
-                <div className='space-y-4'>
-                  <div className="flex flex-col">
-                    <h2 className={`text-xl font-bold ${todo.completed ? 'line-through text-gray-400' : ''}`}>
-                      {truncateString(todo.title, 7, '..')}
-                    </h2>
-
-                    <p className="text-sm font-light text-gray-400">
-                      {(new Date(todo.createdAt)).toLocaleString('ua-UA', { timeZone: 'UTC' })}
-                    </p>
-                  </div>
-                </div>
-
-                <div
-                  className="flex self-start flex-col gap-2 sm:flex-row"
-                >
-                  <button
-                    onClick={() => toggleComplete(todo)}
-                    className={`px-4 py-2 rounded ${todo.completed ? 'bg-green-600 text-white' : 'bg-gray-700 text-white'}`}
-                  >
-                    {todo.completed ? 'Completed' : 'Todo'}
-                  </button>
-
-                  <button
-                    onClick={() => deleteTodo(todo)}
-                    className="bg-red-500 text-white px-4 py-2 rounded"
-                  >
-                    Delete
-                  </button>
-                </div>
-              </div>
-
-              <p className={`text-sm ${todo.completed ? 'line-through text-gray-400' : ''}`}>
-                {todo.title}
-              </p>
-            </div>
+              todo={todo}
+              onDelete={deleteTodo}
+            />
           ))}
         </div>
       </div>

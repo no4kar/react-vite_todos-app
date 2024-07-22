@@ -1,10 +1,10 @@
 import { Filter } from '../types/Filter';
-import { Todo } from '../types/Todo';
+import { TyTodo } from '../types/Todo';
 
 export function getPraperedTodos(
-  todos: Todo[],
+  todos: TyTodo.Item[],
   filter: Filter,
-): Todo[] {
+): TyTodo.Item[] {
   return todos.filter(todo => {
     switch (filter) {
       case Filter.ACTIVE:

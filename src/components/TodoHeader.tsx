@@ -1,27 +1,27 @@
-import { useState, useRef, useEffect } from 'react';
-import cn from 'classnames';
+import React from 'react';
 
-import { TyChangeEvtInputElmt } from '../types/General';
-import { Todo } from '../types/Todo';
-import { TodoError } from '../types/TodoError';
+import { TyChangeEvtTextAreaElmt } from '../types/General';
+import { TyTodo } from '../types/Todo';
+import { useReduxSelector } from '../store/hooks';
 
-type Props = {
-  onAddTodo: (todo: Omit<Todo, 'id' | 'userId'>) => Promise<Todo | void>;
+export const TodoHeader = React.memo(FuncComponent);
+
+function FuncComponent({
+  onCreate,
+  // onToggleAll = () => { },
+  onError = () => { },
+  // isEachTodoComplete = false,
+}: {
+  onCreate: (todo: TyTodo.CreationAttributes) => Promise<TyTodo.Item | void>;
   onToggleAll?: () => void;
-  onErrorCreate?: (errMsg: TodoError) => void;
+  onError?: (errMsg: TyTodo.Error) => void;
   isEachTodoComplete?: boolean;
-};
+}) {
+  const [title, setTitle] = React.useState('');
+  const titleInput = React.useRef<HTMLTextAreaElement>(null);
+  const { id: userId } = useReduxSelector(state => state.author);
 
-export const TodoHeader: React.FC<Props> = ({
-  onAddTodo,
-  onToggleAll = () => { },
-  onErrorCreate = () => { },
-  isEachTodoComplete = false,
-}) => {
-  const [title, setTitle] = useState('');
-  const titleInput = useRef<HTMLInputElement>(null);
-
-  const handleInputChange = (event: TyChangeEvtInputElmt) => {
+  const handleInputChange = (event: TyChangeEvtTextAreaElmt) => {
     setTitle(event.target.value);
   };
 
@@ -30,8 +30,7 @@ export const TodoHeader: React.FC<Props> = ({
     const trimedTitle = title.trim();
 
     if (trimedTitle === '') {
-      onErrorCreate(TodoError.EMPTY_TITLE);
-
+      onError(TyTodo.Error.EMPTY_TITLE);
       return;
     }
 
@@ -43,10 +42,14 @@ export const TodoHeader: React.FC<Props> = ({
       titleInput.current.disabled = true;
     }
 
-    onAddTodo({
+    onCreate({
+      userId,
       title: trimedTitle,
       completed: false,
     }).finally(() => {
+
+      console.info('TodoHeader');
+
       if (titleInput.current) {
         titleInput.current.disabled = false;
         titleInput.current.focus();
@@ -56,16 +59,17 @@ export const TodoHeader: React.FC<Props> = ({
     });
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (titleInput.current) {
       titleInput.current.focus();
     }
   }, [titleInput]);
 
   return (
-    <header className="todoapp__header">
+    <header className="todo__header">
+      <h1 className="text-3xl font-bold text-center mb-4">The Task Manager</h1>
       {/* this buttons is active only if there are some active todos */}
-      <button
+      {/* <button
         type="button"
         className={cn('todoapp__toggle-all', {
           active: isEachTodoComplete,
@@ -73,22 +77,30 @@ export const TodoHeader: React.FC<Props> = ({
         data-cy="ToggleAllButton"
         aria-label="ToggleAllButton"
         onClick={onToggleAll}
-      />
+      /> */}
 
       {/* Add a todo on form submit */}
       <form
+        className='flex space-x-2 mb-4'
         onSubmit={handleSubmit}
       >
-        <input
-          data-cy="NewTodoField"
-          type="text"
-          className="todoapp__new-todo"
-          placeholder="What needs to be done?"
+        <textarea
           ref={titleInput}
+          className='flex-1 p-2 rounded bg-gray-700 text-white placeholder-gray-400'
           value={title}
           onChange={handleInputChange}
+          placeholder='What are you planning to do?'
+          rows={4}
         />
+
+        <button
+          type='submit'
+          // onClick={addTodo}
+          className="bg-yellow-500 text-black px-4 py-2 rounded"
+        >
+          Add Task
+        </button>
       </form>
     </header>
   );
-};
+}

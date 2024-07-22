@@ -1,6 +1,7 @@
 import * as R from 'react';
 
 export type TyChangeEvtInputElmt = R.ChangeEvent<HTMLInputElement>;
+export type TyChangeEvtTextAreaElmt = R.ChangeEvent<HTMLTextAreaElement>;
 export type TyChangeEvtButtonElmt = R.ChangeEvent<HTMLButtonElement>;
 export type TyChangeEvtSelectElmt = R.ChangeEvent<HTMLSelectElement>;
 export type TyKeybrEvtInputElmt = R.KeyboardEvent<HTMLInputElement>;

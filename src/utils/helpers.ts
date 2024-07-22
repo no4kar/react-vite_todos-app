@@ -1,14 +1,15 @@
 // returns a promise resolved after a given delay
 
 // To have autocompletion and avoid mistypes
-export type RequestMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE';
+export type TyRequestMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE';
+export type TyStatus = 'IDLE' | 'LOADING' | 'SUCCEEDED' | 'FAILED'
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export const BASE_URL = [
   'https://mate.academy/students-api',
   'http://localhost:3005',
   'https://node-todos-with-db.onrender.com',
-][2];
+][1];
 
 /**
  * Returns a promise that resolves after a specified delay.

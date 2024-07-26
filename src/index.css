@@ -1,6 +1,9 @@
+@import './styles/main.scss';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 
 /* Custom Container Class */
 .custom-page-container {

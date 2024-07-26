@@ -46,10 +46,14 @@ export const removeThunk: AsyncThunk<
   todosApi.remove,
 );
 
-// export const updateThunk = createAsyncThunk(
-//   `${sliceName}/updateThunk`,
-//   todosApi.update,
-// );
+export const updateThunk: AsyncThunk<
+  AxiosResponse<TyTodo.Item, any>,
+  TyTodo.Item,
+  Record<string, never>
+> = createAsyncThunk(
+  `${sliceName}/updateThunk`,
+  todosApi.update,
+);
 
 
 const todosSlice = createSlice({
@@ -88,7 +92,7 @@ const todosSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder
+    builder // getAllThunk
       .addCase(getAllThunk.pending, (state) => {
         state.loaded = false;
         state.errorMsg = TyTodo.Error.NONE;
@@ -103,7 +107,7 @@ const todosSlice = createSlice({
         state.errorMsg = TyTodo.Error.LOAD;
       });
 
-    builder
+    builder // createThunk
       .addCase(createThunk.pending, (state) => {
         state.loaded = false;
         state.errorMsg = TyTodo.Error.NONE;
@@ -118,7 +122,7 @@ const todosSlice = createSlice({
         state.errorMsg = TyTodo.Error.UNABLE_ADD;
       });
 
-    builder
+    builder // removeThunk
       .addCase(removeThunk.pending, (state) => {
         state.loaded = false;
         state.errorMsg = TyTodo.Error.NONE;
@@ -132,6 +136,24 @@ const todosSlice = createSlice({
         console.error(action.error.message);
         state.loaded = true;
         state.errorMsg = TyTodo.Error.UNABLE_DELETE;
+      });
+
+    builder // updateThunk
+      .addCase(updateThunk.pending, (state) => {
+        state.loaded = false;
+        state.errorMsg = TyTodo.Error.NONE;
+      })
+      .addCase(updateThunk.fulfilled, (state, action) => {
+        const updatedItem = action.payload.data;
+
+        state.items
+          = state.items.map(item => item.id !== updatedItem.id ? item : updatedItem);
+        state.loaded = true;
+      })
+      .addCase(updateThunk.rejected, (state, action) => {
+        console.error(action.error.message);
+        state.loaded = true;
+        state.errorMsg = TyTodo.Error.UNABLE_UPDATE;
       });
   },
 });

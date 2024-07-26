@@ -3,18 +3,19 @@ import cn from 'classnames';
 import { Loader } from './Loader';
 
 import { TyTodo } from '../types/Todo';
-// import { TyChangeEvtInputElmt, TyKeybrEvtInputElmt } from '../types/General';
+// import { TyGeneral } from '../types/General';
 import { truncateString } from '../utils/helpers';
 
 export const TodoItem = React.memo(({
   todo,
   onDelete,
+  onUpdate,
   // onUpdate = () => new Promise(() => { }),
   isProcessed = false,
 }: {
   todo: TyTodo.Item;
-  onDelete: (todo: TyTodo.Item) => Promise<void>;
-  // onUpdate?: (updatedTodo: TyTodo.Item) => Promise<void>;
+  onDelete: (todo: TyTodo.Item) => Promise<any>;
+  onUpdate: (updatedTodo: TyTodo.Item) => Promise<any>;
   isProcessed?: boolean;
 }) => {
   const {
@@ -26,7 +27,6 @@ export const TodoItem = React.memo(({
   // const [newTitle, setNewTitle] = useState(title);
 
   const titleField = useRef<HTMLInputElement>(null);
-  const headerTitle = truncateString(todo.title.replace(/\n/g,' '), 11, '..');
 
   useEffect(() => {
     if (titleField.current) {
@@ -41,7 +41,14 @@ export const TodoItem = React.memo(({
   };
 
   const handleToggleComplete = () => {
+    const updatedTodo = {
+      ...todo,
+      completed: !todo.completed,
+    };
 
+    onUpdate(updatedTodo)
+      .then(() => setIsEditing(false))
+      .catch(() => titleField.current?.focus());
   };
 
   // const handleSubmit = (event: React.FormEvent) => {
@@ -114,37 +121,62 @@ export const TodoItem = React.memo(({
         <Loader style={{ container: 'absolute' }} />
       )}
 
-      <div className="flex justify-between">
-        <div className='space-y-4'>
-          <div className="flex flex-col">
-            <h2 className={`text-xl font-bold ${completed ? 'line-through text-gray-400' : ''}`}>
-              {headerTitle}
-            </h2>
+      {/* <div className="flex"> */}
+      <div className='flex space-x-4'>
+        <button
+          onClick={handleToggleComplete}
+          className={cn('px-4 py-2 rounded aspect-square text-white', {
+            'bg-green-600': completed,
+            'bg-gray-700': !completed,
+          })}
+        >
+          <i className={cn('w-4 aspect-square fa-circle', {
+            'fa-solid ': completed,
+            'fa-regular': !completed,
+          })} />
+        </button>
 
-            <p className="text-sm font-light text-gray-400">
-              {(new Date(todo.createdAt)).toLocaleString('ua-UA', { timeZone: 'UTC' })}
-            </p>
-          </div>
+        <div className="grow flex flex-col">
+          <h2 className={cn('text-xl font-bold', {
+            'line-through text-gray-400': completed,
+          })}>
+            {truncateString(todo.title, 11, '..')}
+          </h2>
+
+          <p className="text-sm font-light text-gray-400">
+            {(new Date(todo.createdAt)).toLocaleString('ua-UA', { timeZone: 'UTC' })}
+          </p>
         </div>
 
-        <div
+        <button
+          onClick={handleDelete}
+          className="px-4 py-2 rounded bg-red-500 text-white "
+        >
+          <i className='w-4 aspect-square fa-solid fa-xmark' />
+        </button>
+      </div>
+
+      {/* <div
           className="flex self-start flex-col gap-2 sm:flex-row"
         >
           <button
             onClick={handleToggleComplete}
             className={`px-4 py-2 rounded ${completed ? 'bg-green-600 text-white' : 'bg-gray-700 text-white'}`}
           >
-            {completed ? 'Completed' : 'Todo'}
+            <i className={cn('fa-circle', {
+              'fa-solid ': completed,
+              'fa-regular': !completed,
+            })} />
           </button>
 
           <button
             onClick={handleDelete}
             className="bg-red-500 text-white px-4 py-2 rounded"
           >
-            Delete
+            <i className='fa-solid fa-xmark' />
           </button>
-        </div>
-      </div>
+        </div> */}
+      {/* </div> */}
 
       <p className={`text-sm ${completed ? 'line-through text-gray-400' : ''}`}>
         {todo.title}

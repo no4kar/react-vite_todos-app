@@ -1,0 +1,26 @@
+@layer base {
+  @font-face {
+    font-family: "RobotoMono-Medium";
+    src: url('/public/fonts/RobotoMono-Medium.ttf') format('truetype');
+  }
+
+  @font-face {
+    font-family: "RobotoMono-Regular";
+    src: url('/public/fonts/RobotoMono-Regular.ttf') format('truetype');
+  }
+
+  @font-face {
+    font-family: "RobotoMono-Light";
+    src: url('/public/fonts/RobotoMono-Light.ttf') format('truetype');
+  }
+
+  @font-face {
+    font-family: "RobotoMono-SemiBold";
+    src: url('/public/fonts/RobotoMono-SemiBold.ttf') format('truetype');
+  }
+
+  @font-face {
+    font-family: "RobotoMono-Bold";
+    src: url('/public/fonts/RobotoMono-Bold.ttf') format('truetype');
+  }
+}

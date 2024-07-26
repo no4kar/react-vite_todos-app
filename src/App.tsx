@@ -19,7 +19,15 @@ import { AxiosResponse } from 'axios';
 // import { Filter } from './types/Filter';
 // import { getPraperedTodos } from './services/todos';
 
+import './App.scss';
+import { PayloadAction } from '@reduxjs/toolkit';
+
 export const App = React.memo(FuncComponent);
+
+const responseToConsoleInfo = <T extends PayloadAction<any>>(response: T) => {
+  console.info(response.payload);
+  return response;
+};
 
 function FuncComponent() {
   // const [title, setTitle] = React.useState('');
@@ -38,18 +46,16 @@ function FuncComponent() {
       });
   };
 
-  // const toggleComplete = (todo: TyTodo.Item) => {
-  //   dispatch(todosSlice.update({ ...todo, completed: !todo.completed }));
-  // };
-
   const deleteTodo = React.useCallback(
     async (todo: TyTodo.Item) => {
       return dispatch(todosSlice.removeThunk(todo.id))
-        .then<void>((response) => {
+        .then(responseToConsoleInfo);
+    }, [dispatch]);
 
-          console.info(response.payload);
-
-        });
+  const updateTodo = React.useCallback(
+    async (updatedTodo: TyTodo.Item) => {
+      return dispatch(todosSlice.updateThunk(updatedTodo))
+        .then(responseToConsoleInfo);
     }, [dispatch]);
 
   React.useEffect(() => {
@@ -58,7 +64,9 @@ function FuncComponent() {
 
   return (
     <div
-      className="min-h-screen bg-gray-800 text-white">
+      className="
+      min-h-screen bg-gray-800 text-white font-robotomono-normal"
+    >
       <div className="custom-page-container py-5">
         <TodoHeader
           onCreate={addTodo}
@@ -70,6 +78,7 @@ function FuncComponent() {
               key={todo.id}
               todo={todo}
               onDelete={deleteTodo}
+              onUpdate={updateTodo}
             />
           ))}
         </div>

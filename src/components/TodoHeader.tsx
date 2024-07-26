@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { TyChangeEvtTextAreaElmt } from '../types/General';
+import { TyGeneral } from '../types/General';
 import { TyTodo } from '../types/Todo';
 import { useReduxSelector } from '../store/hooks';
 
@@ -21,7 +21,7 @@ function FuncComponent({
   const titleInput = React.useRef<HTMLTextAreaElement>(null);
   const { id: userId } = useReduxSelector(state => state.author);
 
-  const handleInputChange = (event: TyChangeEvtTextAreaElmt) => {
+  const handleInputChange = (event: TyGeneral.ChangeEvtTextAreaElmt) => {
     setTitle(event.target.value);
   };
 
@@ -67,7 +67,7 @@ function FuncComponent({
 
   return (
     <header className="todo__header">
-      <h1 className="text-3xl font-bold text-center mb-4">The Task Manager</h1>
+      <h1 className="font-robotomono-bold text-3xl font-bold text-center mb-4">The Task Manager</h1>
       {/* this buttons is active only if there are some active todos */}
       {/* <button
         type="button"
@@ -86,7 +86,7 @@ function FuncComponent({
       >
         <textarea
           ref={titleInput}
-          className='flex-1 p-2 rounded bg-gray-700 text-white placeholder-gray-400'
+          className='flex-1 p-2 min-h-full rounded bg-gray-700 text-white placeholder-gray-400'
           value={title}
           onChange={handleInputChange}
           placeholder='What are you planning to do?'
@@ -95,10 +95,9 @@ function FuncComponent({
 
         <button
           type='submit'
-          // onClick={addTodo}
           className="bg-yellow-500 text-black px-4 py-2 rounded"
         >
-          Add Task
+          <i className='fa-solid fa-plus' />
         </button>
       </form>
     </header>

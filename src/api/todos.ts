@@ -42,12 +42,12 @@ export const todosApi = {
       .then(() => todoId);
   },
 
-  // update({
-  //   id,
-  //   userId,
-  //   title,
-  //   completed,
-  // }: TyTodo.Item){
-  //   return client.patch<TyTodo.Item>(`/${id}`, { userId, title, completed });
-  // },
+  update({
+    id,
+    userId,
+    title,
+    completed,
+  }: TyTodo.Item){
+    return client.put<TyTodo.Item>(`/${id}`, { userId, title, completed });
+  },
 };

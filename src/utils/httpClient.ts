@@ -1,5 +1,5 @@
 import { BASE_URL, wait } from './helpers';
-import type { RequestMethod } from './helpers';
+import type { TyGeneral } from '../types/General';
 
 export function getClient(
   baseURL = BASE_URL,
@@ -8,7 +8,7 @@ export function getClient(
 
   function request<T>(
     url: string,
-    method: RequestMethod = 'GET',
+    method: TyGeneral.RequestMethod = 'GET',
     data: any = null, // we can send any data to the server
   ): Promise<T> {
     const options: RequestInit = { method };

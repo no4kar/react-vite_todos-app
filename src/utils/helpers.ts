@@ -2,7 +2,7 @@
 export const BASE_URL = [
   'http://localhost:3005',
   'https://node-todos-with-db.onrender.com',
-][0];
+][1];
 
 /**
  * Returns a promise that resolves after a specified delay.

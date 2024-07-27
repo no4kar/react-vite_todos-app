@@ -3,17 +3,17 @@ import { TyTodo } from '../types/Todo';
 
 export function getPraperedTodos(
   todos: TyTodo.Item[],
-  filter: Filter,
+  filter: Filter.State,
 ): TyTodo.Item[] {
   return todos.filter(todo => {
     switch (filter) {
-      case Filter.ACTIVE:
+      case Filter.State.ACTIVE:
         return !todo.completed;
 
-      case Filter.COMPLETED:
+      case Filter.State.COMPLETED:
         return todo.completed;
 
-      case Filter.ALL:
+      case Filter.State.ALL:
       default:
         return true;
     }

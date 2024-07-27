@@ -10,7 +10,6 @@ export const TodoItem = React.memo(({
   todo,
   onDelete,
   onUpdate,
-  // onUpdate = () => new Promise(() => { }),
   isProcessed = false,
 }: {
   todo: TyTodo.Item;
@@ -110,77 +109,65 @@ export const TodoItem = React.memo(({
 
   return (
     <div
-      key={todo.id}
-      className={cn('relative',
-        'flex flex-col space-y-6 p-4 mb-2 rounded', {
-        'bg-gray-700': completed,
-        'bg-gray-600': !completed,
-      })}
+      className='relative rounded'
     >
       {isProcessed && (
-        <Loader style={{ container: 'absolute' }} />
+        <Loader
+          style={{
+            container: 'absolute inset-0 z-[1] flex items-center justify-center bg-white bg-opacity-30',
+          }}
+        />
       )}
 
-      {/* <div className="flex"> */}
-      <div className='flex space-x-4'>
-        <button
-          onClick={handleToggleComplete}
-          className={cn('px-4 py-2 rounded aspect-square text-white', {
-            'bg-green-600': completed,
-            'bg-gray-700': !completed,
-          })}
-        >
-          <i className={cn('w-4 aspect-square fa-circle', {
-            'fa-solid ': completed,
-            'fa-regular': !completed,
-          })} />
-        </button>
-
-        <div className="grow flex flex-col">
-          <h2 className={cn('text-xl font-bold', {
-            'line-through text-gray-400': completed,
-          })}>
-            {truncateString(todo.title, 11, '..')}
-          </h2>
-
-          <p className="text-sm font-light text-gray-400">
-            {(new Date(todo.createdAt)).toLocaleString('ua-UA', { timeZone: 'UTC' })}
-          </p>
-        </div>
-
-        <button
-          onClick={handleDelete}
-          className="px-4 py-2 rounded bg-red-500 text-white "
-        >
-          <i className='w-4 aspect-square fa-solid fa-xmark' />
-        </button>
-      </div>
-
-      {/* <div
-          className="flex self-start flex-col gap-2 sm:flex-row"
-        >
+      <div
+      className={cn('flex flex-col space-y-6 p-4 mb-2 rounded', {
+        'bg-gray-700': completed,
+        'bg-gray-600': !completed,
+        'pointer-events-none blur-[2px]': isProcessed,
+      })}
+      >
+        <div className='flex space-x-4'>
           <button
             onClick={handleToggleComplete}
-            className={`px-4 py-2 rounded ${completed ? 'bg-green-600 text-white' : 'bg-gray-700 text-white'}`}
+            className={cn('px-4 py-2 rounded aspect-square text-white', {
+              'bg-green-600': completed,
+              'bg-gray-700': !completed,
+            })}
           >
-            <i className={cn('fa-circle', {
+            <i className={cn('w-4 aspect-square fa-circle', {
               'fa-solid ': completed,
               'fa-regular': !completed,
             })} />
           </button>
 
+          <div className="grow flex flex-col">
+            <h2 className={cn('text-xl font-bold', {
+              'line-through text-gray-400': completed,
+            })}>
+              {truncateString(todo.title, 11, '..')}
+            </h2>
+
+            <p className="text-sm font-light text-gray-400">
+              {(new Date(todo.createdAt)).toLocaleString('ua-UA', { timeZone: 'UTC' })}
+            </p>
+          </div>
+
           <button
             onClick={handleDelete}
-            className="bg-red-500 text-white px-4 py-2 rounded"
+            className="px-4 py-2 rounded bg-red-500 text-white "
           >
-            <i className='fa-solid fa-xmark' />
+            <i className='w-4 aspect-square fa-solid fa-xmark' />
           </button>
-        </div> */}
-      {/* </div> */}
+        </div>
 
-      <p className={`text-sm ${completed ? 'line-through text-gray-400' : ''}`}>
-        {todo.title}
-      </p>
+        <p
+          className={cn('text-sm whitespace-pre-wrap', {
+            'line-through text-gray-400': completed,
+          })}
+        >
+          {todo.title}
+        </p>
+      </div>
     </div>
   );
   // return (

@@ -2,8 +2,8 @@ import cn from 'classnames';
 import { Filter } from '../types/Filter';
 
 type Props = {
-  filter: Filter;
-  onFilterChange?: (v: Filter) => void;
+  filter: Filter.State;
+  onFilterChange?: (v: Filter.State) => void;
   onClearCompleted?: () => void;
   quantityActiveTodos: number;
   isAnyTodoComplete: boolean;
@@ -16,7 +16,7 @@ export const TodoFooter: React.FC<Props> = ({
   quantityActiveTodos,
   isAnyTodoComplete,
 }) => {
-  const handleFilterChange = (v: Filter) => () => onFilterChange(v);
+  const handleFilterChange = (v: Filter.State) => () => onFilterChange(v);
 
   return (
     <footer className="todoapp__footer" data-cy="Footer">
@@ -29,10 +29,10 @@ export const TodoFooter: React.FC<Props> = ({
         <a
           href="#/"
           className={cn('filter__link', {
-            selected: filter === Filter.ALL,
+            selected: filter === Filter.State.ALL,
           })}
           data-cy="FilterLinkAll"
-          onClick={handleFilterChange(Filter.ALL)}
+          onClick={handleFilterChange(Filter.State.ALL)}
         >
           All
         </a>
@@ -40,10 +40,10 @@ export const TodoFooter: React.FC<Props> = ({
         <a
           href="#/active"
           className={cn('filter__link', {
-            selected: filter === Filter.ACTIVE,
+            selected: filter === Filter.State.ACTIVE,
           })}
           data-cy="FilterLinkActive"
-          onClick={handleFilterChange(Filter.ACTIVE)}
+          onClick={handleFilterChange(Filter.State.ACTIVE)}
         >
           Active
         </a>
@@ -51,10 +51,10 @@ export const TodoFooter: React.FC<Props> = ({
         <a
           href="#/completed"
           className={cn('filter__link', {
-            selected: filter === Filter.COMPLETED,
+            selected: filter === Filter.State.COMPLETED,
           })}
           data-cy="FilterLinkCompleted"
-          onClick={handleFilterChange(Filter.COMPLETED)}
+          onClick={handleFilterChange(Filter.State.COMPLETED)}
         >
           Completed
         </a>

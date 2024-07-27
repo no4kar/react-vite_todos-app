@@ -1,22 +1,24 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import cn from 'classnames';
 
-type Props = {
-  errorMsg: string;
-  onErrorDelete?: () => void;
-};
+export const ErrorNotification = React.memo(MyComponent);
 
-export const ErrorNotification: React.FC<Props> = React.memo(({
+function MyComponent({
   errorMsg,
   onErrorDelete = () => { },
-}) => {
-  useEffect(() => {
-    const timeoutID = setTimeout(onErrorDelete, 3000);
+  delay = 3000,
+}: {
+  errorMsg: string;
+  onErrorDelete?: () => void;
+  delay: number;
+}) {
+  React.useEffect(() => {
+    const timeoutID = setTimeout(onErrorDelete, delay);
 
     return () => {
       clearTimeout(timeoutID);
     };
-  }, [onErrorDelete]);
+  }, [onErrorDelete, delay]);
 
   return (
     <div
@@ -32,7 +34,7 @@ export const ErrorNotification: React.FC<Props> = React.memo(({
         aria-label="HideErrorButton"
         onClick={onErrorDelete}
       />
-      {errorMsg}
+      <p>{errorMsg}</p>
     </div>
   );
-});
+}

@@ -1,23 +1,18 @@
 import React from 'react';
-import { TyTodo } from './types/Todo';
 
+import { AxiosResponse } from 'axios';
 import { useReduxDispatch, useReduxSelector } from './store/hooks';
 import * as todosSlice from './slices/todosSlice';
 import { selectFromStore } from './store/store';
 
-import { TodoItem } from './components/TodoItem';
+import { TyTodo } from './types/Todo';
 import { TodoHeader } from './components/TodoHeader';
-import { AxiosResponse } from 'axios';
+import { TodoItem } from './components/TodoItem';
 
-// import { TodoHeader } from './components/TodoHeader';
 // import { TodoFooter } from './components/TodoFooter';
 // import { ErrorNotification } from './components/ErrorNotification';
-// import { TodoItem } from './components/TodoItem';
 
-// import { TyTodo } from './types/Todo';
-// import * as todosApi from './api/todos';
 // import { Filter } from './types/Filter';
-// import { getPraperedTodos } from './services/todos';
 
 import './App.scss';
 import { PayloadAction } from '@reduxjs/toolkit';
@@ -30,32 +25,33 @@ const responseToConsoleInfo = <T extends PayloadAction<any>>(response: T) => {
 };
 
 function FuncComponent() {
-  // const [title, setTitle] = React.useState('');
-  // const [processings, setProcessings] = React.useState<TyTodo.Item['id'][]>([]);
+  const [processings, setProcessings] = React.useState<TyTodo.Item['id'][]>([]);
   const { items: todos } = useReduxSelector(selectFromStore('todos'));
   const { id: userId } = useReduxSelector(selectFromStore('author'));
   const dispatch = useReduxDispatch();
 
   const addTodo = (newTodo: TyTodo.CreationAttributes) => {
     return dispatch(todosSlice.createThunk(newTodo))
-      .then<TyTodo.Item>((response) => {
-
-        console.info(response.payload);
-
-        return (response.payload as AxiosResponse<TyTodo.Item, any>).data;
-      });
+      .then(responseToConsoleInfo)
+      .then<TyTodo.Item>((response) => (response.payload as AxiosResponse<TyTodo.Item, any>).data);
   };
 
   const deleteTodo = React.useCallback(
     async (todo: TyTodo.Item) => {
+      setProcessings(prev => [...prev, todo.id]);
+
       return dispatch(todosSlice.removeThunk(todo.id))
-        .then(responseToConsoleInfo);
+        .then(responseToConsoleInfo)
+        .finally(() => setProcessings(prev => prev.filter(item => item !== todo.id)));
     }, [dispatch]);
 
   const updateTodo = React.useCallback(
     async (updatedTodo: TyTodo.Item) => {
+      setProcessings(prev => [...prev, updatedTodo.id]);
+
       return dispatch(todosSlice.updateThunk(updatedTodo))
-        .then(responseToConsoleInfo);
+        .then(responseToConsoleInfo)
+        .finally(() => setProcessings(prev => prev.filter(item => item !== updatedTodo.id)));
     }, [dispatch]);
 
   React.useEffect(() => {
@@ -79,6 +75,7 @@ function FuncComponent() {
               todo={todo}
               onDelete={deleteTodo}
               onUpdate={updateTodo}
+              isProcessed={processings.includes(todo.id)}
             />
           ))}
         </div>

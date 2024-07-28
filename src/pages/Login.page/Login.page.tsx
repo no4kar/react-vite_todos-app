@@ -6,36 +6,42 @@ import {
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { AxiosError } from 'axios';
 // import cn from 'classnames';
-import { validation } from '../../constants/formValidation';
+import { authValidation } from '../../constants/formValidation';
 import { Button } from '../../components/Button';
-import { MyForm } from '../../types/MyForm';
+import { TyForm } from '../../types/Form.type';
 import { FormField } from '../../components/FormField';
-import { useAdminStore } from '../../store/admin.store';
 import { Loader } from '../../components/Loader';
+
+import * as authSlice from '../../slices/auth.slice';
+import { useReduxSelector, useReduxDispatch } from '../../store/hooks';
+import { selectFromStore } from '../../store/store';
 
 export const LoginPage = () => {
   const location = useLocation();
-  const { login, isLoading, isChecked } = useAdminStore();
+  const { loaded, checked } = useReduxSelector(selectFromStore('author'));
+  const dispatch = useReduxDispatch();
   const {
     register,
     formState: { errors, isValid, isSubmitting },
     handleSubmit,
-  } = useForm<MyForm>({
+  } = useForm<TyForm.Auth>({
     defaultValues: {
-      email: 'antonbabi13@gmail.com',
+      email: 'email@gmail.com',
       password: 'password',
     },
     mode: 'onBlur',
   });
 
-  if (isChecked) {
+  if (checked) {
     return <Navigate to={location.state?.from?.pathname || '/'} replace />;
   }
 
-  const onSubmit: SubmitHandler<MyForm> = async (data) => {
+  const onSubmit: SubmitHandler<TyForm.Auth> = async (data) => {
 
     try {
-      await login(data);
+      dispatch(authSlice.login(data));
+
+      // await login(data);
       // navigate(location.state?.from?.pathname || '/');
     } catch (error) {
       console.error(error);
@@ -58,49 +64,49 @@ export const LoginPage = () => {
           flex flex-col gap-[24px] items-center justify-center"
       >
         <h2
-          className="title--h2"
+          className="font-robotomono-bold text-3xl font-bold"
         >
-          LOGIN AS ADMIN
+          LOG IN
         </h2>
 
-        <p
-          className="title--body text-red"
+        {/* <p
+          className="font-robotomono-normal text-base font-normal text-system-error"
         >
           fill all fields
-        </p>
+        </p> */}
       </div>
 
-      {isLoading
+      {loaded
         ? <Loader />
         : (
           <div className="flex-1">
             <div className="flex flex-col gap-[8px]">
-              <FormField<MyForm>
+              <FormField<TyForm.Auth>
                 type="email"
                 textLabel="E-mail"
                 name="email"
                 register={register}
                 errors={errors}
                 required
-                validation={validation.email}
+                validation={authValidation.email}
                 placeholder="Email"
               />
 
-              <FormField<MyForm>
+              <FormField<TyForm.Auth>
                 type="password"
                 textLabel="Password"
                 name="password"
                 register={register}
                 errors={errors}
                 required
-                validation={validation.password}
+                validation={authValidation.password}
                 placeholder="Email"
               />
             </div>
           </div>
         )}
 
-      <div className="h-[48px] title--h2">
+      <div className="h-12 font-robotomono-bold text-3xl font-bold">
         <Button
           type='submit'
           option='primary'

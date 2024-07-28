@@ -1,11 +1,11 @@
 import React from 'react';
 import cn from 'classnames';
 
-import { TyGeneral } from '../types/General.type';
-import { TyTodo } from '../types/Todo.type';
-import { useReduxSelector } from '../store/hooks';
-import { selectFromStore } from '../store/store';
-import { Loader } from './Loader';
+import { TyGeneral } from '../../types/General.type';
+import { TyTodo } from '../../types/Todo.type';
+import { useReduxSelector } from '../../store/hooks';
+import { selectFromStore } from '../../store/store';
+import { Loader } from '../Loader';
 
 export const TodoHeader = React.memo(FuncComponent);
 

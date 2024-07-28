@@ -1,16 +1,10 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 // import type { PayloadAction } from '@reduxjs/toolkit';
 
 import { TyTodo } from '../types/Todo.type';
+import { TyForm } from '../types/Form.type';
 
 const sliceName = 'author';
-
-// export type TodosState = {
-//   items: TyTodo.Item[];
-//   loaded: boolean,
-//   // status: TyStatus,
-//   errorMsg: TyTodo.Error,
-// };
 
 const initialState: {
   id: TyTodo.Item['userId'];
@@ -24,13 +18,22 @@ const initialState: {
 
 export const {
   reducer: authorReducer,
+  actions: {
+    login,
+  }
 } = createSlice({
   name: sliceName,
   initialState,
   reducers: {
-    // update(state, action: PayloadAction<TyTodo.Item>) {
+    login(
+      state,
+      action: PayloadAction<TyForm.Auth>,
+    ) {
+      
+      console.info(action.payload);
 
-    // },
+      return state;
+    },
   },
   // extraReducers: (builder) => {
 

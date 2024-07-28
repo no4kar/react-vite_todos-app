@@ -1,5 +1,5 @@
 import { BASE_URL, wait } from './helpers';
-import type { TyGeneral } from '../types/General';
+import type { TyGeneral } from '../types/General.type';
 
 export function getClient(
   baseURL = BASE_URL,

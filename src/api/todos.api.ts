@@ -1,6 +1,6 @@
-import { TyTodo } from '../types/Todo';
+import { TyTodo } from '../types/Todo.type';
 // import { getClient } from '../utils/httpClient';
-import { getClient } from '../utils/axiosClient';
+import { getClient } from '../utils/axios.client';
 import { BASE_URL } from '../utils/helpers';
 
 const client = getClient({
@@ -47,7 +47,7 @@ export const todosApi = {
     userId,
     title,
     completed,
-  }: TyTodo.Item){
+  }: TyTodo.Item) {
     return client.put<TyTodo.Item>(`/${id}`, { userId, title, completed });
   },
 };

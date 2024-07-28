@@ -1,6 +1,6 @@
-export const Arrow = Component;
+export const Arrow = FuncComponent;
 
-function Component() {
+function FuncComponent() {
   return (
     <svg
       width="27"

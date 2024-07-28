@@ -1,8 +1,8 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction, AsyncThunk } from '@reduxjs/toolkit';
 
-import { TyTodo } from '../types/Todo';
-import { todosApi } from '../api/todos';
+import { TyTodo } from '../types/Todo.type';
+import { todosApi } from '../api/todos.api';
 import { AxiosResponse } from 'axios';
 // import { TyStatus } from '../utils/helpers';
 
@@ -90,6 +90,10 @@ const todosSlice = createSlice({
     clean(state) {
       state.items = [];
     },
+
+    errorReset(state) {
+      state.errorMsg = TyTodo.Error.NONE;
+    },
   },
   extraReducers: (builder) => {
     builder // getAllThunk
@@ -159,10 +163,11 @@ const todosSlice = createSlice({
 });
 
 export const {
-  add,
-  update,
-  remove,
-  clean,
+  // add,
+  // update,
+  // remove,
+  // clean,
+  errorReset,
 } = todosSlice.actions;
 
 export default todosSlice.reducer;

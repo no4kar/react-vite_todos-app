@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 // import type { PayloadAction } from '@reduxjs/toolkit';
 
-import { TyTodo } from '../types/Todo';
+import { TyTodo } from '../types/Todo.type';
 
 const sliceName = 'author';
 
@@ -14,8 +14,12 @@ const sliceName = 'author';
 
 const initialState: {
   id: TyTodo.Item['userId'];
+  loaded: boolean;
+  checked: boolean;
 } = {
   id: '11967',
+  loaded: true,
+  checked: true,
 };
 
 export const {

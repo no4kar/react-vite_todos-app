@@ -1,5 +1,5 @@
-import { Filter } from '../types/Filter';
-import { TyTodo } from '../types/Todo';
+import { Filter } from '../types/Filter.type';
+import { TyTodo } from '../types/Todo.type';
 
 export function getPraperedTodos(
   todos: TyTodo.Item[],

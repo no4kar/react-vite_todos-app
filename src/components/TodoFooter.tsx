@@ -1,5 +1,5 @@
 import cn from 'classnames';
-import { Filter } from '../types/Filter';
+import { Filter } from '../types/Filter.type';
 
 type Props = {
   filter: Filter.State;

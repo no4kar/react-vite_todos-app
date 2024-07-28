@@ -1,8 +1,11 @@
 import React from 'react';
+import cn from 'classnames';
 
-import { TyGeneral } from '../types/General';
-import { TyTodo } from '../types/Todo';
+import { TyGeneral } from '../types/General.type';
+import { TyTodo } from '../types/Todo.type';
 import { useReduxSelector } from '../store/hooks';
+import { selectFromStore } from '../store/store';
+import { Loader } from './Loader';
 
 export const TodoHeader = React.memo(FuncComponent);
 
@@ -19,7 +22,8 @@ function FuncComponent({
 }) {
   const [title, setTitle] = React.useState('');
   const titleInput = React.useRef<HTMLTextAreaElement>(null);
-  const { id: userId } = useReduxSelector(state => state.author);
+  const { items: todos, loaded } = useReduxSelector(selectFromStore('todos'));
+  const { id: userId } = useReduxSelector(selectFromStore('author'));
 
   const handleInputChange = (event: TyGeneral.ChangeEvtTextAreaElmt) => {
     setTitle(event.target.value);
@@ -81,24 +85,46 @@ function FuncComponent({
 
       {/* Add a todo on form submit */}
       <form
-        className='flex space-x-2 mb-4'
+        className='relative'
         onSubmit={handleSubmit}
       >
-        <textarea
-          ref={titleInput}
-          className='flex-1 p-2 min-h-full rounded bg-gray-700 text-white placeholder-gray-400'
-          value={title}
-          onChange={handleInputChange}
-          placeholder='What are you planning to do?'
-          rows={4}
-        />
+        {!todos.length && !loaded && (
+          <Loader
+            content={
+              <h1
+                className='text-xl font-bold bg-transparent text-white animate-bounce'>
+                Loading is in progress...
+              </h1>
+            }
+            style={{
+              container: `absolute inset-0 z-[1] 
+            flex items-center justify-center 
+            bg-white bg-opacity-30 rounded`,
+            }}
+          />
+        )}
 
-        <button
-          type='submit'
-          className="bg-yellow-500 text-black px-4 py-2 rounded"
-        >
-          <i className='fa-solid fa-plus' />
-        </button>
+        <div className={cn('flex space-x-2 mb-4', {
+          'pointer-events-none blur-[2px]': !todos.length && !loaded,
+        })}>
+          <textarea
+            ref={titleInput}
+            className='flex-1 p-2 min-h-full rounded bg-gray-700 text-white placeholder-gray-400'
+            value={title}
+            onChange={handleInputChange}
+            placeholder='What are you planning to do?'
+            rows={4}
+          />
+
+          <button
+            type='submit'
+            className='px-4 py-2 rounded
+            bg-system-warn text-black 
+            hover:opacity-70'
+          >
+            <i className='fa-solid fa-plus' />
+          </button>
+        </div>
       </form>
     </header>
   );

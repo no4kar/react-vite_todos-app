@@ -1,9 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import cn from 'classnames';
-import { Loader } from './Loader';
 
-import { TyTodo } from '../types/Todo';
-// import { TyGeneral } from '../types/General';
+import { Loader } from './Loader';
+import { TyTodo } from '../types/Todo.type';
 import { truncateString } from '../utils/helpers';
 
 export const TodoItem = React.memo(({
@@ -109,28 +108,31 @@ export const TodoItem = React.memo(({
 
   return (
     <div
-      className='relative rounded'
+      className='relative'
     >
       {isProcessed && (
         <Loader
           style={{
-            container: 'absolute inset-0 z-[1] flex items-center justify-center bg-white bg-opacity-30',
+            container: `absolute inset-0 z-[1] 
+            flex items-center justify-center 
+            bg-white bg-opacity-30 rounded`,
           }}
         />
       )}
 
       <div
-      className={cn('flex flex-col space-y-6 p-4 mb-2 rounded', {
-        'bg-gray-700': completed,
-        'bg-gray-600': !completed,
-        'pointer-events-none blur-[2px]': isProcessed,
-      })}
+        className={cn('flex flex-col space-y-6 p-4 mb-2 rounded', {
+          'bg-gray-700': completed,
+          'bg-gray-600': !completed,
+          'pointer-events-none blur-[2px]': isProcessed,
+        })}
       >
         <div className='flex space-x-4'>
           <button
             onClick={handleToggleComplete}
-            className={cn('px-4 py-2 rounded aspect-square text-white', {
-              'bg-green-600': completed,
+            className={cn(`px-4 py-2 rounded aspect-square 
+              text-white hover:opacity-70`, {
+              'bg-system-success': completed,
               'bg-gray-700': !completed,
             })}
           >
@@ -154,7 +156,9 @@ export const TodoItem = React.memo(({
 
           <button
             onClick={handleDelete}
-            className="px-4 py-2 rounded bg-red-500 text-white "
+            className='px-4 py-2 rounded 
+            bg-system-error text-white
+            hover:opacity-70'
           >
             <i className='w-4 aspect-square fa-solid fa-xmark' />
           </button>

@@ -1,21 +1,20 @@
 import React from 'react';
-
+import { PayloadAction } from '@reduxjs/toolkit';
 import { AxiosResponse } from 'axios';
+
 import { useReduxDispatch, useReduxSelector } from './store/hooks';
-import * as todosSlice from './slices/todosSlice';
+import * as todosSlice from './slices/todos.slice';
 import { selectFromStore } from './store/store';
 
-import { TyTodo } from './types/Todo';
+import { TyTodo } from './types/Todo.type';
 import { TodoHeader } from './components/TodoHeader';
 import { TodoItem } from './components/TodoItem';
+import { Notification } from './components/Notification';
 
 // import { TodoFooter } from './components/TodoFooter';
-// import { ErrorNotification } from './components/ErrorNotification';
-
 // import { Filter } from './types/Filter';
 
 import './App.scss';
-import { PayloadAction } from '@reduxjs/toolkit';
 
 export const App = React.memo(FuncComponent);
 
@@ -26,7 +25,7 @@ const responseToConsoleInfo = <T extends PayloadAction<any>>(response: T) => {
 
 function FuncComponent() {
   const [processings, setProcessings] = React.useState<TyTodo.Item['id'][]>([]);
-  const { items: todos } = useReduxSelector(selectFromStore('todos'));
+  const { items: todos, errorMsg, } = useReduxSelector(selectFromStore('todos'));
   const { id: userId } = useReduxSelector(selectFromStore('author'));
   const dispatch = useReduxDispatch();
 
@@ -56,7 +55,7 @@ function FuncComponent() {
 
   React.useEffect(() => {
     dispatch(todosSlice.getAllThunk({ userId }));
-  }, [dispatch, userId])
+  }, [dispatch, userId]);
 
   return (
     <div
@@ -68,7 +67,9 @@ function FuncComponent() {
           onCreate={addTodo}
         />
 
-        <div>
+        <div
+          data-cy="TodoList"
+        >
           {todos.map((todo) => (
             <TodoItem
               key={todo.id}
@@ -79,7 +80,19 @@ function FuncComponent() {
             />
           ))}
         </div>
+
+
       </div>
+
+      {errorMsg && (
+        <div
+          className='fixed bottom-4 right-4'
+        >
+          <Notification onClose={() => dispatch(todosSlice.errorReset())}>
+            <p>{errorMsg}</p>
+          </Notification>
+        </div>
+      )}
     </div>
   );
 }

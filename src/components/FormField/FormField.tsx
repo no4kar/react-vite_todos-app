@@ -42,7 +42,7 @@ function FuncComponent<T extends Record<string, any>>({
       {textLabel && (
         <label
           htmlFor={name}
-          className={cn('title title--body', {
+          className={cn('font-robotomono-normal font-normal text-base', {
             'text-system-error': hasError,
             'after:content-["*"] after:ml-0.5 after:text-system-error': required,
           })}
@@ -56,7 +56,7 @@ function FuncComponent<T extends Record<string, any>>({
           id={name}
           placeholder={placeholder}
           className="
-          h-48 text-black
+          h-8 text-black
           border-b border-black outline-none resize-none
           title"
           {...register(name, { ...validation })}
@@ -66,13 +66,10 @@ function FuncComponent<T extends Record<string, any>>({
           id={name}
           type={type}
           placeholder={placeholder}
-          className={cn(
-            'h-48 py-3 border-b border-black outline-none text-black',
-            {
-              'text-system-error': hasError,
-            },
-
-          )}
+          className={cn(`h-8 py-3 
+            border-b border-black outline-none text-black`, {
+            'text-system-error': hasError,
+          })}
           {...register(name, { ...validation })}
         />
       )}

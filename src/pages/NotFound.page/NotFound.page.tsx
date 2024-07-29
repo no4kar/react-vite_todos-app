@@ -7,14 +7,17 @@ export const NotFoundPage = R.memo(FuncComponent);
 
 function FuncComponent({
   title = 'Page not found',
-  navigateTo,
+  redirect,
   style = {},
 }: {
   title?: string;
-  navigateTo?: string;
+  redirect?: {
+    to: string;
+    delay: number;
+  };
   style?: {
     container?: string;
-  }
+  };
 }) {
   const {
     container = `flex flex-col gap-16 items-center justify-center content min-h-96`,
@@ -23,10 +26,11 @@ function FuncComponent({
   const navigate = useNavigate();
 
   R.useEffect(() => {
-    if (navigateTo) {
-      const timeoutId = setTimeout(() => {
-        navigate(navigateTo);
-      }, 2000);
+    if (redirect?.to) {
+      const timeoutId
+        = setTimeout(() => {
+          navigate(redirect.to);
+        }, redirect.delay);
 
       return () => clearTimeout(timeoutId);
     }
@@ -39,9 +43,13 @@ function FuncComponent({
     <div
       className={container}
     >
-      <h1 className='font-robotomono-bold text-3xl font-bold text-center'>{title}</h1>
+      <h1
+        className='font-robotomono-bold text-3xl font-bold text-center'
+      >
+        {title}
+      </h1>
 
-      {navigateTo && (
+      {redirect?.to && (
         <Loader />
       )}
     </div>

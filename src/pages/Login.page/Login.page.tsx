@@ -5,18 +5,21 @@ import {
 } from 'react-router-dom';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { AxiosError } from 'axios';
-// import cn from 'classnames';
-import { authValidation } from '../../constants/formValidation';
-import { Button } from '../../components/Button';
-import { TyForm } from '../../types/Form.type';
-import { FormField } from '../../components/FormField';
-import { Loader } from '../../components/Loader';
+import cn from 'classnames';
 
 import * as authSlice from '../../slices/auth.slice';
 import { useReduxSelector, useReduxDispatch } from '../../store/hooks';
 import { selectFromStore } from '../../store/store';
 
-export const LoginPage = () => {
+import { authValidation } from '../../constants/formValidation';
+// import { Button } from '../../components/Button';
+import { TyForm } from '../../types/Form.type';
+import { FormField } from '../../components/FormField';
+import { Loader } from '../../components/Loader';
+
+export const LoginPage = FuncComponent;
+
+function FuncComponent() {
   const location = useLocation();
   const { loaded, checked } = useReduxSelector(selectFromStore('author'));
   const dispatch = useReduxDispatch();
@@ -33,54 +36,63 @@ export const LoginPage = () => {
   });
 
   if (checked) {
-    return <Navigate to={location.state?.from?.pathname || '/'} replace />;
+    return (
+      <Navigate
+        to={location.state?.from?.pathname || '/'}
+        replace
+      />
+    );
   }
 
-  const onSubmit: SubmitHandler<TyForm.Auth> = async (data) => {
+  const onSubmit: SubmitHandler<TyForm.Auth>
+    = async (data) => {
+      try {
+        dispatch(authSlice.login(data));
 
-    try {
-      dispatch(authSlice.login(data));
-
-      // await login(data);
-      // navigate(location.state?.from?.pathname || '/');
-    } catch (error) {
-      console.error(error);
-      alert((error as AxiosError).message);
-    }
-  };
+        // await login(data);
+        // navigate(location.state?.from?.pathname || '/');
+      } catch (error) {
+        console.error(error);
+        alert((error as AxiosError).message);
+      }
+    };
 
   return (
-    <form
-      className="
-      content
-      pt-[24px] pb-[4px]
-      flex flex-col gap-5
-      sm:pb-[62px]
-      md:pt-[92px] md:pb-[84px]"
-      onSubmit={handleSubmit(onSubmit)}
+    <div
+      className='
+    custom-page-container space-y-6'
     >
       <div
         className="
-          flex flex-col gap-[24px] items-center justify-center"
+          flex flex-col gap-6 items-center justify-center"
       >
         <h2
-          className="font-robotomono-bold text-3xl font-bold"
+          className="font-robotomono-bold text-3xl font-bold uppercase"
         >
-          LOG IN
+          Authorization form
         </h2>
 
         {/* <p
           className="font-robotomono-normal text-base font-normal text-system-error"
         >
-          fill all fields
+          You can leave default values.
         </p> */}
       </div>
 
-      {loaded
-        ? <Loader />
-        : (
-          <div className="flex-1">
-            <div className="flex flex-col gap-[8px]">
+      <form
+        className="
+      w-full p-4
+      rounded bg-gray-700
+      flex flex-col gap-5"
+        onSubmit={handleSubmit(onSubmit)}
+      >
+        {loaded
+          ? <Loader />
+          : (
+            <div
+              className="
+          flex-1 flex flex-col gap-2"
+            >
               <FormField<TyForm.Auth>
                 type="email"
                 textLabel="E-mail"
@@ -89,7 +101,7 @@ export const LoginPage = () => {
                 errors={errors}
                 required
                 validation={authValidation.email}
-                placeholder="Email"
+                placeholder="some@email.com"
               />
 
               <FormField<TyForm.Auth>
@@ -100,22 +112,37 @@ export const LoginPage = () => {
                 errors={errors}
                 required
                 validation={authValidation.password}
-                placeholder="Email"
+                placeholder="password"
               />
             </div>
-          </div>
-        )}
+          )}
 
-      <div className="h-12 font-robotomono-bold text-3xl font-bold">
-        <Button
+        <button
           type='submit'
-          option='primary'
-          isDisable={!isValid}
+          disabled={!isValid}
+          title='You can leave default values'
+          className={cn('px-4 py-2 rounded hover:opacity-70 bg-gray-600', {
+            'blur-[2px]': !isValid,
+          })}
         >
-          {isSubmitting ? 'Logging in...' : 'Log in'}
-        </Button>
-      </div>
-    </form>
-  );
-};
+          <p className="w-full h-12 font-robotomono-bold text-3xl font-bold">
+            {isSubmitting ? 'Logging in...' : 'Log in'}
+          </p>
+        </button>
 
+        <button
+          type='submit'
+          disabled={!isValid}
+          className={cn('px-4 py-2 rounded hover:opacity-70 bg-gray-600', {
+            'blur-[2px]': !isValid,
+          })}
+        >
+          <p className="w-full h-12 font-robotomono-bold text-3xl font-bold">
+            {isSubmitting ? 'Signing up...' : 'Sign up'}
+          </p>
+        </button>
+      </form>
+    </div>
+
+  );
+}

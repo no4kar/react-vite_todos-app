@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
-import todosReducer from '../slices/todos.slice';
-import { authorReducer } from '../slices/auth.slice';
+import { reducer as todosReducer } from '../slices/todos.slice';
+import { reducer as authorReducer } from '../slices/auth.slice';
 
 // collect all *Slice.reducer from *Slice.ts
 export const store = configureStore({

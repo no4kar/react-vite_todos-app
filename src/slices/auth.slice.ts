@@ -12,15 +12,15 @@ const initialState: {
   checked: boolean;
 } = {
   id: '11967',
-  loaded: true,
-  checked: true,
+  loaded: false,
+  checked: false,
 };
 
 export const {
-  reducer: authorReducer,
   actions: {
     login,
-  }
+  },
+  reducer,
 } = createSlice({
   name: sliceName,
   initialState,
@@ -29,8 +29,11 @@ export const {
       state,
       action: PayloadAction<TyForm.Auth>,
     ) {
-      
+
       console.info(action.payload);
+
+      state.checked = true;
+      state.loaded = true;
 
       return state;
     },

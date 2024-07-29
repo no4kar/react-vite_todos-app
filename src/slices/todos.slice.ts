@@ -56,7 +56,12 @@ export const updateThunk: AsyncThunk<
 );
 
 
-const todosSlice = createSlice({
+export const {
+  actions: {
+    errorReset,
+  },
+  reducer,
+} = createSlice({
   name: sliceName,
   initialState,
   reducers: {
@@ -161,13 +166,3 @@ const todosSlice = createSlice({
       });
   },
 });
-
-export const {
-  // add,
-  // update,
-  // remove,
-  // clean,
-  errorReset,
-} = todosSlice.actions;
-
-export default todosSlice.reducer;

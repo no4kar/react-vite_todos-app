@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import cn from 'classnames';
 
-import { Loader } from './Loader';
-import { TyTodo } from '../types/Todo.type';
-import { truncateString } from '../utils/helpers';
+import { Loader } from '.././Loader';
+import { TyTodo } from '../../types/Todo.type';
+import { truncateString } from '../../utils/helpers';
 
 export const TodoItem = React.memo(({
   todo,

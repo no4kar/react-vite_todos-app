@@ -71,7 +71,11 @@ function FuncComponent({
 
   return (
     <header className="todo__header">
-      <h1 className="font-robotomono-bold text-3xl font-bold text-center mb-4">The Task Manager</h1>
+      <h1
+        className="font-robotomono-bold text-3xl font-bold text-center mb-4"
+      >
+        The Task Manager
+      </h1>
       {/* this buttons is active only if there are some active todos */}
       {/* <button
         type="button"
@@ -92,7 +96,8 @@ function FuncComponent({
           <Loader
             content={
               <h1
-                className='text-xl font-bold bg-transparent text-white animate-bounce'>
+                className='text-xl font-bold bg-transparent text-white animate-bounce'
+              >
                 Loading is in progress...
               </h1>
             }

@@ -54,10 +54,9 @@ function FuncComponent() {
 
   return (
     <div
-      className="
-      min-h-screen bg-gray-800 text-white font-robotomono-normal"
+      className="bg-gray-800 text-white font-robotomono-normal"
     >
-      <div className="custom-page-container py-5">
+      <div className="custom-page-container py-4 sm:py-6 md:py-10">
         <TodoHeader
           onCreate={addTodo}
         />

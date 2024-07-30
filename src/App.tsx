@@ -13,11 +13,21 @@ function FuncComponent() {
   return (
     <div
       className="
-      min-h-screen bg-gray-800 text-white font-robotomono-normal"
+      min-h-screen 
+      bg-gray-800 text-white font-robotomono-normal
+      grid grid-cols-1 grid-rows-[auto,1fr,auto]"
     >
+      <header>
+        <div className='h-10 custom-page-container bg-gray-900' />
+      </header>
+      
       <main>
         <Outlet />
       </main>
+      
+      <footer>
+        <div className='h-10 custom-page-container bg-gray-900' />
+      </footer>
     </div>
   );
 }

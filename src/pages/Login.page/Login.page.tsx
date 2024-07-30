@@ -12,10 +12,9 @@ import { useReduxSelector, useReduxDispatch } from '../../store/hooks';
 import { selectFromStore } from '../../store/store';
 
 import { authValidation } from '../../constants/formValidation';
-// import { Button } from '../../components/Button';
 import { TyForm } from '../../types/Form.type';
 import { FormField } from '../../components/FormField';
-import { Loader } from '../../components/Loader';
+// import { Loader } from '../../components/Loader';
 
 export const LoginPage = FuncComponent;
 
@@ -58,91 +57,83 @@ function FuncComponent() {
     };
 
   return (
-    <div
-      className='
-    custom-page-container space-y-6'
-    >
-      <div
-        className="
-          flex flex-col gap-6 items-center justify-center"
-      >
-        <h2
-          className="font-robotomono-bold text-3xl font-bold uppercase"
+    <div className='custom-page-container py-4 sm:py-6 md:py-10'>
+      <div className='w-full max-w-md p-8 mx-auto
+      bg-gray-800 text-gray-400 rounded-lg shadow-md space-y-6'>
+        <div
+          className='flex items-center justify-center flex-col gap-6 '
         >
-          Authorization form
-        </h2>
+          <h2 className='text-2xl font-robotomono-bold font-bold text-center text-white'>Enter</h2>
+          <p className='text-center'>Welcome to our website</p>
+        </div>
 
-        {/* <p
-          className="font-robotomono-normal text-base font-normal text-system-error"
+        <form
+          className='
+          w-full p-4
+          rounded bg-gray-700
+          flex flex-col gap-5'
+          onSubmit={handleSubmit(onSubmit)}
         >
-          You can leave default values.
-        </p> */}
+          <div
+            className='flex-1 flex flex-col gap-2'
+          >
+            <FormField<TyForm.Auth>
+              type='email'
+              textLabel='E-mail'
+              name='email'
+              register={register}
+              errors={errors}
+              required
+              validation={authValidation.email}
+              placeholder='some@email.com'
+            />
+
+            <FormField<TyForm.Auth>
+              type='password'
+              textLabel='Password'
+              name='password'
+              register={register}
+              errors={errors}
+              required
+              validation={authValidation.password}
+              placeholder='password'
+            />
+          </div>
+
+          <button
+            type='submit'
+            disabled={!isValid}
+            title='You can leave default values'
+            className={cn('w-full py-2 bg-red-600 text-white rounded hover:opacity-70', {
+              'blur-[2px]': !isValid,
+            })}
+          >
+            <p className='flex items-center justify-center font-bold'>
+              {isSubmitting && loaded ? 'Logging in...' : 'Log in'}
+            </p>
+          </button>
+        </form>
+
+        <div className='text-center space-y-4'>
+          <p>Login via social networks</p>
+          <button className='w-full py-2 
+          bg-white text-gray-800 font-bold rounded hover:opacity-70'>
+            Google
+          </button>
+        </div>
+
+        <div className='text-center hidden'>
+          <a href='#register' className=' hover:underline'>
+            Not registered yet? Registration
+          </a>
+
+          <br />
+
+          <a href='#recover' className=' hover:underline'>
+            Forgot your password? Recover password
+          </a>
+        </div>
       </div>
-
-      <form
-        className="
-      w-full p-4
-      rounded bg-gray-700
-      flex flex-col gap-5"
-        onSubmit={handleSubmit(onSubmit)}
-      >
-        {loaded
-          ? <Loader />
-          : (
-            <div
-              className="
-          flex-1 flex flex-col gap-2"
-            >
-              <FormField<TyForm.Auth>
-                type="email"
-                textLabel="E-mail"
-                name="email"
-                register={register}
-                errors={errors}
-                required
-                validation={authValidation.email}
-                placeholder="some@email.com"
-              />
-
-              <FormField<TyForm.Auth>
-                type="password"
-                textLabel="Password"
-                name="password"
-                register={register}
-                errors={errors}
-                required
-                validation={authValidation.password}
-                placeholder="password"
-              />
-            </div>
-          )}
-
-        <button
-          type='submit'
-          disabled={!isValid}
-          title='You can leave default values'
-          className={cn('px-4 py-2 rounded hover:opacity-70 bg-gray-600', {
-            'blur-[2px]': !isValid,
-          })}
-        >
-          <p className="w-full h-12 font-robotomono-bold text-3xl font-bold">
-            {isSubmitting ? 'Logging in...' : 'Log in'}
-          </p>
-        </button>
-
-        <button
-          type='submit'
-          disabled={!isValid}
-          className={cn('px-4 py-2 rounded hover:opacity-70 bg-gray-600', {
-            'blur-[2px]': !isValid,
-          })}
-        >
-          <p className="w-full h-12 font-robotomono-bold text-3xl font-bold">
-            {isSubmitting ? 'Signing up...' : 'Sign up'}
-          </p>
-        </button>
-      </form>
     </div>
-
   );
 }

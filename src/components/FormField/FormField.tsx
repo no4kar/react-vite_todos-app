@@ -30,11 +30,37 @@ function FuncComponent<T extends Record<string, any>>({
   required?: boolean;
   style?: {
     container?: string,
+    label?: {
+      container: string;
+      hasError: string;
+      required: string;
+    },
+    input?: {
+      container: string;
+      hasError: string;
+    },
+    errorMsg?: {
+      container: string;
+    },
   },
 }) {
   const hasError = errors[name];
   const {
     container = 'flex flex-col gap-2',
+    label = {
+      container: 'font-robotomono-normal font-normal text-base',
+      hasError: '',
+      required: 'after:content-["*"] after:ml-1 after:text-system-error',
+    },
+    input = {
+      container: `py-2
+      border-b border-black outline-none text-gray-400 resize-none`,
+      hasError: 'text-system-error',
+    },
+    errorMsg = {
+      container: `font-robotomono-light font-light text-xs text-system-error 
+      overflow-hidden transition-all duration-500 ease-in-out`,
+    },
   } = style;
 
   return (
@@ -42,9 +68,9 @@ function FuncComponent<T extends Record<string, any>>({
       {textLabel && (
         <label
           htmlFor={name}
-          className={cn('font-robotomono-normal font-normal text-base', {
-            'text-system-error': hasError,
-            'after:content-["*"] after:ml-0.5 after:text-system-error': required,
+          className={cn(label.container, {
+            [label.hasError]: hasError,
+            [label.required]: required,
           })}
         >
           {textLabel}
@@ -55,10 +81,7 @@ function FuncComponent<T extends Record<string, any>>({
         <textarea
           id={name}
           placeholder={placeholder}
-          className="
-          h-8 text-black
-          border-b border-black outline-none resize-none
-          title"
+          className={input.container}
           {...register(name, { ...validation })}
         />
       ) : (
@@ -66,21 +89,19 @@ function FuncComponent<T extends Record<string, any>>({
           id={name}
           type={type}
           placeholder={placeholder}
-          className={cn(`h-8 py-3 
-            border-b border-black outline-none text-black`, {
-            'text-system-error': hasError,
+          className={cn(input.container, {
+            [input.hasError]: hasError,
           })}
           {...register(name, { ...validation })}
         />
       )}
 
       <p
-        className={cn(
-          'font-robotomono-light font-light text-xs text-system-error overflow-hidden',
-          'transition-all duration-500 ease-in-out',
+        className={cn(errorMsg.container,
+          'origin-top',
           {
-            'h-0': !hasError,
-            'h-4': hasError,
+            'scale-y-0': !hasError,
+            'scale-y-100': hasError,
           })}
       >
         {(hasError?.message as string) || ''}

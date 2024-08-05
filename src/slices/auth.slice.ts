@@ -12,13 +12,16 @@ import { accessTokenApi } from '../api/accessToken.api';
 const sliceName = 'author';
 
 const initialState: {
-  author: TyAuth.Item | null;
+  author: TyAuth.Item;
   loaded: boolean;
   registered: boolean;
   activated: boolean;
   errorMsg: string,
 } = {
-  author: null,
+  author: {
+    id: '',
+    email: '',
+  },
   loaded: false,
   registered: false,
   activated: false,

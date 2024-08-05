@@ -1,7 +1,5 @@
-// import React from 'react';
+import React from 'react';
 import {
-  Navigate,
-  useLocation,
   Link,
 } from 'react-router-dom';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -15,45 +13,46 @@ import { selectFromStore } from '../../store/store';
 import { authValidation } from '../../constants/formValidation';
 import { TyForm } from '../../types/Form.type';
 import { FormField } from '../../components/FormField';
-import { Notification } from '../../components/Notification';
 // import { Loader } from '../../components/Loader';
 
-export const LoginPage = FuncComponent;
+export const SignupPage = FuncComponent;
 
 function FuncComponent() {
-  const location = useLocation();
-  const {
-    loaded,
-    registered,
-    errorMsg,
-  } = useReduxSelector(selectFromStore('author'));
+  const { errorMsg } = useReduxSelector(selectFromStore('author'));
+  const [sent, setSent] = React.useState(false);
   const dispatch = useReduxDispatch();
   const {
     register,
     formState: { errors, isValid, isSubmitting },
     handleSubmit,
   } = useForm<TyForm.Auth>({
-    defaultValues: {
-      email: 'some@email.com',
-      password: 'password',
-    },
     mode: 'onChange',
   });
 
-  if (registered) {
+  if (sent) {
     return (
-      <Navigate
-        to={location.state?.from?.pathname || '/'}
-        replace
-      />
+      <div className='custom-page-container py-4 sm:py-6 md:py-10'>
+        <div className='w-full max-w-md p-8 mx-auto
+      bg-gray-800 text-gray-400 rounded-lg shadow-md space-y-6'>
+          <div
+            className='flex items-center justify-center flex-col gap-4'
+          >
+            <h2 className='text-2xl font-robotomono-bold font-bold text-white'>
+              Check your email
+            </h2>
+
+            <p>We have sent you an email with the activation link</p>
+          </div>
+        </div>
+      </div>
     );
   }
 
   const onSubmit: SubmitHandler<TyForm.Auth>
     = async (data) => {
       try {
-        await dispatch(authSlice.loginThunk(data));
-
+        await dispatch(authSlice.registrationThunk(data))
+          .then(() => setSent(true));
         // await login(data);
         // navigate(location.state?.from?.pathname || '/');
       } catch (error) {
@@ -70,7 +69,7 @@ function FuncComponent() {
           className='flex items-center justify-center'
         >
           <h2 className='text-2xl font-robotomono-bold font-bold text-white'>
-            Log In
+            Sign Up
           </h2>
         </div>
 
@@ -92,7 +91,7 @@ function FuncComponent() {
               errors={errors}
               required
               validation={authValidation.email}
-              placeholder='some@email.com'
+              placeholder='your@email.com'
             />
 
             <FormField<TyForm.Auth>
@@ -103,7 +102,7 @@ function FuncComponent() {
               errors={errors}
               required
               validation={authValidation.password}
-              placeholder='password'
+              placeholder='your password'
             />
           </div>
 
@@ -116,35 +115,32 @@ function FuncComponent() {
             })}
           >
             <p className='flex items-center justify-center font-bold'>
-              {isSubmitting && loaded ? 'Submitting...' : 'Submit'}
+              {isSubmitting ? 'Submitting...' : 'Submit'}
             </p>
           </button>
         </form>
 
+        {/* <div className='text-center space-y-4'>
+          <p>Login via social networks</p>
+          <button className='w-full py-2 
+          bg-white text-gray-800 font-bold rounded hover:opacity-70'>
+            Google
+          </button>
+        </div> */}
+
         <div className='text-center'>
           <p>
-            Not registered yet?
-            {' '}
-            <Link to='/signup' className='inline hover:underline'>Registration</Link>
+            {'Already have an account? '}
+            <Link to='/login' className='inline hover:underline'>Log in</Link>
           </p>
-
-          {/* <br />
-
-          <a href='#recover' className=' hover:underline'>
-            Forgot your password? Recover password
-          </a> */}
         </div>
+
+        {errorMsg && (
+          <p className='bg-red-100 text-system-error border border-red-400 p-4 rounded'>
+            {errorMsg}
+          </p>
+        )}
       </div>
-
-      {errorMsg && (
-        <div
-          className='fixed bottom-4 right-4'
-        >
-          <Notification onClose={() => dispatch(authSlice.errorReset())}>
-            <p>{errorMsg}</p>
-          </Notification>
-        </div>
-      )}
     </div>
   );
 }

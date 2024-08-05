@@ -19,7 +19,7 @@ export const TodoFooter: React.FC<Props> = ({
   const handleFilterChange = (v: Filter.State) => () => onFilterChange(v);
 
   return (
-    <footer className="todoapp__footer" data-cy="Footer">
+    <footer className='todoapp__footer' data-cy='Footer'>
       <span className="todo-count" data-cy="TodosCounter">
         {`${quantityActiveTodos} item${quantityActiveTodos <= 1 ? '' : 's'} left`}
       </span>

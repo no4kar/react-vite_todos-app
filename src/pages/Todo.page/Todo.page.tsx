@@ -20,14 +20,20 @@ const responseToConsoleInfo = <T extends PayloadAction<any>>(response: T) => {
 
 function FuncComponent() {
   const [processings, setProcessings] = React.useState<TyTodo.Item['id'][]>([]);
-  const { items: todos, errorMsg, } = useReduxSelector(selectFromStore('todos'));
-  const { id: userId } = useReduxSelector(selectFromStore('author'));
+  const {
+    items: todos,
+    errorMsg,
+  } = useReduxSelector(selectFromStore('todos'));
+  const {
+    author: { id: userId },
+  } = useReduxSelector(selectFromStore('author'));
   const dispatch = useReduxDispatch();
 
   const addTodo = (newTodo: TyTodo.CreationAttributes) => {
     return dispatch(todosSlice.createThunk(newTodo))
       .then(responseToConsoleInfo)
-      .then<TyTodo.Item>((response) => (response.payload as AxiosResponse<TyTodo.Item, any>).data);
+      .then<TyTodo.Item>((response) => (
+        response.payload as AxiosResponse<TyTodo.Item, any>).data);
   };
 
   const deleteTodo = React.useCallback(
@@ -36,7 +42,8 @@ function FuncComponent() {
 
       return dispatch(todosSlice.removeThunk(todo.id))
         .then(responseToConsoleInfo)
-        .finally(() => setProcessings(prev => prev.filter(item => item !== todo.id)));
+        .finally(() => setProcessings(prev =>
+          prev.filter(item => item !== todo.id)));
     }, [dispatch]);
 
   const updateTodo = React.useCallback(
@@ -45,11 +52,14 @@ function FuncComponent() {
 
       return dispatch(todosSlice.updateThunk(updatedTodo))
         .then(responseToConsoleInfo)
-        .finally(() => setProcessings(prev => prev.filter(item => item !== updatedTodo.id)));
+        .finally(() => setProcessings(prev => 
+          prev.filter(item => item !== updatedTodo.id)));
     }, [dispatch]);
 
   React.useEffect(() => {
-    dispatch(todosSlice.getAllThunk({ userId }));
+    if (userId) {
+      dispatch(todosSlice.getAllThunk({ userId }));
+    }
   }, [dispatch, userId]);
 
   return (
@@ -60,7 +70,6 @@ function FuncComponent() {
         <TodoHeader
           onCreate={addTodo}
         />
-
         <div
           data-cy="TodoList"
         >
@@ -74,8 +83,6 @@ function FuncComponent() {
             />
           ))}
         </div>
-
-
       </div>
 
       {errorMsg && (

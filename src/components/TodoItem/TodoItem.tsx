@@ -100,10 +100,10 @@ export const TodoItem = React.memo(({
   //   }
   // };
 
-  // const handleTodoChecked = (
+  // const handleTodoregistered = (
   //   event: TyChangeEvtInputElmt,
   // ) => {
-  //   onUpdateTodo({ ...todo, completed: event.target.checked });
+  //   onUpdateTodo({ ...todo, completed: event.target.registered });
   // };
 
   return (
@@ -186,8 +186,8 @@ export const TodoItem = React.memo(({
   //         data-cy="TodoStatus"
   //         type="checkbox"
   //         className="todo__status"
-  //         checked={completed}
-  //         onChange={handleTodoChecked}
+  //         registered={completed}
+  //         onChange={handleTodoregistered}
   //       />
   //     </label>
 

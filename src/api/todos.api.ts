@@ -1,15 +1,26 @@
 import { TyTodo } from '../types/Todo.type';
 // import { getClient } from '../utils/httpClient';
 import { getClient } from '../utils/axios.client';
-import { BASE_URL } from '../utils/helpers';
+import { env } from '../constants/varsFromEnv';
+import { accessTokenApi } from './accessToken.api';
 
 const client = getClient({
-  baseURL: `${BASE_URL}/todos`
+  baseURL: `${env.API_URL}/todos`
+});
+
+client.interceptors.request.use(req => {
+  const accessToken = accessTokenApi.get();
+
+  if (accessToken) {
+    req.headers.Authorization = `Bearer ${accessToken}`;
+  }
+
+  return req;
 });
 
 export const todosApi = {
   getAll(
-    query: TyTodo.Request.GetQuery,
+    query: TyTodo.Request.GetAll,
   ) {
     const params: any = {
       userId: query.userId,
@@ -29,7 +40,7 @@ export const todosApi = {
       params.completed = String(query.completed);
     }
 
-    return client.get<TyTodo.Response.Get>('', { params })
+    return client.get<TyTodo.Response.GetAll>('', { params })
       .then(res => res.data);
   },
 

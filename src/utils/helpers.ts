@@ -1,8 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-export const BASE_URL = [
-  'http://localhost:3005',
-  'https://node-todos-with-db.onrender.com',
-][1];
+import { AxiosResponse } from "axios";
 
 /**
  * Returns a promise that resolves after a specified delay.
@@ -39,4 +35,9 @@ export function truncateString(
   } else {
     return str;
   }
+}
+
+export function axiosResToConsoleInfo(response: AxiosResponse) {
+  console.info(response.data);
+  return response;
 }

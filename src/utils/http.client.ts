@@ -1,10 +1,11 @@
-import { BASE_URL, wait } from './helpers';
+import { wait } from './helpers';
 import type { TyGeneral } from '../types/General.type';
+import { env } from '../constants/varsFromEnv';
 
 export function getClient(
-  baseURL = BASE_URL,
+  baseURL = env.API_URL,
 ) {
-  console.info(`BASE_URL = ${BASE_URL}`);// eslint-disable-line
+  // console.info(`BASE_URL = ${baseURL}`);// eslint-disable-line
 
   function request<T>(
     url: string,

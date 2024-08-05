@@ -22,8 +22,13 @@ function FuncComponent({
 }) {
   const [title, setTitle] = React.useState('');
   const titleInput = React.useRef<HTMLTextAreaElement>(null);
-  const { items: todos, loaded } = useReduxSelector(selectFromStore('todos'));
-  const { id: userId } = useReduxSelector(selectFromStore('author'));
+  const {
+    items: todos,
+    loaded,
+  } = useReduxSelector(selectFromStore('todos'));
+  const {
+    author: { id: userId },
+  } = useReduxSelector(selectFromStore('author'));
 
   const handleInputChange = (event: TyGeneral.ChangeEvtTextAreaElmt) => {
     setTitle(event.target.value);

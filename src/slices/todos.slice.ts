@@ -20,8 +20,8 @@ const initialState: {
 
 
 export const getAllThunk: AsyncThunk<
-  TyTodo.Response.Get,
-  TyTodo.Request.GetQuery,
+  TyTodo.Response.GetAll,
+  TyTodo.Request.GetAll,
   Record<string, never>
 > = createAsyncThunk(
   `${sliceName}/getAllThunk`,

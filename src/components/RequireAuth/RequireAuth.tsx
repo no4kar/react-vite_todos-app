@@ -12,14 +12,14 @@ function FuncComponent({
 }: {
   children?: React.ReactNode,
 }) {
-  const { checked, loaded } = useReduxSelector(selectFromStore('author'));
+  const { registered, loaded } = useReduxSelector(selectFromStore('author'));
   const location = useLocation();
 
-  if (loaded && !checked) {
+  if (loaded && !registered) {
     return <Loader />;
   }
 
-  if (!checked) {
+  if (!registered) {
     return (
       <Navigate
         to='/login'

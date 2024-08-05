@@ -108,4 +108,4 @@ function FuncComponent<T extends Record<string, any>>({
       </p>
     </div>
   );
-};
+}

@@ -7,6 +7,8 @@ import { RequireAuth } from './components/RequireAuth';
 import { NotFoundPage } from './pages/NotFound.page';
 import { LoginPage } from './pages/Login.page';
 import { TodoPage } from './pages/Todo.page';
+import { SignupPage } from './pages/Signup.page';
+import { ActivationPage } from './pages/ActivationPage';
 
 const router = createBrowserRouter([
   {
@@ -20,12 +22,17 @@ const router = createBrowserRouter([
         ],
       },
       { path: 'login', element: <LoginPage />, },
+      { path: 'signup', element: <SignupPage /> },
+      {
+        path: 'activate',
+        children: [
+          {
+            path: ':activationToken',
+            element: <ActivationPage />
+          }
+        ],
+      },
       { path: '*', element: <NotFoundPage />, },
-
-      // {
-      //   path: 'signup',
-      //   element: <LoginPage />
-      // },
       // {
       //   path: 'logout',
       //   element: <LoginPage />

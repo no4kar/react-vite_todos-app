@@ -14,10 +14,10 @@ export namespace TyTodo {
     updatedAt: string;
   }
 
-  export type CreationAttributes = Omit<TyTodo.Item, 'id' | 'createdAt' | 'updatedAt'>;
+  export type CreationAttributes = Omit<Item, 'id' | 'createdAt' | 'updatedAt'>;
   
   export namespace Request {
-    export interface GetQuery extends Partial<Omit<Item, 'id' | 'userId'>> {
+    export interface GetAll extends Partial<Omit<Item, 'id' | 'userId'>> {
       userId: Item['userId'],
       page?: number,
       size?: number,
@@ -25,7 +25,7 @@ export namespace TyTodo {
   }
 
   export namespace Response {
-    export type Get = PageFomServer<TyTodo.Item>;
+    export type GetAll = PageFomServer<Item>;
   }
 
   export enum Error {

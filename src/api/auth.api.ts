@@ -7,6 +7,11 @@ const client = getClient({
 });
 
 export const authApi = {
+  makeCookies: async () => {
+    return client.get('/set-cookie')
+      .then<TyAuth.Response.Login>(onRes.obtainData);
+  },
+  
   login: async ({
     email,
     password,
@@ -42,4 +47,3 @@ client.interceptors.request.use(onReq.stickAccessToken);
 client.interceptors.response.use(
   onRes.toConsoleInfo,
   onRes.handleError(client, authApi.refresh));
-

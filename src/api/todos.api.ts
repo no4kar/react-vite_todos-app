@@ -1,20 +1,11 @@
 import { TyTodo } from '../types/Todo.type';
-// import { getClient } from '../utils/httpClient';
 import { getClient, onReq, onRes } from '../utils/axios.client';
 import { env } from '../constants/varsFromEnv';
 import { authApi } from './auth.api';
-// import { authApi } from './auth.api';
-// import { accessTokenApi } from './accessToken.api';
 
 const client = getClient({
   baseURL: `${env.API_URL}/todos`,
 });
-
-
-client.interceptors.request.use(onReq.stickAccessToken);
-client.interceptors.response.use(
-  onRes.toConsoleInfo,
-  onRes.handleError(client, authApi.refresh));
 
 export const todosApi = {
   getAll(
@@ -62,3 +53,8 @@ export const todosApi = {
       .then<TyTodo.Response.Update>(onRes.obtainData);
   },
 };
+
+client.interceptors.request.use(onReq.stickAccessToken);
+client.interceptors.response.use(
+  onRes.toConsoleInfo,
+  onRes.handleError(client, authApi.refresh));

@@ -22,6 +22,8 @@ export const onReq = {
       req.headers['Authorization'] = `Bearer ${accessToken}`;
     }
 
+    req.withCredentials = true;
+
     return req;
   },
 }

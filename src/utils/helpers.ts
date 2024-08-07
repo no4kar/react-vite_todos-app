@@ -1,5 +1,3 @@
-import { AxiosResponse } from "axios";
-
 /**
  * Returns a promise that resolves after a specified delay.
  * This function can be used to pause execution for a set amount of time.
@@ -35,9 +33,4 @@ export function truncateString(
   } else {
     return str;
   }
-}
-
-export function axiosResToConsoleInfo(response: AxiosResponse) {
-  console.info(response.data);
-  return response;
 }

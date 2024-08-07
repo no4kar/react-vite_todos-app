@@ -18,8 +18,15 @@ export namespace TyAuth {
       user: Item,
       accessToken: string
     };
-    export type Activation = Login;
+    export type Activation = {
+      user: Item,
+      accessToken: string
+    };
     export type Registration = { message: string, error: any, };
+    export type Refresh = {
+      user: Item,
+      accessToken: string
+    };
   }
 
   export enum Error {

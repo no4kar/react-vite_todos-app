@@ -3,8 +3,6 @@ import type { PayloadAction, AsyncThunk } from '@reduxjs/toolkit';
 
 import { TyTodo } from '../types/Todo.type';
 import { todosApi } from '../api/todos.api';
-import { AxiosResponse } from 'axios';
-// import { TyStatus } from '../utils/helpers';
 
 const sliceName = 'todos';
 
@@ -29,8 +27,8 @@ export const getAllThunk: AsyncThunk<
 );
 
 export const createThunk: AsyncThunk<
-  AxiosResponse<TyTodo.Item, any>,
-  TyTodo.CreationAttributes,
+  TyTodo.Response.Create,
+  TyTodo.Request.Create,
   Record<string, never>
 > = createAsyncThunk(
   `${sliceName}/createThunk`,
@@ -47,8 +45,8 @@ export const removeThunk: AsyncThunk<
 );
 
 export const updateThunk: AsyncThunk<
-  AxiosResponse<TyTodo.Item, any>,
-  TyTodo.Item,
+  TyTodo.Response.Update,
+  TyTodo.Request.Update,
   Record<string, never>
 > = createAsyncThunk(
   `${sliceName}/updateThunk`,
@@ -122,7 +120,7 @@ export const {
         state.errorMsg = TyTodo.Error.NONE;
       })
       .addCase(createThunk.fulfilled, (state, action) => {
-        state.items.push(action.payload.data);
+        state.items.push(action.payload);
         state.loaded = true;
       })
       .addCase(createThunk.rejected, (state, action) => {
@@ -153,10 +151,12 @@ export const {
         state.errorMsg = TyTodo.Error.NONE;
       })
       .addCase(updateThunk.fulfilled, (state, action) => {
-        const updatedItem = action.payload.data;
+        const updatedItem = action.payload;
+        console.info(action.payload);
 
-        state.items
-          = state.items.map(item => item.id !== updatedItem.id ? item : updatedItem);
+        state.items = state.items.map(item => (
+          item.id !== updatedItem.id ? item : updatedItem));
+          
         state.loaded = true;
       })
       .addCase(updateThunk.rejected, (state, action) => {

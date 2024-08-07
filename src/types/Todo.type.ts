@@ -22,10 +22,14 @@ export namespace TyTodo {
       page?: number,
       size?: number,
     }
+    export type Update = Item;
+    export type Create = TyTodo.CreationAttributes;
   }
 
   export namespace Response {
     export type GetAll = PageFomServer<Item>;
+    export type Update = Item;
+    export type Create = Item;
   }
 
   export enum Error {

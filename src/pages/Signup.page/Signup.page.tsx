@@ -15,7 +15,7 @@ import { TyForm } from '../../types/Form.type';
 import { FormField } from '../../components/FormField';
 // import { Loader } from '../../components/Loader';
 
-export const SignupPage = FuncComponent;
+export const SignupPage = React.memo(FuncComponent);
 
 function FuncComponent() {
   const { errorMsg } = useReduxSelector(selectFromStore('author'));

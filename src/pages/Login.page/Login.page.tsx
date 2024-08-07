@@ -1,4 +1,4 @@
-// import React from 'react';
+import React from 'react';
 import {
   Navigate,
   useLocation,
@@ -18,7 +18,7 @@ import { FormField } from '../../components/FormField';
 import { Notification } from '../../components/Notification';
 // import { Loader } from '../../components/Loader';
 
-export const LoginPage = FuncComponent;
+export const LoginPage = React.memo(FuncComponent);
 
 function FuncComponent() {
   const location = useLocation();

@@ -12,16 +12,13 @@ import { accessTokenApi } from '../api/accessToken.api';
 const sliceName = 'author';
 
 const initialState: {
-  author: TyAuth.Item;
+  author: TyAuth.Item | null;
   loaded: boolean;
   registered: boolean;
   activated: boolean;
   errorMsg: string,
 } = {
-  author: {
-    id: '',
-    email: '',
-  },
+  author: null,
   loaded: false,
   registered: false,
   activated: false,
@@ -75,60 +72,90 @@ export const {
 
   extraReducers: (builder) => {
     builder // registrationThunk
-      .addCase(registrationThunk.pending, (state) => {
-        state.loaded = false;
-        state.registered = false;
-        state.errorMsg = '';
-      })
-      .addCase(registrationThunk.fulfilled, (state, action) => {
-        console.info(action.payload);
-        state.registered = true;
-        state.loaded = true;
-      })
-      .addCase(registrationThunk.rejected, (state, action) => {
-        console.error(action.payload);
-        state.errorMsg = String(action.payload) || 'Registration failed';
-        state.loaded = true;
-      });
+      .addCase(
+        registrationThunk.pending,
+        (state) => {
+          state.loaded = false;
+          state.registered = false;
+          state.errorMsg = '';
+        })
+      .addCase(
+        registrationThunk.fulfilled,
+        (state, action) => {
+          console.info(action.payload);
+          state.registered = true;
+          state.loaded = true;
+        })
+      .addCase(
+        registrationThunk.rejected,
+        (state, action) => {
+          console.error(action.error);
+
+          state.errorMsg
+            = action.error.message
+            || 'Registration failed';
+
+          state.loaded = true;
+        });
 
     builder // activationThunk
-      .addCase(activationThunk.pending, (state) => {
-        state.loaded = false;
-        state.errorMsg = '';
-      })
-      .addCase(activationThunk.fulfilled, (state, action) => {
-        console.info(action.payload);
-        accessTokenApi.save(action.payload.accessToken);
+      .addCase(
+        activationThunk.pending,
+        (state) => {
+          state.loaded = false;
+          state.errorMsg = '';
+        })
+      .addCase(
+        activationThunk.fulfilled,
+        (state, action) => {
+          console.info(action.payload);
+          accessTokenApi.save(action.payload.accessToken);
 
-        state.author = action.payload.user;
-        state.registered = true;
-        state.activated = true;
-        state.loaded = true;
-      })
-      .addCase(activationThunk.rejected, (state, action) => {
-        console.error(action.error); // Log the actual error message
-        state.errorMsg = action.error.message || 'Activation failed'; // Use the error message
-        state.loaded = true;
-      });
+          state.author = action.payload.user;
+          state.registered = true;
+          state.activated = true;
+          state.loaded = true;
+        })
+      .addCase(
+        activationThunk.rejected,
+        (state, action) => {
+          console.error(action.error); // Log the actual error message
+
+          state.errorMsg
+            = action.error.message
+            || 'Activation failed'; // Use the error message
+
+          state.loaded = true;
+        });
 
     builder // loginThunk
-      .addCase(loginThunk.pending, (state) => {
-        state.loaded = false;
-        state.errorMsg = '';
-      })
-      .addCase(loginThunk.fulfilled, (state, action) => {
-        console.info(action.payload);
-        accessTokenApi.save(action.payload.accessToken);
+      .addCase(
+        loginThunk.pending,
+        (state) => {
+          state.loaded = false;
+          state.errorMsg = '';
+        })
+      .addCase(
+        loginThunk.fulfilled,
+        (state, action) => {
+          console.info(action.payload);
+          accessTokenApi.save(action.payload.accessToken);
 
-        state.author = action.payload.user;
-        state.registered = true;
-        state.activated = true;
-        state.loaded = true;
-      })
-      .addCase(loginThunk.rejected, (state, action) => {
-        console.error(action.error); // Log the actual error message
-        state.errorMsg = action.error.message || 'Login failed'; // Use the error message
-        state.loaded = true;
-      });
+          state.author = action.payload.user;
+          state.registered = true;
+          state.activated = true;
+          state.loaded = true;
+        })
+      .addCase(
+        loginThunk.rejected,
+        (state, action) => {
+          console.error(action.error); // Log the actual error message
+
+          state.errorMsg
+            = action.error.message
+            || 'Login failed'; // Use the error message
+
+          state.loaded = true;
+        });
   },
 });

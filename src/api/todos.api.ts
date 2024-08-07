@@ -1,22 +1,20 @@
 import { TyTodo } from '../types/Todo.type';
 // import { getClient } from '../utils/httpClient';
-import { getClient } from '../utils/axios.client';
+import { getClient, onReq, onRes } from '../utils/axios.client';
 import { env } from '../constants/varsFromEnv';
-import { accessTokenApi } from './accessToken.api';
+import { authApi } from './auth.api';
+// import { authApi } from './auth.api';
+// import { accessTokenApi } from './accessToken.api';
 
 const client = getClient({
-  baseURL: `${env.API_URL}/todos`
+  baseURL: `${env.API_URL}/todos`,
 });
 
-client.interceptors.request.use(req => {
-  const accessToken = accessTokenApi.get();
 
-  if (accessToken) {
-    req.headers.Authorization = `Bearer ${accessToken}`;
-  }
-
-  return req;
-});
+client.interceptors.request.use(onReq.stickAccessToken);
+client.interceptors.response.use(
+  onRes.toConsoleInfo,
+  onRes.handleError(client, authApi.refresh));
 
 export const todosApi = {
   getAll(
@@ -40,17 +38,18 @@ export const todosApi = {
       params.completed = String(query.completed);
     }
 
-    return client.get<TyTodo.Response.GetAll>('', { params })
-      .then(res => res.data);
+    return client.get('', { params })
+      .then<TyTodo.Response.GetAll>(onRes.obtainData);
   },
 
-  create({ userId, title, completed }: TyTodo.CreationAttributes) {
-    return client.post<TyTodo.Item>('', { userId, title, completed });
+  create({ userId, title, completed }: TyTodo.Request.Create) {
+    return client.post('', { userId, title, completed })
+      .then<TyTodo.Response.Create>(onRes.obtainData);
   },
 
   remove(todoId: TyTodo.Item['id']) {
     return client.delete(`/${todoId}`)
-      .then(() => todoId);
+      .then<TyTodo.Item['id']>(() => todoId);
   },
 
   update({
@@ -58,7 +57,8 @@ export const todosApi = {
     userId,
     title,
     completed,
-  }: TyTodo.Item) {
-    return client.put<TyTodo.Item>(`/${id}`, { userId, title, completed });
+  }: TyTodo.Request.Update) {
+    return client.put(`/${id}`, { userId, title, completed })
+      .then<TyTodo.Response.Update>(onRes.obtainData);
   },
 };

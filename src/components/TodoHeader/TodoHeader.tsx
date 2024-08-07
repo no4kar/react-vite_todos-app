@@ -27,7 +27,7 @@ function FuncComponent({
     loaded,
   } = useReduxSelector(selectFromStore('todos'));
   const {
-    author: { id: userId },
+    author,
   } = useReduxSelector(selectFromStore('author'));
 
   const handleInputChange = (event: TyGeneral.ChangeEvtTextAreaElmt) => {
@@ -51,14 +51,16 @@ function FuncComponent({
       titleInput.current.disabled = true;
     }
 
+    if (!author) {
+      onError(TyTodo.Error.UNABLE_ADD);
+      return;
+    }
+
     onCreate({
-      userId,
+      userId: author.id,
       title: trimedTitle,
       completed: false,
     }).finally(() => {
-
-      console.info('TodoHeader');
-
       if (titleInput.current) {
         titleInput.current.disabled = false;
         titleInput.current.focus();
@@ -81,18 +83,7 @@ function FuncComponent({
       >
         The Task Manager
       </h1>
-      {/* this buttons is active only if there are some active todos */}
-      {/* <button
-        type="button"
-        className={cn('todoapp__toggle-all', {
-          active: isEachTodoComplete,
-        })}
-        data-cy="ToggleAllButton"
-        aria-label="ToggleAllButton"
-        onClick={onToggleAll}
-      /> */}
 
-      {/* Add a todo on form submit */}
       <form
         className='relative'
         onSubmit={handleSubmit}
@@ -101,7 +92,8 @@ function FuncComponent({
           <Loader
             content={
               <h1
-                className='text-xl font-bold bg-transparent text-white animate-bounce'
+                className='text-xl font-bold 
+                bg-transparent text-white animate-bounce'
               >
                 Loading is in progress...
               </h1>
@@ -119,7 +111,8 @@ function FuncComponent({
         })}>
           <textarea
             ref={titleInput}
-            className='flex-1 p-2 min-h-full rounded bg-gray-700 text-white placeholder-gray-400'
+            className='flex-1 p-2 min-h-full rounded 
+            bg-gray-700 text-white placeholder-gray-400'
             value={title}
             onChange={handleInputChange}
             placeholder='What are you planning to do?'

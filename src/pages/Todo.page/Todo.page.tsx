@@ -1,5 +1,4 @@
 import React from 'react';
-import { PayloadAction } from '@reduxjs/toolkit';
 import { AxiosResponse } from 'axios';
 
 import { useReduxDispatch, useReduxSelector } from '../../store/hooks';
@@ -10,13 +9,9 @@ import { TyTodo } from '../../types/Todo.type';
 import { TodoHeader } from '../../components/TodoHeader';
 import { TodoItem } from '../../components/TodoItem';
 import { Notification } from '../../components/Notification';
+import { onRes } from '../../utils/axios.client';
 
 export const TodoPage = React.memo(FuncComponent);
-
-const responseToConsoleInfo = <T extends PayloadAction<any>>(response: T) => {
-  console.info(response.payload);
-  return response;
-};
 
 function FuncComponent() {
   const [processings, setProcessings] = React.useState<TyTodo.Item['id'][]>([]);
@@ -25,13 +20,13 @@ function FuncComponent() {
     errorMsg,
   } = useReduxSelector(selectFromStore('todos'));
   const {
-    author: { id: userId },
+    author,
   } = useReduxSelector(selectFromStore('author'));
   const dispatch = useReduxDispatch();
 
   const addTodo = (newTodo: TyTodo.CreationAttributes) => {
     return dispatch(todosSlice.createThunk(newTodo))
-      .then(responseToConsoleInfo)
+      .then(onRes.toConsoleInfo)
       .then<TyTodo.Item>((response) => (
         response.payload as AxiosResponse<TyTodo.Item, any>).data);
   };
@@ -41,7 +36,7 @@ function FuncComponent() {
       setProcessings(prev => [...prev, todo.id]);
 
       return dispatch(todosSlice.removeThunk(todo.id))
-        .then(responseToConsoleInfo)
+        .then(onRes.toConsoleInfo)
         .finally(() => setProcessings(prev =>
           prev.filter(item => item !== todo.id)));
     }, [dispatch]);
@@ -51,16 +46,16 @@ function FuncComponent() {
       setProcessings(prev => [...prev, updatedTodo.id]);
 
       return dispatch(todosSlice.updateThunk(updatedTodo))
-        .then(responseToConsoleInfo)
+        .then(onRes.toConsoleInfo)
         .finally(() => setProcessings(prev => 
           prev.filter(item => item !== updatedTodo.id)));
     }, [dispatch]);
 
   React.useEffect(() => {
-    if (userId) {
-      dispatch(todosSlice.getAllThunk({ userId }));
+    if (author?.id) {
+      dispatch(todosSlice.getAllThunk({ userId: author.id }));
     }
-  }, [dispatch, userId]);
+  }, [dispatch, author]);
 
   return (
     <div

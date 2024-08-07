@@ -10,7 +10,7 @@ import { Loader } from '../../components/Loader';
 
 // import { Loader } from '../../components/Loader';
 
-export const ActivationPage = FuncComponent;
+export const ActivationPage = React.memo(FuncComponent);
 
 function FuncComponent() {
   const { errorMsg, activated } = useReduxSelector(selectFromStore('author'));

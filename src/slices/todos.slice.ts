@@ -16,7 +16,6 @@ const initialState: {
   errorMsg: TyTodo.Error.NONE,
 };
 
-
 export const getAllThunk: AsyncThunk<
   TyTodo.Response.GetAll,
   TyTodo.Request.GetAll,

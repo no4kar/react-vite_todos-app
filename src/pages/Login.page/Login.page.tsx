@@ -16,7 +16,6 @@ import { authValidation } from '../../constants/formValidation';
 import { TyForm } from '../../types/Form.type';
 import { FormField } from '../../components/FormField';
 import { Notification } from '../../components/Notification';
-// import { Loader } from '../../components/Loader';
 
 export const LoginPage = React.memo(FuncComponent);
 
@@ -43,7 +42,7 @@ function FuncComponent() {
   if (registered) {
     return (
       <Navigate
-        to={location.state?.from?.pathname || '/'}
+        to={location.state?.from?.pathname || '/todo'}
         replace
       />
     );

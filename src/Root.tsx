@@ -9,16 +9,17 @@ import { LoginPage } from './pages/Login.page';
 import { TodoPage } from './pages/Todo.page';
 import { SignupPage } from './pages/Signup.page';
 import { ActivationPage } from './pages/ActivationPage';
+import { HomePage } from './pages/HomePage';
 
 const router = createBrowserRouter([
   {
     path: '/', element: <App />,
     children: [
+      { path: '/', element: <HomePage />, },
       {
         path: '/', element: <RequireAuth />,
         children: [
-          { index: true, element: <TodoPage />, },
-          { path: 'home', element: <TodoPage />, },
+          { path: 'tasks', element: <TodoPage />, },
         ],
       },
       { path: 'login', element: <LoginPage />, },
@@ -33,10 +34,6 @@ const router = createBrowserRouter([
         ],
       },
       { path: '*', element: <NotFoundPage />, },
-      // {
-      //   path: 'logout',
-      //   element: <LoginPage />
-      // },
     ],
   },
 ], {

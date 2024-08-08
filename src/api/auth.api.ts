@@ -7,39 +7,39 @@ const client = getClient({
 });
 
 export const authApi = {
-  makeCookies: async () => {
-    return client.get('/set-cookie')
-      .then<TyAuth.Response.Login>(onRes.obtainData);
-  },
-  
-  login: async ({
-    email,
-    password,
-  }: TyAuth.Request.Login
-  ) => {
-    return client.post<TyAuth.Response.Login>('/login', { email, password })
-      .then<TyAuth.Response.Login>(onRes.obtainData);
-  },
-
-  registration: async ({
+  async registration({
     email,
     password,
   }: TyAuth.Request.Registration
-  ) => {
+  ) {
     return client.post('/registration', { email, password })
       .then<TyAuth.Response.Registration>(onRes.obtainData);
   },
 
-  activation: async (
+  async activation(
     activationToken: TyAuth.Request.Activation['activationToken']
-  ) => {
+  ) {
     return client.get(`/activate/${activationToken}`)
       .then<TyAuth.Response.Activation>(onRes.obtainData);
   },
 
-  refresh: async () => {
+  async refresh() {
     return client.get(`/refresh`)
       .then<TyAuth.Response.Refresh>(onRes.obtainData);
+  },
+
+  async login({
+    email,
+    password,
+  }: TyAuth.Request.Login
+  ) {
+    return client.post('/login', { email, password })
+      .then<TyAuth.Response.Login>(onRes.obtainData);
+  },
+
+  async logout() {
+    return client.post('/logout')
+      .then<void>(onRes.obtainData);
   },
 };
 

@@ -1,7 +1,8 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { useReduxSelector } from '../../store/hooks';
+import { Link, useNavigate } from 'react-router-dom';
+import { useReduxDispatch, useReduxSelector } from '../../store/hooks';
 import { selectFromStore } from '../../store/store';
+import * as authSlice from '../../slices/auth.slice';
 
 export const PageHeader = React.memo(FuncComponent);
 
@@ -9,6 +10,8 @@ function FuncComponent() {
   const {
     author,
   } = useReduxSelector(selectFromStore('author'));
+  const dispatch = useReduxDispatch();
+  const navigate = useNavigate();
 
   return (
     <div
@@ -16,40 +19,69 @@ function FuncComponent() {
     custom-page-container 
     w-full py-4 sm:py-6 md:py-10 bg-gray-800'
     >
-      <div className='header__buttons flex gap-4 justify-end'>
-        {author ? (
-          <button className='w-fit p-2 
-          bg-red-400 text-white rounded hover:opacity-70'
+      <div className="header__nav flex justify-between">
+        <div className="header__nav-start flex gap-4">
+          <Link
+            to='/'
+            className='w-fit p-2
+          bg-indigo-400 text-white rounded hover:opacity-70'
           >
             <p className='flex items-center justify-center font-bold'>
-              {'Log Out'}
+              Home
             </p>
-          </button>
-        ) : (
-          <>
-            <Link
-              to='/signup'
-              className='w-fit p-2 
-          bg-system-warn text-white rounded hover:opacity-70'
+          </Link>
+
+          <Link
+            to='/tasks'
+            className='w-fit p-2
+          bg-indigo-400 text-white rounded hover:opacity-70'
+          >
+            <p className='flex items-center justify-center font-bold'>
+              Tasks
+            </p>
+          </Link>
+        </div>
+
+        <div className='header__nav-end flex gap-4 justify-end'>
+          {author ? (
+            <button className='w-fit p-2 
+          bg-red-400 text-white rounded hover:opacity-70'
+              onClick={() => {
+                dispatch(authSlice.logoutThunk())
+                  .then(() => {
+                    navigate('/');
+                  })
+              }}
             >
               <p className='flex items-center justify-center font-bold'>
-                {'Sign up'}
+                {'Log Out'}
               </p>
-            </Link>
+            </button>
+          ) : (
+            <>
+              <Link
+                to='/signup'
+                className='w-fit p-2 
+          bg-system-warn text-white rounded hover:opacity-70'
+              >
+                <p className='flex items-center justify-center font-bold'>
+                  Sign up
+                </p>
+              </Link>
 
-            <Link
-              to='/login'
-              className='w-fit p-2 
+              <Link
+                to='/login'
+                className='w-fit p-2 
           bg-system-success text-white rounded hover:opacity-70'
-            >
-              <p className='w-fit flex items-center justify-center font-bold'>
-                {'Log in'}
-              </p>
-            </Link>
-          </>
-        )}
-
+              >
+                <p className='w-fit flex items-center justify-center font-bold'>
+                  Log in
+                </p>
+              </Link>
+            </>
+          )}
+        </div>
       </div>
-    </div >
+    </div>
   );
 }

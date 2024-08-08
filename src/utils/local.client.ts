@@ -3,7 +3,7 @@ import { env } from '../constants/varsFromEnv';
 const PREFIX = env.LOCAL_CLIENT_PREFIX;
 
 const client = {
-  read: <T>(key: string): T | null => {
+  read<T>(key: string): T | null {
     const data = window.localStorage.getItem(key);
 
     try {
@@ -13,21 +13,21 @@ const client = {
     }
   },
 
-  write: <T>(key: string, data: T): void => {
+  write<T>(key: string, data: T): void {
     window.localStorage.setItem(key, JSON.stringify(data));
   },
 
-  remove: (key: string,): void => {
+  remove(key: string,): void {
     window.localStorage.removeItem(key);
   },
 
-  init: <T>(
+  init<T>(
     key: string,
     initialData: T,
     isValid: (item: any) => boolean,
-  ): T => {
+  ): T {
     const storedData = client.read<T>(key);
-
+    // check the saved data
     if (Array.isArray(storedData) && storedData.every(isValid)) {
       return storedData;
     }

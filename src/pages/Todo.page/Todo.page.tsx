@@ -47,7 +47,7 @@ function FuncComponent() {
 
       return dispatch(todosSlice.updateThunk(updatedTodo))
         .then(onRes.toConsoleInfo)
-        .finally(() => setProcessings(prev => 
+        .finally(() => setProcessings(prev =>
           prev.filter(item => item !== updatedTodo.id)));
     }, [dispatch]);
 
@@ -65,9 +65,7 @@ function FuncComponent() {
         <TodoHeader
           onCreate={addTodo}
         />
-        <div
-          data-cy="TodoList"
-        >
+        <div data-cy="TodoList">
           {todos.map((todo) => (
             <TodoItem
               key={todo.id}

@@ -7,18 +7,15 @@ import { AxiosError } from 'axios';
 import cn from 'classnames';
 
 import * as authSlice from '../../slices/auth.slice';
-import { useReduxSelector, useReduxDispatch } from '../../store/hooks';
-import { selectFromStore } from '../../store/store';
+import { useReduxDispatch } from '../../store/hooks';
 
 import { authValidation } from '../../constants/formValidation';
 import { TyForm } from '../../types/Form.type';
 import { FormField } from '../../components/FormField';
-// import { Loader } from '../../components/Loader';
 
 export const SignupPage = React.memo(FuncComponent);
 
 function FuncComponent() {
-  const { errorMsg } = useReduxSelector(selectFromStore('author'));
   const [sent, setSent] = React.useState(false);
   const dispatch = useReduxDispatch();
   const {
@@ -134,12 +131,6 @@ function FuncComponent() {
             <Link to='/login' className='inline hover:underline'>Log in</Link>
           </p>
         </div>
-
-        {errorMsg && (
-          <p className='bg-red-100 text-system-error border border-red-400 p-4 rounded'>
-            {errorMsg}
-          </p>
-        )}
       </div>
     </div>
   );

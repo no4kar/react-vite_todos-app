@@ -1,12 +1,21 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 
-import { PageHeader } from './components/PageHeader';
-import './App.scss';
+import * as authSlice from './slices/auth.slice';
+import { useReduxDispatch, useReduxSelector } from './store/hooks';
+import { selectFromStore } from './store/store';
 
+import { PageHeader } from './components/PageHeader';
+import { Notification } from './components/Notification';
+
+import './App.scss';
 export const App = React.memo(FuncComponent);
 
 function FuncComponent() {
+  const {
+    errorMsg,
+  } = useReduxSelector(selectFromStore('author'));
+  const dispatch = useReduxDispatch();
 
   return (
     <div
@@ -23,6 +32,16 @@ function FuncComponent() {
       <footer>
         <div className='h-10 custom-page-container bg-gray-900' />
       </footer>
+
+      {errorMsg && (
+        <div
+          className='fixed bottom-4 right-4'
+        >
+          <Notification onClose={() => dispatch(authSlice.errorReset())}>
+            <p>{errorMsg}</p>
+          </Notification>
+        </div>
+      )}
     </div>
   );
 }

@@ -7,24 +7,11 @@ import { Loader } from '../Loader';
 
 export const RequireAuth = React.memo(FuncComponent);
 
-function FuncComponent({
-  children,
-}: {
-  children?: React.ReactNode,
-}) {
+function FuncComponent() {
   const { registered, loaded } = useReduxSelector(selectFromStore('author'));
   const location = useLocation();
 
-  if (!loaded && !registered) {
-    return <Loader 
-    style={{
-      container: `custom-page-container
-      py-4 sm:py-6 md:py-10
-      h-full flex items-center justify-center`
-    }}/>;
-  }
-
-  if (!registered) {
+  if (loaded && !registered) {
     return (
       <Navigate
         to='/login'
@@ -34,6 +21,14 @@ function FuncComponent({
     );
   }
 
+  if (!loaded && !registered) {
+    return <Loader
+      style={{
+        container: `custom-page-container
+      py-4 sm:py-6 md:py-10
+      h-full flex items-center justify-center`
+      }} />;
+  }
 
-  return children || <Outlet />;
+  return <Outlet />;
 }

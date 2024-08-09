@@ -19,7 +19,7 @@ const initialState: {
   errorMsg: string,
 } = {
   author: null,
-  loaded: false,
+  loaded: true,
   registered: false,
   activated: false,
   errorMsg: '',

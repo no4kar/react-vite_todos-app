@@ -1,16 +1,15 @@
 import React from 'react';
+import { authApi } from '../../api/auth.api';
 
-import { useReduxDispatch } from '../../store/hooks';
-import * as authSlice from '../../slices/auth.slice';
 
 export const HomePage = React.memo(FuncComponent);
 
 function FuncComponent() {
-  const dispatch = useReduxDispatch();
 
   React.useEffect(() => {
-    dispatch(authSlice.refreshThunk());
-  }, [dispatch]);
+    // wake up server
+    authApi.refresh().catch();
+  }, []);
 
   return (
     <div

@@ -15,7 +15,6 @@ import { selectFromStore } from '../../store/store';
 import { authValidation } from '../../constants/formValidation';
 import { TyForm } from '../../types/Form.type';
 import { FormField } from '../../components/FormField';
-import { Notification } from '../../components/Notification';
 
 export const LoginPage = React.memo(FuncComponent);
 
@@ -24,7 +23,6 @@ function FuncComponent() {
   const {
     loaded,
     registered,
-    errorMsg,
   } = useReduxSelector(selectFromStore('author'));
   const dispatch = useReduxDispatch();
   const {
@@ -42,7 +40,7 @@ function FuncComponent() {
   if (registered) {
     return (
       <Navigate
-        to={location.state?.from?.pathname || '/todo'}
+        to={location.state?.from?.pathname || '/tasks'}
         replace
       />
     );
@@ -134,16 +132,6 @@ function FuncComponent() {
           </a> */}
         </div>
       </div>
-
-      {errorMsg && (
-        <div
-          className='fixed bottom-4 right-4'
-        >
-          <Notification onClose={() => dispatch(authSlice.errorReset())}>
-            <p>{errorMsg}</p>
-          </Notification>
-        </div>
-      )}
     </div>
   );
 }

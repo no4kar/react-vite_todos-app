@@ -4,6 +4,7 @@ import cn from 'classnames';
 import { Loader } from '.././Loader';
 import { TyTodo } from '../../types/Todo.type';
 import { truncateString } from '../../utils/helpers';
+import { TyGeneral } from '../../types/General.type';
 
 export const TodoItem = React.memo(({
   todo,
@@ -17,20 +18,15 @@ export const TodoItem = React.memo(({
   isProcessed?: boolean;
 }) => {
   const {
-    // title,
+    title,
     completed,
   } = todo;
 
   const [isEditing, setIsEditing] = useState(false);
-  // const [newTitle, setNewTitle] = useState(title);
+  const [newTitle, setNewTitle] = useState(title);
 
-  const titleField = useRef<HTMLInputElement>(null);
+  const titleField = useRef<HTMLTextAreaElement>(null);
 
-  useEffect(() => {
-    if (titleField.current) {
-      titleField.current.focus();
-    }
-  }, [isEditing]);
 
   const handleDelete = () => {
     onDelete(todo)
@@ -49,63 +45,63 @@ export const TodoItem = React.memo(({
       .catch(() => titleField.current?.focus());
   };
 
-  // const handleSubmit = (event: React.FormEvent) => {
-  //   event.preventDefault();
-  //   if (isProcessed) {
-  //     return;
-  //   }
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    if (isProcessed) {
+      return;
+    }
 
-  //   const trimmedTitle = newTitle.trim();
+    const trimmedTitle = newTitle.trim();
 
-  //   switch (trimmedTitle) {
-  //     case '':
-  //       handleDeleteTodo();
+    switch (trimmedTitle) {
+      case '':
+        handleDelete();
 
-  //       break;
+        break;
 
-  //     case title:
-  //       setIsEditing(false);
+      case title:
+        setIsEditing(false);
 
-  //       break;
+        break;
 
-  //     default:
-  //       if (titleField.current) {
-  //         titleField.current.disabled = true;
-  //       }
+      default:
+        if (titleField.current) {
+          titleField.current.disabled = true;
+        }
 
-  //       onUpdateTodo({ ...todo, title: trimmedTitle })
-  //         .then(() => {
-  //           setIsEditing(false);
-  //           if (titleField.current) {
-  //             titleField.current.disabled = false;
-  //           }
-  //         })
-  //         .catch(() => titleField.current?.focus());
+        onUpdate({ ...todo, title: trimmedTitle })
+          .then(() => {
+            setIsEditing(false);
+            if (titleField.current) {
+              titleField.current.disabled = false;
+            }
+          })
+          .catch(() => titleField.current?.focus());
 
-  //       break;
-  //   }
-  // };
+        break;
+    }
+  };
 
-  // const handleKeyUp = (event: TyKeybrEvtInputElmt) => {
-  //   switch (event.key) {
-  //     case 'Escape':
-  //       setIsEditing(false);
-  //       setNewTitle(title);
+  const handleKeyUp = (event: TyGeneral.KeybrEvtTextAreaElmt) => {
+    switch (event.key) {
+      case 'Escape':
+        setIsEditing(false);
+        setNewTitle(title);
 
-  //       break;
+        break;
 
-  //     default:
+      default:
 
-  //       break;
-  //   }
-  // };
+        break;
+    }
+  };
 
-  // const handleTodoregistered = (
-  //   event: TyChangeEvtInputElmt,
-  // ) => {
-  //   onUpdateTodo({ ...todo, completed: event.target.registered });
-  // };
-
+  useEffect(() => {
+    if (titleField.current) {
+      titleField.current.focus();
+    }
+  }, [isEditing]);
+  
   return (
     <div
       className='relative'
@@ -150,7 +146,8 @@ export const TodoItem = React.memo(({
             </h2>
 
             <p className="text-sm font-light text-gray-400">
-              {(new Date(todo.createdAt)).toLocaleString('ua-UA', { timeZone: 'UTC' })}
+              {(new Date(todo.createdAt))
+                .toLocaleString('ua-UA', { timeZone: 'UTC' })}
             </p>
           </div>
 
@@ -164,16 +161,43 @@ export const TodoItem = React.memo(({
           </button>
         </div>
 
-        <p
-          className={cn('text-sm whitespace-pre-wrap', {
-            'line-through text-gray-400': completed,
-          })}
-        >
-          {todo.title}
-        </p>
+        {isEditing ? (
+          <form
+            onSubmit={handleSubmit}
+          >
+            {/* This form is shown instead of the title and remove button */}
+            <textarea
+              data-cy="TodoTitleField"
+              className='w-full max-h-[60vh]
+              resize-y overflow-hidden
+              flex-1 p-2 rounded'
+              placeholder='Empty todo will be deleted'
+              ref={titleField}
+              value={newTitle}
+              rows={(newTitle.match(/\n/g) || []).length + 1} // last row doest have '\n'
+              onChange={event => {
+                setNewTitle(event.target.value);
+                // event.target.style.height = 'auto'; // Reset the height
+                // event.target.style.height = `${event.target.scrollHeight}px`;
+              }}
+              onBlur={handleSubmit}
+              onKeyUp={handleKeyUp}
+            />
+          </form>
+        ) : (
+          <p
+            className={cn('text-sm whitespace-pre-wrap cursor-pointer', {
+              'line-through text-gray-400': completed,
+            })}
+            onDoubleClick={() => setIsEditing(true)}
+          >
+            {todo.title}
+          </p>
+        )}
       </div>
     </div>
   );
+
   // return (
   //   <div
   //     data-cy="Todo"
@@ -187,7 +211,7 @@ export const TodoItem = React.memo(({
   //         type="checkbox"
   //         className="todo__status"
   //         registered={completed}
-  //         onChange={handleTodoregistered}
+  //         onChange={handleToggleComplete}
   //       />
   //     </label>
 

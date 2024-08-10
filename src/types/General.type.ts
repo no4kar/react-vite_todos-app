@@ -11,6 +11,7 @@ export namespace TyGeneral {
   export type ChangeEvtButtonElmt = R.ChangeEvent<HTMLButtonElement>;
   export type ChangeEvtSelectElmt = R.ChangeEvent<HTMLSelectElement>;
   export type KeybrEvtInputElmt = R.KeyboardEvent<HTMLInputElement>;
+  export type KeybrEvtTextAreaElmt = R.KeyboardEvent<HTMLTextAreaElement>;
   export type MouseEvtButtonElmt = R.MouseEvent<HTMLButtonElement>;
   export type SetState<T> = R.Dispatch<R.SetStateAction<T>>;
   export type UseState<T> = (initSt: T | (() => T)) => [T, SetState<T>];

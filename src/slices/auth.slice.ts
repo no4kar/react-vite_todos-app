@@ -13,15 +13,11 @@ const sliceName = 'author';
 
 const initialState: {
   author: TyAuth.Item | null;
-  loaded: boolean;
-  registered: boolean;
-  activated: boolean;
+  status: TyAuth.Status;
   errorMsg: string,
 } = {
   author: null,
-  loaded: true,
-  registered: false,
-  activated: false,
+  status: TyAuth.Status.UNAUTHENTICATED,
   errorMsg: '',
 };
 
@@ -81,7 +77,6 @@ export const {
   reducers: {
     errorReset(
       state,
-      // action: PayloadAction<TyAuth.Request.Login>,
     ) {
       state.errorMsg = '';
       return state;
@@ -93,16 +88,15 @@ export const {
       .addCase(
         registrationThunk.pending,
         (state) => {
-          state.loaded = false;
-          state.registered = false;
           state.errorMsg = '';
+          state.status = TyAuth.Status.LOADING;
         })
       .addCase(
         registrationThunk.fulfilled,
         (state, action) => {
           console.info(action.payload);
-          state.registered = true;
-          state.loaded = true;
+
+          state.status = TyAuth.Status.REGISTERED;
         })
       .addCase(
         registrationThunk.rejected,
@@ -110,29 +104,26 @@ export const {
           console.error(action.error);
 
           state.errorMsg
-            = action.error.message
-            || 'Registration failed';
-
-          state.loaded = true;
+          = action.error.message
+          || 'Registration failed';
+          state.status = TyAuth.Status.ERROR;
         });
 
     builder // activationThunk
       .addCase(
         activationThunk.pending,
         (state) => {
-          state.loaded = false;
           state.errorMsg = '';
+          state.status = TyAuth.Status.LOADING;
         })
       .addCase(
         activationThunk.fulfilled,
         (state, action) => {
           console.info(action.payload);
-          accessTokenApi.save(action.payload.accessToken);
 
+          accessTokenApi.save(action.payload.accessToken);
           state.author = action.payload.user;
-          state.registered = true;
-          state.activated = true;
-          state.loaded = true;
+          state.status = TyAuth.Status.ACTIVATED;
         })
       .addCase(
         activationThunk.rejected,
@@ -140,29 +131,26 @@ export const {
           console.error(action.error); // Log the actual error message
 
           state.errorMsg
-            = action.error.message
-            || 'Activation failed'; // Use the error message
-
-          state.loaded = true;
+          = action.error.message
+          || 'Activation failed'; // Use the error message
+          state.status = TyAuth.Status.ERROR;
         });
 
     builder // loginThunk
       .addCase(
         loginThunk.pending,
         (state) => {
-          state.loaded = false;
           state.errorMsg = '';
+          state.status = TyAuth.Status.LOADING;
         })
       .addCase(
         loginThunk.fulfilled,
         (state, action) => {
           console.info(action.payload);
-          accessTokenApi.save(action.payload.accessToken);
 
+          accessTokenApi.save(action.payload.accessToken);
           state.author = action.payload.user;
-          state.registered = true;
-          state.activated = true;
-          state.loaded = true;
+          state.status = TyAuth.Status.ACTIVATED;
         })
       .addCase(
         loginThunk.rejected,
@@ -170,48 +158,46 @@ export const {
           console.error(action.error); // Log the actual error message
 
           state.errorMsg
-            = action.error.message
-            || 'Login failed'; // Use the error message
-
-          state.loaded = true;
+          = action.error.message
+          || 'Login failed'; // Use the error message
+          state.status = TyAuth.Status.ERROR;
         });
 
     builder // logoutThunk
       .addCase(
         logoutThunk.pending,
         (state) => {
-          state.loaded = false;
           state.errorMsg = '';
+          state.status = TyAuth.Status.LOADING;
         })
       .addCase(
         logoutThunk.fulfilled,
         (state, action) => {
           console.info(action.payload);
-          accessTokenApi.remove();
 
+          accessTokenApi.remove();
           state.author = null;
-          state.registered = false;
-          state.activated = false;
-          state.loaded = true;
+          state.status = TyAuth.Status.UNAUTHENTICATED;
         })
       .addCase(
         logoutThunk.rejected,
         (state, action) => {
           console.error(action.error); // Log the actual error message
 
+          // accessTokenApi.remove();
+          // state.author = null;
           state.errorMsg
-            = action.error.message
-            || 'logout failed'; // Use the error message
-
-          state.loaded = true;
+          = action.error.message
+          || 'logout failed'; // Use the error message
+          state.status = TyAuth.Status.ERROR;
         });
 
     builder // refreshThunk
       .addCase(
         refreshThunk.pending,
         (state) => {
-          state.loaded = false;
           state.errorMsg = '';
+          state.status = TyAuth.Status.LOADING;
         })
       .addCase(
         refreshThunk.fulfilled,
@@ -220,9 +206,7 @@ export const {
           accessTokenApi.save(action.payload.accessToken);
 
           state.author = action.payload.user;
-          state.registered = true;
-          state.activated = true;
-          state.loaded = true;
+          state.status = TyAuth.Status.ACTIVATED;
         })
       .addCase(
         refreshThunk.rejected,
@@ -232,8 +216,7 @@ export const {
           state.errorMsg
             = action.error.message
             || 'refresh failed'; // Use the error message
-
-          state.loaded = true;
+          state.status = TyAuth.Status.ERROR;
         });
   },
 });

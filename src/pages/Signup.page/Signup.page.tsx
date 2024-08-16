@@ -7,16 +7,21 @@ import { AxiosError } from 'axios';
 import cn from 'classnames';
 
 import * as authSlice from '../../slices/auth.slice';
-import { useReduxDispatch } from '../../store/hooks';
+import { useReduxDispatch, useReduxSelector } from '../../store/hooks';
 
 import { authValidation } from '../../constants/formValidation';
 import { TyForm } from '../../types/Form.type';
 import { FormField } from '../../components/FormField';
+import { env } from '../../constants/varsFromEnv';
+import { selectFromStore } from '../../store/store';
+import { TyAuth } from '../../types/Auth.type';
 
 export const SignupPage = React.memo(FuncComponent);
 
 function FuncComponent() {
-  const [sent, setSent] = React.useState(false);
+  const {
+    status: authStatus,
+  } = useReduxSelector(selectFromStore('author'));
   const dispatch = useReduxDispatch();
   const {
     register,
@@ -26,7 +31,7 @@ function FuncComponent() {
     mode: 'onChange',
   });
 
-  if (sent) {
+  if (authStatus === TyAuth.Status.REGISTERED) {
     return (
       <div className='custom-page-container py-4 sm:py-6 md:py-10'>
         <div className='w-full max-w-md p-8 mx-auto
@@ -48,10 +53,7 @@ function FuncComponent() {
   const onSubmit: SubmitHandler<TyForm.Auth>
     = async (data) => {
       try {
-        await dispatch(authSlice.registrationThunk(data))
-          .then(() => setSent(true));
-        // await login(data);
-        // navigate(location.state?.from?.pathname || '/');
+        await dispatch(authSlice.registrationThunk(data));
       } catch (error) {
         console.error(error);
         alert((error as AxiosError).message);
@@ -111,19 +113,27 @@ function FuncComponent() {
               'blur-[2px]': !isValid,
             })}
           >
-            <p className='flex items-center justify-center font-bold'>
+            <p className={cn('flex items-center justify-center font-bold', {
+              'animate-bounce': isSubmitting,
+            })}>
               {isSubmitting ? 'Submitting...' : 'Submit'}
             </p>
           </button>
         </form>
 
-        {/* <div className='text-center space-y-4'>
-          <p>Login via social networks</p>
-          <button className='w-full py-2 
-          bg-white text-gray-800 font-bold rounded hover:opacity-70'>
+        <div className='text-center space-y-4'>
+          <p>Signup via social networks</p>
+
+          <button
+            className='w-full py-2 
+          bg-white text-gray-800 font-bold rounded hover:opacity-70'
+            onClick={() => {
+              window.location.href = `${env.API_URL}/auth/google`;
+            }}
+          >
             Google
           </button>
-        </div> */}
+        </div>
 
         <div className='text-center'>
           <p>
@@ -132,6 +142,6 @@ function FuncComponent() {
           </p>
         </div>
       </div>
-    </div>
+    </div >
   );
 }

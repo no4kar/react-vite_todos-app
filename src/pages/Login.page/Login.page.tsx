@@ -15,14 +15,14 @@ import { selectFromStore } from '../../store/store';
 import { authValidation } from '../../constants/formValidation';
 import { TyForm } from '../../types/Form.type';
 import { FormField } from '../../components/FormField';
+import { TyAuth } from '../../types/Auth.type';
 
 export const LoginPage = React.memo(FuncComponent);
 
 function FuncComponent() {
   const location = useLocation();
   const {
-    loaded,
-    registered,
+    status: authStatus,
   } = useReduxSelector(selectFromStore('author'));
   const dispatch = useReduxDispatch();
   const {
@@ -37,7 +37,11 @@ function FuncComponent() {
     mode: 'onChange',
   });
 
-  if (registered) {
+  const isLoading = isSubmitting && authStatus === TyAuth.Status.LOADING;
+
+  if (
+    authStatus === TyAuth.Status.ACTIVATED
+  ) {
     return (
       <Navigate
         to={location.state?.from?.pathname || '/tasks'}
@@ -112,8 +116,10 @@ function FuncComponent() {
               'blur-[2px]': !isValid,
             })}
           >
-            <p className='flex items-center justify-center font-bold'>
-              {isSubmitting && loaded ? 'Submitting...' : 'Submit'}
+            <p className={cn('flex items-center justify-center font-bold', {
+              'animate-pulse': isLoading,
+            })}>
+              {isLoading ? 'Submitting...' : 'Submit'}
             </p>
           </button>
         </form>

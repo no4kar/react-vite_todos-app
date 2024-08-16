@@ -32,6 +32,12 @@ export namespace TyTodo {
     export type Create = Item;
   }
 
+  export enum Status {
+    NONE = 'none',
+    LOADING = 'loading',
+    ERROR = 'error',
+  }
+
   export enum Error {
     NONE = '',
     LOAD = 'Unable to load todos',

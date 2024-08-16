@@ -1,14 +1,16 @@
 import React from 'react';
-import { authApi } from '../../api/auth.api';
+import { useReduxDispatch } from '../../store/hooks';
+import * as authSlice from '../../slices/auth.slice';
 
 
 export const HomePage = React.memo(FuncComponent);
 
 function FuncComponent() {
+  const dispatch = useReduxDispatch();
 
   React.useEffect(() => {
-    // wake up server
-    authApi.refresh().catch();
+    // check auth
+    dispatch(authSlice.refreshThunk());
   }, []);
 
   return (
@@ -33,7 +35,7 @@ function FuncComponent() {
             The Task Manager allows you to register a new user by email.
             For <em>demonstration</em> purposes, you can access a pre-created
             account using <em>the default values</em> provided on <em>the
-            login page</em>.
+              login page</em>.
           </p>
 
           <p className='text-system-warn font-semibold'>

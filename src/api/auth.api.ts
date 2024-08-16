@@ -7,6 +7,11 @@ const client = getClient({
 });
 
 export const authApi = {
+  async registrationByGoogle() {
+    return client.get('/google')
+      .then(onRes.obtainData);
+  },
+
   async registration({
     email,
     password,

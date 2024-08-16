@@ -29,8 +29,12 @@ export namespace TyAuth {
     };
   }
 
-  export enum Error {
-    NONE = '',
-    REGISTRATION = 'Registration error',
+  export enum Status {
+    NONE = 'none',
+    UNAUTHENTICATED = 'unauthenticated',
+    REGISTERED = 'registered',
+    ACTIVATED = 'activated',
+    LOADING = 'loading',
+    ERROR = 'error',
   }
 }

@@ -5,11 +5,18 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build --mode production",
-    "preview": "vite preview",
+    "prebuild": "npm run clean-folder && tsc -b",
+    "build-dev": "npm run prebuild && vite build --mode develop",
+    "build": "npm run prebuild && vite build --mode production",
+    "preview": "vite preview --port 5173",
     "deploy": "gh-pages -d dist",
-    "clean": "npm cache clean --force",
+    "clean-cache": "npm cache clean --force",
+    "clean-folder": "rimraf $npm_package_config_clean_folder",
+    "clean-folder-build": "npm run clean-folder --config.clean_folder=./build && tsc -b",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
+  },
+  "config": {
+    "clean_folder": "./dist"
   },
   "dependencies": {
     "axios": "^1.7.2",
@@ -34,6 +41,7 @@
     "eslint-plugin-react-refresh": "^0.4.7",
     "gh-pages": "^6.1.1",
     "postcss": "^8.4.39",
+    "rimraf": "^3.0.2",
     "sass": "^1.77.6",
     "tailwindcss": "^3.4.4",
     "typescript": "^5.2.2",

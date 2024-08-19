@@ -20,8 +20,17 @@ function FuncComponent() {
       style={{
         container: `custom-page-container
         py-4 sm:py-6 md:py-10
-        h-full flex items-center justify-center`
-      }} />;
+        h-full flex flex-col gap-4 items-center justify-center`
+      }}>
+      <>
+        <h1 className='text-xl font-bold bg-transparent text-white'>
+          Processing...
+        </h1>
+        <p className='text-sm font-light text-system-warn animate-pulse'>
+          Remember about 50 sec delay.
+        </p>
+      </>
+    </Loader>;
   }
 
   if (!author

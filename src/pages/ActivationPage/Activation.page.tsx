@@ -63,7 +63,6 @@ function FuncComponent() {
           </h2>
 
           {content}
-
         </div>
       </div>
     </div>

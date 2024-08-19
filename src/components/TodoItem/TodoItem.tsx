@@ -138,14 +138,14 @@ export const TodoItem = React.memo(({
             })} />
           </button>
 
-          <div className="grow flex flex-col">
+          <div className='grow flex flex-col'>
             <h2 className={cn('text-xl font-bold', {
               'line-through text-gray-400': completed,
             })}>
               {truncateString(todo.title, 11, '..')}
             </h2>
 
-            <p className="text-sm font-light text-gray-400">
+            <p className='text-sm font-light text-gray-400'>
               {(new Date(todo.createdAt))
                 .toLocaleString('ua-UA', { timeZone: 'UTC' })}
             </p>
@@ -167,7 +167,7 @@ export const TodoItem = React.memo(({
           >
             {/* This form is shown instead of the title and remove button */}
             <textarea
-              data-cy="TodoTitleField"
+              data-cy='TodoTitleField'
               className='w-full max-h-[60vh]
               resize-y overflow-hidden
               flex-1 p-2 rounded'

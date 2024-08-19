@@ -11,9 +11,7 @@ export const TodoHeader = React.memo(FuncComponent);
 
 function FuncComponent({
   onCreate,
-  // onToggleAll = () => { },
   onError = () => { },
-  // isEachTodoComplete = false,
 }: {
   onCreate: (todo: TyTodo.CreationAttributes) => Promise<TyTodo.Item | void>;
   onToggleAll?: () => void;
@@ -81,7 +79,7 @@ function FuncComponent({
       <h1
         className="font-robotomono-bold text-3xl font-bold text-center mb-4"
       >
-        The Task Manager
+        The {author?.email}'s tasks
       </h1>
 
       <form
@@ -90,20 +88,19 @@ function FuncComponent({
       >
         {!todos.length && !loaded && (
           <Loader
-            content={
-              <h1
-                className='text-xl font-bold 
-                bg-transparent text-white animate-bounce'
-              >
-                Loading is in progress...
-              </h1>
-            }
             style={{
               container: `absolute inset-0 z-[1] 
             flex items-center justify-center 
             bg-white bg-opacity-30 rounded`,
             }}
-          />
+          >
+            <h1
+              className='text-xl font-bold 
+                bg-transparent text-white animate-bounce'
+            >
+              Loading is in progress...
+            </h1>
+          </Loader>
         )}
 
         <div className={cn('flex space-x-2 mb-4', {

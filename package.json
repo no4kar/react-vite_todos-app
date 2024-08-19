@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "prebuild": "npm run clean-folder && tsc -b",
-    "build-dev": "npm run prebuild && vite build --mode develop",
+    "build-dev": "npm run prebuild && vite build --mode development",
     "build": "npm run prebuild && vite build --mode production",
     "preview": "vite preview --port 5173",
     "deploy": "gh-pages -d dist",

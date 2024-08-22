@@ -7,7 +7,8 @@ export const env: {
     development: 'http://localhost:3005',
     production: import.meta.env.VITE_API_URL,
   }[import.meta.env.MODE],
-  CORS_PROXY_URL: import.meta.env.VITE_CORS_PROXY_URL || '',
+  CORS_PROXY_URL:
+    import.meta.env.VITE_CORS_PROXY_URL || '',
   LOCAL_CLIENT_PREFIX:
     import.meta.env.VITE_LOCAL_CLIENT_PREFIX || 'TASK_MANAGER_',
 });

@@ -1,18 +1,9 @@
 import React from 'react';
-import { useReduxDispatch } from '../../store/hooks';
-import * as authSlice from '../../slices/auth.slice';
 
 
 export const HomePage = React.memo(FuncComponent);
 
 function FuncComponent() {
-  const dispatch = useReduxDispatch();
-
-  React.useEffect(() => {
-    // check auth
-    dispatch(authSlice.refreshThunk());
-  }, []);
-
   return (
     <div
       className='bg-gray-800 text-white font-robotomono-normal'

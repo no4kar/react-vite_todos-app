@@ -19,7 +19,7 @@ export const onReq = {
     const accessToken = accessTokenApi.get();
 
     if (accessToken) {
-      req.headers['Authorization'] = `Bearer ${accessToken}`;
+      req.headers.Authorization = `Bearer ${accessToken}`;
     }
 
     req.withCredentials = true;

@@ -17,6 +17,11 @@ function FuncComponent() {
   } = useReduxSelector(selectFromStore('author'));
   const dispatch = useReduxDispatch();
 
+  React.useEffect(() => {
+    // check auth
+    dispatch(authSlice.refreshThunk());
+  }, []);
+
   return (
     <div
       className='min-h-screen

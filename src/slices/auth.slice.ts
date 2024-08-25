@@ -93,9 +93,7 @@ export const {
         })
       .addCase(
         registrationThunk.fulfilled,
-        (state, action) => {
-          console.info(action.payload);
-
+        (state) => {
           state.status = TyAuth.Status.REGISTERED;
         })
       .addCase(
@@ -119,8 +117,6 @@ export const {
       .addCase(
         activationThunk.fulfilled,
         (state, action) => {
-          console.info(action.payload);
-
           accessTokenApi.save(action.payload.accessToken);
           state.author = action.payload.user;
           state.status = TyAuth.Status.ACTIVATED;
@@ -146,8 +142,6 @@ export const {
       .addCase(
         loginThunk.fulfilled,
         (state, action) => {
-          console.info(action.payload);
-
           accessTokenApi.save(action.payload.accessToken);
           state.author = action.payload.user;
           state.status = TyAuth.Status.ACTIVATED;
@@ -172,9 +166,7 @@ export const {
         })
       .addCase(
         logoutThunk.fulfilled,
-        (state, action) => {
-          console.info(action.payload);
-
+        (state) => {
           accessTokenApi.remove();
           state.author = null;
           state.status = TyAuth.Status.UNAUTHENTICATED;
@@ -202,9 +194,7 @@ export const {
       .addCase(
         refreshThunk.fulfilled,
         (state, action) => {
-          console.info(action.payload);
           accessTokenApi.save(action.payload.accessToken);
-
           state.author = action.payload.user;
           state.status = TyAuth.Status.ACTIVATED;
         })

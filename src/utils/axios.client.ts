@@ -1,5 +1,5 @@
-// axios docs https://axios-http.com/docs/intro
 import axios, {
+  AxiosError,
   AxiosInstance,
   AxiosResponse,
   CreateAxiosDefaults,
@@ -42,43 +42,47 @@ export const onRes = {
     client: AxiosInstance,
     refresh: () => Promise<TyAuth.Response.Refresh>,
   ) {
+    // prevent infinity loop
     let firstRequest = true;
 
     return async (error: any) => {
       const originalRequest = error.config;
 
-      console.error(error);
-
-      if (error.response.status !== 401
+      if (error.response?.status !== 401
         || !firstRequest
       ) {
         firstRequest = true;
-        throw {
-          code: `${error.response?.status} ${error?.code}`,
-          message: error.response?.data?.message,
-          name: error.name,
-          stack: error.stack,
-        };
+        throw axiosErrorToError(error);
       }
-      
-      // prevent infinity loop
+
       firstRequest = false;
 
       try {
         const { accessToken } = await refresh();
-
         accessTokenApi.save(accessToken);
         return client.request(originalRequest);
-
       } catch (error: any) {
-        throw {
-          code: `${error.response?.status} ${error.code}`,
-          message: error.response?.data?.message,
-          name: error.name,
-          stack: error.stack,
-        };
+        throw axiosErrorToError(error);
       }
     };
   },
 }
 
+function axiosErrorToError(
+  error: AxiosError<{
+    message: string,
+    error: string,
+  }, any>,
+) {
+  return {
+    code: `${error.response?.status} ${error.code}`,
+    message: error.response?.data?.message,
+    name: error.name,
+    stack: `
+    CLIENT:
+    ${error.stack}
+
+    SERVER:
+    ${error.response?.data.error}`,
+  };
+}

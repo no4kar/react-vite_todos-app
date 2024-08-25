@@ -8,7 +8,6 @@ import { selectFromStore } from '../../store/store';
 import { TyTodo } from '../../types/Todo.type';
 import { TodoHeader } from '../../components/TodoHeader';
 import { TodoItem } from '../../components/TodoItem';
-import { Notification } from '../../components/Notification';
 
 export const TodoPage = React.memo(FuncComponent);
 
@@ -16,7 +15,6 @@ function FuncComponent() {
   const [processings, setProcessings] = React.useState<TyTodo.Item['id'][]>([]);
   const {
     items: todos,
-    errorMsg,
   } = useReduxSelector(selectFromStore('todos'));
   const {
     author,
@@ -73,16 +71,6 @@ function FuncComponent() {
           ))}
         </div>
       </div>
-
-      {errorMsg && (
-        <div
-          className='fixed bottom-4 right-4'
-        >
-          <Notification onClose={() => dispatch(todosSlice.errorReset())}>
-            <p>{errorMsg}</p>
-          </Notification>
-        </div>
-      )}
     </div>
   );
 }

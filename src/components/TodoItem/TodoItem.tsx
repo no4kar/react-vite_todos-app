@@ -101,7 +101,7 @@ export const TodoItem = React.memo(({
       titleField.current.focus();
     }
   }, [isEditing]);
-  
+
   return (
     <div
       className='relative'
@@ -126,7 +126,7 @@ export const TodoItem = React.memo(({
         <div className='flex space-x-4'>
           <button
             onClick={handleToggleComplete}
-            className={cn(`px-4 py-2 rounded aspect-square 
+            className={cn(`w-11 sm:w-12 rounded aspect-square 
               text-white hover:opacity-70`, {
               'bg-system-success': completed,
               'bg-gray-700': !completed,
@@ -138,14 +138,14 @@ export const TodoItem = React.memo(({
             })} />
           </button>
 
-          <div className='grow flex flex-col'>
-            <h2 className={cn('text-xl font-bold', {
+          <div className='grow flex flex-col justify-between'>
+            <h2 className={cn('text-lg sm:text-xl font-bold', {
               'line-through text-gray-400': completed,
             })}>
               {truncateString(todo.title, 11, '..')}
             </h2>
 
-            <p className='text-sm font-light text-gray-400'>
+            <p className='text-xs sm:text-sm font-light text-gray-400'>
               {(new Date(todo.createdAt))
                 .toLocaleString('ua-UA', { timeZone: 'UTC' })}
             </p>
@@ -153,7 +153,7 @@ export const TodoItem = React.memo(({
 
           <button
             onClick={handleDelete}
-            className='px-4 py-2 rounded 
+            className='w-11 sm:w-12 rounded aspect-square
             bg-system-error text-white
             hover:opacity-70'
           >
@@ -186,7 +186,7 @@ export const TodoItem = React.memo(({
           </form>
         ) : (
           <p
-            className={cn('text-sm whitespace-pre-wrap cursor-pointer', {
+            className={cn('text-xs sm:text-sm whitespace-pre-wrap cursor-pointer', {
               'line-through text-gray-400': completed,
             })}
             onDoubleClick={() => setIsEditing(true)}

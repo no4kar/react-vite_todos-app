@@ -8,11 +8,11 @@ const sliceName = 'todos';
 
 const initialState: {
   items: TyTodo.Item[];
-  loaded: boolean,
+  status: TyTodo.Status;
   errorMsg: TyTodo.Error,
 } = {
   items: [] as TyTodo.Item[],
-  loaded: false,
+  status: TyTodo.Status.NONE,
   errorMsg: TyTodo.Error.NONE,
 };
 
@@ -100,67 +100,69 @@ export const {
   extraReducers: (builder) => {
     builder // getAllThunk
       .addCase(getAllThunk.pending, (state) => {
-        state.loaded = false;
+        state.status = TyTodo.Status.LOADING;
         state.errorMsg = TyTodo.Error.NONE;
       })
       .addCase(getAllThunk.fulfilled, (state, action) => {
         state.items = action.payload.content;
-        state.loaded = true;
+        state.status = TyTodo.Status.NONE;
       })
       .addCase(getAllThunk.rejected, (state, action) => {
         console.error(action.error.message);
-        state.loaded = true;
+
+        state.status = TyTodo.Status.ERROR;
         state.errorMsg = TyTodo.Error.LOAD;
       });
 
     builder // createThunk
       .addCase(createThunk.pending, (state) => {
-        state.loaded = false;
+        state.status = TyTodo.Status.LOADING;
         state.errorMsg = TyTodo.Error.NONE;
       })
       .addCase(createThunk.fulfilled, (state, action) => {
         state.items.push(action.payload);
-        state.loaded = true;
+        state.status = TyTodo.Status.NONE;
       })
       .addCase(createThunk.rejected, (state, action) => {
         console.error(action.error.message);
-        state.loaded = true;
+
+        state.status = TyTodo.Status.ERROR;
         state.errorMsg = TyTodo.Error.UNABLE_ADD;
       });
 
     builder // removeThunk
       .addCase(removeThunk.pending, (state) => {
-        state.loaded = false;
+        state.status = TyTodo.Status.LOADING;
         state.errorMsg = TyTodo.Error.NONE;
       })
       .addCase(removeThunk.fulfilled, (state, action) => {
         state.items
           = state.items.filter(item => item.id !== action.payload);
-        state.loaded = true;
+        state.status = TyTodo.Status.NONE;
       })
       .addCase(removeThunk.rejected, (state, action) => {
         console.error(action.error.message);
-        state.loaded = true;
+
+        state.status = TyTodo.Status.ERROR;
         state.errorMsg = TyTodo.Error.UNABLE_DELETE;
       });
 
     builder // updateThunk
       .addCase(updateThunk.pending, (state) => {
-        state.loaded = false;
+        state.status = TyTodo.Status.LOADING;
         state.errorMsg = TyTodo.Error.NONE;
       })
       .addCase(updateThunk.fulfilled, (state, action) => {
         const updatedItem = action.payload;
-        console.info(action.payload);
 
         state.items = state.items.map(item => (
           item.id !== updatedItem.id ? item : updatedItem));
-          
-        state.loaded = true;
+        state.status = TyTodo.Status.NONE;
       })
       .addCase(updateThunk.rejected, (state, action) => {
         console.error(action.error.message);
-        state.loaded = true;
+
+        state.status = TyTodo.Status.ERROR;
         state.errorMsg = TyTodo.Error.UNABLE_UPDATE;
       });
   },

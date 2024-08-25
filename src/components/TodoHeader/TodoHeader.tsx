@@ -22,11 +22,12 @@ function FuncComponent({
   const titleInput = React.useRef<HTMLTextAreaElement>(null);
   const {
     items: todos,
-    loaded,
+    status,
   } = useReduxSelector(selectFromStore('todos'));
   const {
     author,
   } = useReduxSelector(selectFromStore('author'));
+  const isLoading = status === TyTodo.Status.LOADING;
 
   const handleInputChange = (event: TyGeneral.ChangeEvtTextAreaElmt) => {
     setTitle(event.target.value);
@@ -75,9 +76,10 @@ function FuncComponent({
   }, [titleInput]);
 
   return (
-    <header className="todo__header">
+    <header className='todo__header'>
       <h1
-        className="font-robotomono-bold text-3xl font-bold text-center mb-4"
+        className='mb-4 sm:mb-6 
+        font-robotomono-bold text-2xl sm:text-3xl font-bold text-center'
       >
         The {author?.email}'s tasks
       </h1>
@@ -86,7 +88,7 @@ function FuncComponent({
         className='relative'
         onSubmit={handleSubmit}
       >
-        {!todos.length && !loaded && (
+        {!todos.length && isLoading && (
           <Loader
             style={{
               container: `absolute inset-0 z-[1] 
@@ -95,7 +97,7 @@ function FuncComponent({
             }}
           >
             <h1
-              className='text-xl font-bold 
+              className='text-lg sm:text-xl font-bold 
                 bg-transparent text-white animate-bounce'
             >
               Loading is in progress...
@@ -104,7 +106,7 @@ function FuncComponent({
         )}
 
         <div className={cn('flex space-x-2 mb-4', {
-          'pointer-events-none blur-[2px]': !todos.length && !loaded,
+          'pointer-events-none blur-[2px]': !todos.length && isLoading,
         })}>
           <textarea
             ref={titleInput}

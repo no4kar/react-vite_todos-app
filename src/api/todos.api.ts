@@ -8,7 +8,7 @@ const client = getClient({
 });
 
 export const todosApi = {
-  getAll(
+  async getAll(
     query: TyTodo.Request.GetAll,
   ) {
     const params: any = {
@@ -33,17 +33,17 @@ export const todosApi = {
       .then<TyTodo.Response.GetAll>(onRes.obtainData);
   },
 
-  create({ userId, title, completed }: TyTodo.Request.Create) {
+  async create({ userId, title, completed }: TyTodo.Request.Create) {
     return client.post('', { userId, title, completed })
       .then<TyTodo.Response.Create>(onRes.obtainData);
   },
 
-  remove(todoId: TyTodo.Item['id']) {
+  async remove(todoId: TyTodo.Item['id']) {
     return client.delete(`/${todoId}`)
       .then<TyTodo.Item['id']>(() => todoId);
   },
 
-  update({
+  async update({
     id,
     userId,
     title,

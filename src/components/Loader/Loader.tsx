@@ -3,7 +3,13 @@ import React from "react";
 export const Loader = React.memo(FuncComponent);
 
 function FuncComponent({
-  children = <h1 className='text-xl font-bold bg-transparent text-white animate-pulse'>Processing...</h1>,
+  children =
+  <h1
+    className='text-lg sm:text-xl font-bold bg-transparent text-white
+  animate-pulse'
+  >
+    Processing...
+  </h1>,
   style,
 }: {
   children?: JSX.Element,

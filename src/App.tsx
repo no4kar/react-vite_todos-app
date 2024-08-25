@@ -2,6 +2,7 @@ import React from 'react';
 import { Outlet } from 'react-router-dom';
 
 import * as authSlice from './slices/auth.slice';
+// import * as todosSlice from './slices/todos.slice';
 import { useReduxDispatch, useReduxSelector } from './store/hooks';
 import { selectFromStore } from './store/store';
 
@@ -9,18 +10,49 @@ import { PageHeader } from './components/PageHeader';
 import { Notification } from './components/Notification';
 
 import './App.scss';
+import { TyAuth } from './types/Auth.type';
+import { TyTodo } from './types/Todo.type';
 export const App = React.memo(FuncComponent);
 
 function FuncComponent() {
   const {
-    errorMsg,
+    errorMsg: authErrorMsg,
+    status: authStatus,
   } = useReduxSelector(selectFromStore('author'));
+  const {
+    errorMsg: todosErrorMsg,
+    status: todosStatus,
+  } = useReduxSelector(selectFromStore('todos'));
   const dispatch = useReduxDispatch();
+  const [messages, setMessages]
+    = React.useState<{ date: number, content: string }[]>([]);
 
   React.useEffect(() => {
     // check auth
     dispatch(authSlice.refreshThunk());
   }, []);
+
+  React.useEffect(() => {
+    if (authStatus === TyAuth.Status.ERROR) {
+      const newMsg = {
+        date: Date.now(),
+        content: authErrorMsg,
+      };
+
+      setMessages(prev => [...prev, newMsg]);
+    }
+  }, [authStatus]);
+
+  React.useEffect(() => {
+    if (todosStatus === TyTodo.Status.ERROR) {
+      const newMsg = {
+        date: Date.now(),
+        content: todosErrorMsg,
+      };
+
+      setMessages(prev => [...prev, newMsg]);
+    }
+  }, [todosStatus]);
 
   return (
     <div
@@ -38,13 +70,20 @@ function FuncComponent() {
         <div className='h-10 custom-page-container bg-gray-900' />
       </footer>
 
-      {errorMsg && (
+      {messages && (
         <div
           className='fixed bottom-4 right-4'
         >
-          <Notification onClose={() => dispatch(authSlice.errorReset())}>
-            <p>{errorMsg}</p>
-          </Notification>
+          {messages.map(msg => (
+            <Notification
+              key={msg.date}
+              onClose={() => setMessages(
+                prev => prev.filter(item => item.date !== msg.date)
+              )}
+            >
+              <p>{msg.content}</p>
+            </Notification>
+          ))}
         </div>
       )}
     </div>

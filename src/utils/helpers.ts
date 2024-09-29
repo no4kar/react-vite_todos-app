@@ -27,8 +27,7 @@ export function truncateString(
 ): string {
   if (str.length > maxLength) {
     // Regular expression to match all characters after the maxLength-fillString.length
-    const regex = new RegExp(`([\\w\\s]{${maxLength - fillString.length}})`);
-    // const regex = new RegExp(`^(.{${maxLength - fillString.length}}).*$`);
+    const regex = new RegExp(`^\\b(.{${maxLength - fillString.length}})`,'m');
     return str.replace(regex, `$1${fillString}`).slice(0, maxLength);
   } else {
     return str;

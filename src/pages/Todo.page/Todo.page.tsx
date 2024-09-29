@@ -49,7 +49,7 @@ function FuncComponent() {
     if (author) {
       dispatch(todosSlice.getAllThunk({ userId: author.id }));
     }
-  }, [author, dispatch]);
+  }, [author?.id]);
 
   return (
     <div

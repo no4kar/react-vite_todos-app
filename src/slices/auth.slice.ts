@@ -8,6 +8,7 @@ import {
 import { authApi } from '../api/auth.api';
 import { TyAuth } from '../types/Auth.type';
 import { accessTokenApi } from '../api/accessToken.api';
+import { getAllThunk } from './todos.slice';
 
 const sliceName = 'author';
 
@@ -37,6 +38,29 @@ export const activationThunk: AsyncThunk<
 > = createAsyncThunk(
   `${sliceName}/activationThunk`,
   authApi.activation,
+);
+
+export const activationAndGetAllThunk: AsyncThunk<
+  TyAuth.Response.Activation,
+  TyAuth.Request.Activation['activationToken'],
+  Record<string, never>
+> = createAsyncThunk(
+  `${sliceName}/activationThunk`,
+  async (activationToken: TyAuth.Request.Activation['activationToken'],
+    { dispatch },
+  ) => {
+    // Perform the activation API call
+    const response = await authApi.activation(activationToken);
+
+    // Use dispatch(activationThunk(activationToken)) to call the original activationThunk. The .unwrap() method is used to extract the payload from the fulfilled action or throw an error if rejected.
+    // const response = await dispatch(activationThunk(activationToken)).unwrap();
+
+    // Chain getAllThunk to fetch todos for the activated user
+    dispatch(getAllThunk({ userId: response.user.id }));
+
+    // Return the response for the fulfilled case in extraReducers
+    return response;
+  }
 );
 
 export const loginThunk: AsyncThunk<
@@ -78,8 +102,8 @@ export const {
     errorReset(
       state,
     ) {
+      state.status = TyAuth.Status.NONE;
       state.errorMsg = '';
-      return state;
     },
   },
 
@@ -102,8 +126,8 @@ export const {
           console.error(action.error);
 
           state.errorMsg
-          = action.error.message
-          || 'Registration failed';
+            = action.error.message
+            || 'Registration failed';
           state.status = TyAuth.Status.ERROR;
         });
 
@@ -127,8 +151,8 @@ export const {
           console.error(action.error); // Log the actual error message
 
           state.errorMsg
-          = action.error.message
-          || 'Activation failed'; // Use the error message
+            = action.error.message
+            || 'Activation failed'; // Use the error message
           state.status = TyAuth.Status.ERROR;
         });
 
@@ -152,8 +176,8 @@ export const {
           console.error(action.error); // Log the actual error message
 
           state.errorMsg
-          = action.error.message
-          || 'Login failed'; // Use the error message
+            = action.error.message
+            || 'Login failed'; // Use the error message
           state.status = TyAuth.Status.ERROR;
         });
 
@@ -176,11 +200,9 @@ export const {
         (state, action) => {
           console.error(action.error); // Log the actual error message
 
-          // accessTokenApi.remove();
-          // state.author = null;
           state.errorMsg
-          = action.error.message
-          || 'logout failed'; // Use the error message
+            = action.error.message
+            || 'logout failed'; // Use the error message
           state.status = TyAuth.Status.ERROR;
         });
 

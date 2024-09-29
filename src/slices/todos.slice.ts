@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import type { PayloadAction, AsyncThunk } from '@reduxjs/toolkit';
+import type { AsyncThunk } from '@reduxjs/toolkit';
 
 import { TyTodo } from '../types/Todo.type';
 import { todosApi } from '../api/todos.api';
@@ -52,7 +52,6 @@ export const updateThunk: AsyncThunk<
   todosApi.update,
 );
 
-
 export const {
   actions: {
     errorReset,
@@ -62,41 +61,12 @@ export const {
   name: sliceName,
   initialState,
   reducers: {
-    add(state, action: PayloadAction<TyTodo.CreationAttributes>) {
-      const currentTime = (new Date()).toISOString();
-
-      const newTodo: TyTodo.Item = {
-        ...action.payload,
-        id: String(state.items.length + 1),
-        createdAt: currentTime,
-        updatedAt: currentTime,
-      };
-
-      state.items.push(newTodo);
-    },
-
-    update(state, action: PayloadAction<TyTodo.Item>) {
-      const index
-        = state.items.findIndex(item => item.id === action.payload.id);
-
-      if (index !== -1) {
-        state.items[index] = action.payload;
-      }
-    },
-
-    remove(state, action: PayloadAction<TyTodo.Item>) {
-      state.items
-        = state.items.filter(item => item.id !== action.payload.id);
-    },
-
-    clean(state) {
-      state.items = [];
-    },
-
     errorReset(state) {
+      state.status = TyTodo.Status.NONE;
       state.errorMsg = TyTodo.Error.NONE;
     },
   },
+
   extraReducers: (builder) => {
     builder // getAllThunk
       .addCase(getAllThunk.pending, (state) => {

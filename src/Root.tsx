@@ -4,12 +4,12 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import { App } from './App';
 import { RequireAuth } from './components/RequireAuth';
-import { NotFoundPage } from './pages/NotFound.page';
-import { LoginPage } from './pages/Login.page';
-import { TodoPage } from './pages/Todo.page';
-import { SignupPage } from './pages/Signup.page';
-import { ActivationPage } from './pages/ActivationPage';
-import { HomePage } from './pages/HomePage';
+import { NotFoundPage } from './pages/NotFound';
+import { LoginPage } from './pages/Login';
+import { TodoPage } from './pages/Todo';
+import { SignupPage } from './pages/Signup';
+import { ActivationPage } from './pages/Activation';
+import { HomePage } from './pages/Home';
 
 const router = createBrowserRouter([
   {

@@ -2,9 +2,10 @@ import React, { useState, useRef, useEffect } from 'react';
 import cn from 'classnames';
 
 import { Loader } from '.././Loader';
-import { TyTodo } from '../../types/Todo.type';
 import { truncateString } from '../../utils/helpers';
-import { TyGeneral } from '../../types/General.type';
+
+import { TyTodo } from '../../types/Todo.type';
+import { TyEvt } from '../../types/Evt.type';
 
 export const TodoItem = React.memo(({
   todo,
@@ -82,7 +83,7 @@ export const TodoItem = React.memo(({
     }
   };
 
-  const handleKeyUp = (event: TyGeneral.KeybrEvtTextAreaElmt) => {
+  const handleKeyUp = (event: TyEvt.Keybr.TextAreaElmt) => {
     switch (event.key) {
       case 'Escape':
         setIsEditing(false);

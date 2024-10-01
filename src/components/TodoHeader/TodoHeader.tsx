@@ -1,11 +1,13 @@
 import React from 'react';
 import cn from 'classnames';
 
-import { TyGeneral } from '../../types/General.type';
+import { TyEvt } from '../../types/Evt.type';
 import { TyTodo } from '../../types/Todo.type';
 import { useReduxSelector } from '../../store/hooks';
 import { selectFromStore } from '../../store/store';
 import { Loader } from '../Loader';
+import { Dropdown } from '../Dropdown/Dropdown';
+import { TyTask } from '../../types/Task.type';
 
 export const TodoHeader = React.memo(FuncComponent);
 
@@ -29,7 +31,13 @@ function FuncComponent({
   } = useReduxSelector(selectFromStore('author'));
   const isLoading = status === TyTodo.Status.LOADING;
 
-  const handleInputChange = (event: TyGeneral.ChangeEvtTextAreaElmt) => {
+  const items: TyTask.Item[] = [
+    { id: '0', name: 'someName0', createdAt: '', updatedAt: '' },
+    { id: '1', name: 'someName1', createdAt: '', updatedAt: '' },
+    { id: '2', name: 'someName2', createdAt: '', updatedAt: '' },
+  ];
+
+  const handleInputChange = (event: TyEvt.Change.TextAreaElmt) => {
     setTitle(event.target.value);
   };
 
@@ -83,6 +91,15 @@ function FuncComponent({
       >
         The {author?.email}'s tasks
       </h1>
+
+      <div
+        className='mb-4 sm:mb-6 text-center'
+      >
+        <Dropdown
+          items={items}
+          // isProcessing={true}
+        />
+      </div>
 
       <form
         className='relative'

@@ -47,6 +47,12 @@ export default {
         'dropdown-menu-close': 'menu-close-1 0.5s ease-in-out forwards',
         'aside-menu-open': 'menu-open-2 0.5s ease-in-out forwards',
       },
+      strokeWidth: {
+        '1': '1',
+        '2': '2',
+        '4': '4',
+        '8': '8',
+      },
     },
   },
   plugins: [],

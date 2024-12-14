@@ -1,13 +1,12 @@
 /* eslint @typescript-eslint/no-namespace: 'off' */
-type PageFomServer<T> = {
-  count: number,
-  content: T[],
-};
+
+import type { TyGeneral } from './General.type';
 
 export namespace TyTodo {
   export type Item = {
     id: string;
     userId: string;
+    taskId: string;
     title: string;
     completed: boolean;
     createdAt: string;
@@ -15,10 +14,10 @@ export namespace TyTodo {
   }
 
   export type CreationAttributes = Omit<Item, 'id' | 'createdAt' | 'updatedAt'>;
-  
+
   export namespace Request {
     export interface GetAll extends Partial<Omit<Item, 'id' | 'userId'>> {
-      userId: Item['userId'],
+      taskId: Item['taskId'],
       page?: number,
       size?: number,
     }
@@ -27,7 +26,7 @@ export namespace TyTodo {
   }
 
   export namespace Response {
-    export type GetAll = PageFomServer<Item>;
+    export type GetAll = TyGeneral.PageFomServer<Item>;
     export type Update = Item;
     export type Create = Item;
   }

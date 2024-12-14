@@ -4,11 +4,12 @@ import {
   useParams,
 } from 'react-router-dom';
 
-import * as authSlice from '../../slices/auth.slice';
+import { TyAuth } from '../../types/Auth.type';
+
 import { useReduxSelector, useReduxDispatch } from '../../store/hooks';
 import { selectFromStore } from '../../store/store';
+import * as authSlice from '../../slices/auth.slice';
 import { Loader } from '../../components/Loader';
-import { TyAuth } from '../../types/Auth.type';
 
 export const ActivationPage = React.memo(FuncComponent);
 

@@ -11,8 +11,14 @@ export const todosApi = {
   async getAll(
     query: TyTodo.Request.GetAll,
   ) {
-    const params: any = {
-      userId: query.userId,
+    const params: {
+      taskId: string,
+      title?: string,
+      completed?: string,
+      page: string,
+      size: string,
+    } = {
+      taskId: query.taskId,
       page: (query.page && query.page > 1)
         ? String(query.page)
         : '1',
@@ -33,8 +39,8 @@ export const todosApi = {
       .then<TyTodo.Response.GetAll>(onRes.obtainData);
   },
 
-  async create({ userId, title, completed }: TyTodo.Request.Create) {
-    return client.post('', { userId, title, completed })
+  async create(props: TyTodo.Request.Create) {
+    return client.post('', props)
       .then<TyTodo.Response.Create>(onRes.obtainData);
   },
 

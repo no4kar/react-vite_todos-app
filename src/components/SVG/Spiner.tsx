@@ -11,7 +11,7 @@ function FuncComponent({
 }) {
   const {
     container = 'animate-spin -ml-1 mr-3 h-5 w-5 text-white fill-none',
-    circle1 = 'opacity-25',
+    circle1 = 'opacity-25 stroke-blue-400 stroke-[4]',
     path1 = 'opacity-75 fill-current',
   } = style;
 
@@ -26,8 +26,8 @@ function FuncComponent({
         cx="12"
         cy="12"
         r="10"
-        stroke="currentColor"
-        stroke-width="4"
+        // stroke="currentColor"
+        // stroke-width="4"
       />
       <path
         className={path1}

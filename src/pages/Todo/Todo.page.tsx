@@ -16,15 +16,20 @@ function FuncComponent() {
   const {
     items: todos,
   } = useReduxSelector(selectFromStore('todos'));
+
   const {
-    author,
-  } = useReduxSelector(selectFromStore('author'));
+    selected: selectedTask,
+  } = useReduxSelector(selectFromStore('tasks'));
+
+  // const {
+  //   author,
+  // } = useReduxSelector(selectFromStore('author'));
   const dispatch = useReduxDispatch();
 
   const addTodo = (newTodo: TyTodo.CreationAttributes) => {
     return dispatch(todosSlice.createThunk(newTodo))
       .then<TyTodo.Item>((response) => (
-        response.payload as AxiosResponse<TyTodo.Item, any>).data);
+        response.payload as AxiosResponse<TyTodo.Item>).data);
   };
 
   const deleteTodo = React.useCallback(
@@ -46,10 +51,12 @@ function FuncComponent() {
     }, [dispatch]);
 
   React.useEffect(() => {
-    if (author) {
-      dispatch(todosSlice.getAllThunk({ userId: author.id }));
+    if (selectedTask) {
+      dispatch(todosSlice.getAllThunk({
+        taskId: selectedTask.id,
+      }));
     }
-  }, [author?.id]);
+  }, [selectedTask, dispatch]);
 
   return (
     <div

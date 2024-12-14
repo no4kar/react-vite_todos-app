@@ -37,4 +37,13 @@ export namespace TyAuth {
     LOADING = 'loading',
     ERROR = 'error',
   }
+
+  export enum Error {
+    NONE = '',
+    REGISTERATION = 'Registration failed',
+    ACTIVATION = 'Activation failed',
+    LOGIN = 'Login failed',
+    LOGOUT = 'Logout failed',
+    REFRESH = 'Refresh failed',
+  }
 }

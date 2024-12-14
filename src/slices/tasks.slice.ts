@@ -1,16 +1,18 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import type { AsyncThunk } from '@reduxjs/toolkit';
 
-import { TyTodo as TySlice } from '../types/Todo.type';
-import { todosApi as sliceApi } from '../api/todos.api';
+import { TyTask as TySlice } from '../types/Task.type';
+import { tasksApi as sliceApi } from '../api/tasks.api';
 
-const sliceName = 'todos';
+const sliceName = 'tasks';
 
 const initialState: {
+  selected: TySlice.Item | null;
   items: TySlice.Item[];
   status: TySlice.Status;
-  errorMsg: TySlice.Error,
+  errorMsg: TySlice.Error;
 } = {
+  selected: null,
   items: [] as TySlice.Item[],
   status: TySlice.Status.NONE,
   errorMsg: TySlice.Error.NONE,
@@ -55,6 +57,7 @@ export const updateThunk: AsyncThunk<
 export const {
   actions: {
     errorReset,
+    select,
   },
   reducer,
 } = createSlice({
@@ -64,6 +67,12 @@ export const {
     errorReset(state) {
       state.status = TySlice.Status.NONE;
       state.errorMsg = TySlice.Error.NONE;
+    },
+
+    select(state, action: { payload: TySlice.Item['id'] }) {
+      state.selected
+        = state.items.find((item) => item.id === action.payload)
+        || null;
     },
   },
 

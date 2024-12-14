@@ -33,12 +33,9 @@ export const authApi = {
       .then<TyAuth.Response.Refresh>(onRes.obtainData);
   },
 
-  async login({
-    email,
-    password,
-  }: TyAuth.Request.Login
+  async login(props: TyAuth.Request.Login
   ) {
-    return client.post('/login', { email, password })
+    return client.post('/login', props)
       .then<TyAuth.Response.Login>(onRes.obtainData);
   },
 

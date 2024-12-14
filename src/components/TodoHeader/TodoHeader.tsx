@@ -3,11 +3,13 @@ import cn from 'classnames';
 
 import { TyEvt } from '../../types/Evt.type';
 import { TyTodo } from '../../types/Todo.type';
-import { useReduxSelector } from '../../store/hooks';
+import { TyTask } from '../../types/Task.type';
+
+import { useReduxDispatch, useReduxSelector } from '../../store/hooks';
 import { selectFromStore } from '../../store/store';
 import { Loader } from '../Loader';
 import { Dropdown } from '../Dropdown/Dropdown';
-import { TyTask } from '../../types/Task.type';
+import * as tasksSlice from '../../slices/tasks.slice';
 
 export const TodoHeader = React.memo(FuncComponent);
 
@@ -24,22 +26,27 @@ function FuncComponent({
   const titleInput = React.useRef<HTMLTextAreaElement>(null);
   const {
     items: todos,
-    status,
+    status: todosStatus,
   } = useReduxSelector(selectFromStore('todos'));
   const {
     author,
   } = useReduxSelector(selectFromStore('author'));
-  const isLoading = status === TyTodo.Status.LOADING;
+  const {
+    selected: selectedTask,
+    items: tasks,
+    status: tasksStatus,
+  } = useReduxSelector(selectFromStore('tasks'));
+  const dispatch = useReduxDispatch();
 
-  const items: TyTask.Item[] = [
-    { id: '0', name: 'someName0', createdAt: '', updatedAt: '' },
-    { id: '1', name: 'someName1', createdAt: '', updatedAt: '' },
-    { id: '2', name: 'someName2', createdAt: '', updatedAt: '' },
-  ];
+  const isLoading = todosStatus === TyTodo.Status.LOADING;
 
   const handleInputChange = (event: TyEvt.Change.TextAreaElmt) => {
     setTitle(event.target.value);
   };
+
+  const handleSelectTask = (taskId: TyTask.Item['id']) => {
+    dispatch(tasksSlice.select(taskId));
+  }
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -58,13 +65,15 @@ function FuncComponent({
       titleInput.current.disabled = true;
     }
 
-    if (!author) {
+    if (!author
+      || !selectedTask) {
       onError(TyTodo.Error.UNABLE_ADD);
       return;
     }
 
     onCreate({
       userId: author.id,
+      taskId: selectedTask.id,
       title: trimedTitle,
       completed: false,
     }).finally(() => {
@@ -83,6 +92,14 @@ function FuncComponent({
     }
   }, [titleInput]);
 
+  React.useEffect(() => {
+    if (author) {
+      dispatch(tasksSlice.getAllThunk({
+        userId: author.id,
+      }));
+    }
+  }, [author, dispatch]);
+
   return (
     <header className='todo__header'>
       <h1
@@ -96,8 +113,9 @@ function FuncComponent({
         className='mb-4 sm:mb-6 text-center'
       >
         <Dropdown
-          items={items}
-          // isProcessing={true}
+          items={tasks}
+          isProcessing={tasksStatus === TyTask.Status.LOADING}
+          onSelectItem={handleSelectTask}
         />
       </div>
 

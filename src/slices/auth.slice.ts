@@ -1,62 +1,61 @@
-import {
-  AsyncThunk,
-  createAsyncThunk,
-  createSlice,
-  // PayloadAction,
-} from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import type { AsyncThunk } from '@reduxjs/toolkit';
 
-import { authApi } from '../api/auth.api';
-import { TyAuth } from '../types/Auth.type';
+import { TyAuth as TySlice } from '../types/Auth.type';
+import { authApi as sliceApi } from '../api/auth.api';
 import { accessTokenApi } from '../api/accessToken.api';
-import { getAllThunk } from './todos.slice';
+import * as tasksSlice from './tasks.slice';
 
 const sliceName = 'author';
 
 const initialState: {
-  author: TyAuth.Item | null;
-  status: TyAuth.Status;
-  errorMsg: string,
+  author: TySlice.Item | null;
+  status: TySlice.Status;
+  errorMsg: string;
 } = {
   author: null,
-  status: TyAuth.Status.UNAUTHENTICATED,
-  errorMsg: '',
+  status: TySlice.Status.UNAUTHENTICATED,
+  errorMsg: TySlice.Error.NONE,
 };
 
 export const registrationThunk: AsyncThunk<
-  TyAuth.Response.Registration,
-  TyAuth.Request.Registration,
+  TySlice.Response.Registration,
+  TySlice.Request.Registration,
   Record<string, never>
 > = createAsyncThunk(
   `${sliceName}/registrationThunk`,
-  authApi.registration,
+  sliceApi.registration,
 );
 
 export const activationThunk: AsyncThunk<
-  TyAuth.Response.Activation,
-  TyAuth.Request.Activation['activationToken'],
+  TySlice.Response.Activation,
+  TySlice.Request.Activation['activationToken'],
   Record<string, never>
 > = createAsyncThunk(
   `${sliceName}/activationThunk`,
-  authApi.activation,
+  sliceApi.activation,
 );
 
-export const activationAndGetAllThunk: AsyncThunk<
-  TyAuth.Response.Activation,
-  TyAuth.Request.Activation['activationToken'],
+export const activationAndGetAllTasksThunk: AsyncThunk<
+  TySlice.Response.Activation,
+  TySlice.Request.Activation['activationToken'],
   Record<string, never>
 > = createAsyncThunk(
   `${sliceName}/activationThunk`,
-  async (activationToken: TyAuth.Request.Activation['activationToken'],
+  async (activationToken: TySlice.Request.Activation['activationToken'],
     { dispatch },
   ) => {
     // Perform the activation API call
-    const response = await authApi.activation(activationToken);
+    const response
+      = await sliceApi.activation(activationToken);
 
     // Use dispatch(activationThunk(activationToken)) to call the original activationThunk. The .unwrap() method is used to extract the payload from the fulfilled action or throw an error if rejected.
     // const response = await dispatch(activationThunk(activationToken)).unwrap();
 
-    // Chain getAllThunk to fetch todos for the activated user
-    dispatch(getAllThunk({ userId: response.user.id }));
+    // Chain getAllThunk to fetch tasks for the activated user
+    dispatch(tasksSlice.getAllThunk({
+      userId: response.user.id,
+    }));
 
     // Return the response for the fulfilled case in extraReducers
     return response;
@@ -64,12 +63,12 @@ export const activationAndGetAllThunk: AsyncThunk<
 );
 
 export const loginThunk: AsyncThunk<
-  TyAuth.Response.Login,
-  TyAuth.Request.Login,
+  TySlice.Response.Login,
+  TySlice.Request.Login,
   Record<string, never>
 > = createAsyncThunk(
   `${sliceName}/loginThunk`,
-  authApi.login,
+  sliceApi.login,
 );
 
 export const logoutThunk: AsyncThunk<
@@ -78,16 +77,16 @@ export const logoutThunk: AsyncThunk<
   Record<string, never>
 > = createAsyncThunk(
   `${sliceName}/logoutThunk`,
-  authApi.logout,
+  sliceApi.logout,
 );
 
 export const refreshThunk: AsyncThunk<
-  TyAuth.Response.Refresh,
+  TySlice.Response.Refresh,
   void,
   Record<string, never>
 > = createAsyncThunk(
   `${sliceName}/refreshThunk`,
-  authApi.refresh,
+  sliceApi.refresh,
 );
 
 export const {
@@ -102,8 +101,8 @@ export const {
     errorReset(
       state,
     ) {
-      state.status = TyAuth.Status.NONE;
-      state.errorMsg = '';
+      state.status = TySlice.Status.NONE;
+      state.errorMsg = TySlice.Error.NONE;
     },
   },
 
@@ -112,13 +111,13 @@ export const {
       .addCase(
         registrationThunk.pending,
         (state) => {
-          state.errorMsg = '';
-          state.status = TyAuth.Status.LOADING;
+          state.errorMsg = TySlice.Error.NONE;
+          state.status = TySlice.Status.LOADING;
         })
       .addCase(
         registrationThunk.fulfilled,
         (state) => {
-          state.status = TyAuth.Status.REGISTERED;
+          state.status = TySlice.Status.REGISTERED;
         })
       .addCase(
         registrationThunk.rejected,
@@ -127,23 +126,23 @@ export const {
 
           state.errorMsg
             = action.error.message
-            || 'Registration failed';
-          state.status = TyAuth.Status.ERROR;
+            || TySlice.Error.REGISTERATION
+          state.status = TySlice.Status.ERROR;
         });
 
     builder // activationThunk
       .addCase(
         activationThunk.pending,
         (state) => {
-          state.errorMsg = '';
-          state.status = TyAuth.Status.LOADING;
+          state.errorMsg = TySlice.Error.NONE
+          state.status = TySlice.Status.LOADING;
         })
       .addCase(
         activationThunk.fulfilled,
         (state, action) => {
           accessTokenApi.save(action.payload.accessToken);
           state.author = action.payload.user;
-          state.status = TyAuth.Status.ACTIVATED;
+          state.status = TySlice.Status.ACTIVATED;
         })
       .addCase(
         activationThunk.rejected,
@@ -152,23 +151,23 @@ export const {
 
           state.errorMsg
             = action.error.message
-            || 'Activation failed'; // Use the error message
-          state.status = TyAuth.Status.ERROR;
+            || TySlice.Error.ACTIVATION; // Use the error message
+          state.status = TySlice.Status.ERROR;
         });
 
     builder // loginThunk
       .addCase(
         loginThunk.pending,
         (state) => {
-          state.errorMsg = '';
-          state.status = TyAuth.Status.LOADING;
+          state.errorMsg = TySlice.Error.NONE;
+          state.status = TySlice.Status.LOADING;
         })
       .addCase(
         loginThunk.fulfilled,
         (state, action) => {
           accessTokenApi.save(action.payload.accessToken);
           state.author = action.payload.user;
-          state.status = TyAuth.Status.ACTIVATED;
+          state.status = TySlice.Status.ACTIVATED;
         })
       .addCase(
         loginThunk.rejected,
@@ -177,23 +176,23 @@ export const {
 
           state.errorMsg
             = action.error.message
-            || 'Login failed'; // Use the error message
-          state.status = TyAuth.Status.ERROR;
+            || TySlice.Error.LOGIN; // Use the error message
+          state.status = TySlice.Status.ERROR;
         });
 
     builder // logoutThunk
       .addCase(
         logoutThunk.pending,
         (state) => {
-          state.errorMsg = '';
-          state.status = TyAuth.Status.LOADING;
+          state.errorMsg = TySlice.Error.NONE;
+          state.status = TySlice.Status.LOADING;
         })
       .addCase(
         logoutThunk.fulfilled,
         (state) => {
           accessTokenApi.remove();
           state.author = null;
-          state.status = TyAuth.Status.UNAUTHENTICATED;
+          state.status = TySlice.Status.UNAUTHENTICATED;
         })
       .addCase(
         logoutThunk.rejected,
@@ -202,23 +201,23 @@ export const {
 
           state.errorMsg
             = action.error.message
-            || 'logout failed'; // Use the error message
-          state.status = TyAuth.Status.ERROR;
+            || TySlice.Error.LOGOUT; // Use the error message
+          state.status = TySlice.Status.ERROR;
         });
 
     builder // refreshThunk
       .addCase(
         refreshThunk.pending,
         (state) => {
-          state.errorMsg = '';
-          state.status = TyAuth.Status.LOADING;
+          state.errorMsg = TySlice.Error.NONE;
+          state.status = TySlice.Status.LOADING;
         })
       .addCase(
         refreshThunk.fulfilled,
         (state, action) => {
           accessTokenApi.save(action.payload.accessToken);
           state.author = action.payload.user;
-          state.status = TyAuth.Status.ACTIVATED;
+          state.status = TySlice.Status.ACTIVATED;
         })
       .addCase(
         refreshThunk.rejected,
@@ -227,8 +226,8 @@ export const {
 
           state.errorMsg
             = action.error.message
-            || 'refresh failed'; // Use the error message
-          state.status = TyAuth.Status.ERROR;
+            || TySlice.Error.REFRESH; // Use the error message
+          state.status = TySlice.Status.ERROR;
         });
   },
 });

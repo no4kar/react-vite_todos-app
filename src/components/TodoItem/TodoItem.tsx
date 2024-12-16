@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React from 'react';
 import cn from 'classnames';
 
 import { Loader } from '.././Loader';
@@ -23,11 +23,16 @@ export const TodoItem = React.memo(({
     completed,
   } = todo;
 
-  const [isEditing, setIsEditing] = useState(false);
-  const [newTitle, setNewTitle] = useState(title);
-
-  const titleField = useRef<HTMLTextAreaElement>(null);
-
+  const [
+    isEditing,
+    setIsEditing,
+  ] = React.useState(false);
+  const [
+    newTitle,
+    setNewTitle,
+  ] = React.useState(title);
+  const titleField
+    = React.useRef<HTMLTextAreaElement>(null);
 
   const handleDelete = () => {
     onDelete(todo)
@@ -97,7 +102,7 @@ export const TodoItem = React.memo(({
     }
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (titleField.current) {
       titleField.current.focus();
     }
@@ -150,6 +155,11 @@ export const TodoItem = React.memo(({
               {(new Date(todo.createdAt))
                 .toLocaleString('ua-UA', { timeZone: 'UTC' })}
             </p>
+
+            <p className='text-xs sm:text-sm font-light text-gray-400'>
+              {(new Date(todo.updatedAt))
+                .toLocaleString('ua-UA', { timeZone: 'UTC' })}
+            </p>
           </div>
 
           <button
@@ -175,7 +185,7 @@ export const TodoItem = React.memo(({
               placeholder='Empty todo will be deleted'
               ref={titleField}
               value={newTitle}
-              rows={(newTitle.match(/\n/g) || []).length + 1} // last row doest have '\n'
+              rows={(newTitle.match(/\n/g) || []).length + 1} // last row doesnt have '\n'
               onChange={event => {
                 setNewTitle(event.target.value);
                 // event.target.style.height = 'auto'; // Reset the height

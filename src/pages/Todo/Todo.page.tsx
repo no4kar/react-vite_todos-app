@@ -12,18 +12,17 @@ import { TodoItem } from '../../components/TodoItem';
 export const TodoPage = React.memo(FuncComponent);
 
 function FuncComponent() {
-  const [processings, setProcessings] = React.useState<TyTodo.Item['id'][]>([]);
+  const [
+    processings,
+    setProcessings
+  ] = React.useState<TyTodo.Item['id'][]>([]);
   const {
     items: todos,
   } = useReduxSelector(selectFromStore('todos'));
-
   const {
     selected: selectedTask,
   } = useReduxSelector(selectFromStore('tasks'));
 
-  // const {
-  //   author,
-  // } = useReduxSelector(selectFromStore('author'));
   const dispatch = useReduxDispatch();
 
   const addTodo = (newTodo: TyTodo.CreationAttributes) => {

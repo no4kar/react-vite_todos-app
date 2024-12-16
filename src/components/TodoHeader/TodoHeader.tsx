@@ -1,4 +1,4 @@
-import React from 'react';
+import * as R from 'react';
 import cn from 'classnames';
 
 import { TyEvt } from '../../types/Evt.type';
@@ -11,7 +11,7 @@ import { Loader } from '../Loader';
 import { Dropdown } from '../Dropdown/Dropdown';
 import * as tasksSlice from '../../slices/tasks.slice';
 
-export const TodoHeader = React.memo(FuncComponent);
+export const TodoHeader = R.memo(FuncComponent);
 
 function FuncComponent({
   onCreate,
@@ -22,8 +22,12 @@ function FuncComponent({
   onError?: (errMsg: TyTodo.Error) => void;
   isEachTodoComplete?: boolean;
 }) {
-  const [title, setTitle] = React.useState('');
-  const titleInput = React.useRef<HTMLTextAreaElement>(null);
+  const [
+    title,
+    setTitle,
+  ] = R.useState('');
+  const titleInput
+    = R.useRef<HTMLTextAreaElement>(null);
   const {
     items: todos,
     status: todosStatus,
@@ -36,7 +40,8 @@ function FuncComponent({
     items: tasks,
     status: tasksStatus,
   } = useReduxSelector(selectFromStore('tasks'));
-  const dispatch = useReduxDispatch();
+  const dispatch
+    = useReduxDispatch();
 
   const isLoading = todosStatus === TyTodo.Status.LOADING;
 
@@ -44,11 +49,34 @@ function FuncComponent({
     setTitle(event.target.value);
   };
 
-  const handleSelectTask = (taskId: TyTask.Item['id']) => {
-    dispatch(tasksSlice.select(taskId));
-  }
+  const handleSelectTask
+    = R.useCallback(
+      (taskId: TyTask.Item['id']) => {
+        dispatch(tasksSlice.select(taskId));
+      }, []);
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleCreateTask
+    = R.useCallback(
+      ({ name }: { name: TyTask.Item['name'] }) => {
+        if (author) {
+          dispatch(tasksSlice.createThunk({
+            name,
+            userId: author.id,
+          })).then((action) => {
+            if (tasksSlice.createThunk.fulfilled.match(action)) {
+              dispatch(tasksSlice.select(action.payload.id));
+            }
+          });
+        }
+      }, [author]);
+
+  const handleRemoveTask
+    = R.useCallback(
+      (taskId: TyTask.Item['id']) => {
+        dispatch(tasksSlice.removeThunk(taskId));
+      }, []);
+
+  const handleSubmit = (event: R.FormEvent) => {
     event.preventDefault();
     const trimedTitle = title.trim();
 
@@ -86,13 +114,13 @@ function FuncComponent({
     });
   };
 
-  React.useEffect(() => {
+  R.useEffect(() => {
     if (titleInput.current) {
       titleInput.current.focus();
     }
   }, [titleInput]);
 
-  React.useEffect(() => {
+  R.useEffect(() => {
     if (author) {
       dispatch(tasksSlice.getAllThunk({
         userId: author.id,
@@ -114,55 +142,60 @@ function FuncComponent({
       >
         <Dropdown
           items={tasks}
+          selectedItem={selectedTask}
           isProcessing={tasksStatus === TyTask.Status.LOADING}
           onSelectItem={handleSelectTask}
+          onCreateItem={handleCreateTask}
+          onRemoveItem={handleRemoveTask}
         />
       </div>
 
-      <form
-        className='relative'
-        onSubmit={handleSubmit}
-      >
-        {!todos.length && isLoading && (
-          <Loader
-            style={{
-              container: `absolute inset-0 z-[1] 
+      {selectedTask && (
+        <form
+          className='relative'
+          onSubmit={handleSubmit}
+        >
+          {!todos.length && isLoading && (
+            <Loader
+              style={{
+                container: `absolute inset-0 z-[1] 
             flex items-center justify-center 
             bg-white bg-opacity-30 rounded`,
-            }}
-          >
-            <h1
-              className='text-lg sm:text-xl font-bold 
-                bg-transparent text-white animate-bounce'
+              }}
             >
-              Loading is in progress...
-            </h1>
-          </Loader>
-        )}
+              <h1
+                className='text-lg sm:text-xl font-bold 
+                bg-transparent text-white animate-bounce'
+              >
+                Loading is in progress...
+              </h1>
+            </Loader>
+          )}
 
-        <div className={cn('flex space-x-2 mb-4', {
-          'pointer-events-none blur-[2px]': !todos.length && isLoading,
-        })}>
-          <textarea
-            ref={titleInput}
-            className='flex-1 p-2 min-h-full rounded 
+          <div className={cn('flex space-x-2 mb-4', {
+            'pointer-events-none blur-[2px]': !todos.length && isLoading,
+          })}>
+            <textarea
+              ref={titleInput}
+              className='flex-1 p-2 min-h-full rounded 
             bg-gray-700 text-white placeholder-gray-400'
-            value={title}
-            onChange={handleInputChange}
-            placeholder='What are you planning to do?'
-            rows={4}
-          />
+              value={title}
+              onChange={handleInputChange}
+              placeholder='What are you planning to do?'
+              rows={4}
+            />
 
-          <button
-            type='submit'
-            className='px-4 py-2 rounded
+            <button
+              type='submit'
+              className='px-4 py-2 rounded
             bg-system-warn text-black 
             hover:opacity-70'
-          >
-            <i className='fa-solid fa-plus' />
-          </button>
-        </div>
-      </form>
+            >
+              <i className='fa-solid fa-plus' />
+            </button>
+          </div>
+        </form>
+      )}
     </header>
   );
 }

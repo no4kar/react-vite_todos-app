@@ -128,7 +128,9 @@ function FuncComponent() {
           <p>
             Not registered yet?
             {' '}
-            <Link to='/signup' className='inline hover:underline'>Registration</Link>
+            <Link to='/signup' className='inline hover:underline'>
+              Registration
+            </Link>
           </p>
 
           {/* <br />

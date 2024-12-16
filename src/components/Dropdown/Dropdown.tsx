@@ -1,6 +1,6 @@
 import * as R from 'react';
 import cn from 'classnames';
-// import { TyTask } from '../../types/Task.type';
+
 import { Spiner } from '../SVG/Spiner';
 
 type TyItem = {
@@ -39,6 +39,9 @@ function FuncComponent({
   };
 
   const handleCreate = async () => {
+    const trimmedTitle = value.trim();
+    if (!trimmedTitle) return;
+
     await onCreateItem({ name: value.trim() });
     setIsEditing(false);
   };
@@ -62,9 +65,12 @@ function FuncComponent({
       })}
     >
       <div className='flex space-x-2 rounded-md'>
-        <div className={cn('relative flex flex-grow rounded-md', {
+        <div className={cn(
+          'cursor-move',
+          'relative flex flex-grow rounded-md', {
           'is-loading': isProcessing,
-        })}>
+        })}
+        >
           <input
             type='text'
             className='
@@ -79,6 +85,7 @@ function FuncComponent({
             onKeyDown={handleKeyDown}
             onBlur={handleCreate}
             disabled={isProcessing || !isEditing}
+            // disabled={isProcessing}
           />
 
           {isProcessing && (

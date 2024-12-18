@@ -197,7 +197,8 @@ export const TodoItem = React.memo(({
           </form>
         ) : (
           <p
-            className={cn('text-xs sm:text-sm whitespace-pre-wrap cursor-pointer', {
+            className={cn(
+              'text-xs sm:text-sm whitespace-pre-wrap cursor-pointer', {
               'line-through text-gray-400': completed,
             })}
             onDoubleClick={() => setIsEditing(true)}

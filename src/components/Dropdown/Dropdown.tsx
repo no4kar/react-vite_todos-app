@@ -17,6 +17,7 @@ function FuncComponent({
   isProcessing = false,
   onSelectItem = () => { },
   onCreateItem = () => { },
+  onUpdateItem = () => { },
   onRemoveItem = () => { },
 }: {
   items: TyItem[],
@@ -25,12 +26,28 @@ function FuncComponent({
   onSelectItem?: (itemId: TyItem['id']) => void,
   onCreateItem?: ({ name }: { name: TyItem['name'] })
     => Promise<void> | void,
+  onUpdateItem?: ({ name }: { name: TyItem['name'] })
+    => Promise<void> | void,
   onRemoveItem?: (itemId: TyItem['id']) => Promise<void> | void,
 }) {
-  const [isOpen, setIsOpen] = R.useState(false);
-  const [isEditing, setIsEditing] = R.useState(false);
-  const [value, setValue] = R.useState(selectedItem?.name || 'Select task');
-  const inputRef = R.useRef<HTMLInputElement | null>(null);
+  const [
+    isOpen,
+    setIsOpen,
+  ] = R.useState(false);
+  const [
+    isEditing,
+    setIsEditing,
+  ] = R.useState(false);
+  const [
+    mode,
+    setMode,
+  ] = R.useState<'' | 'update' | 'create'>('');
+  const [
+    title,
+    setTitle,
+  ] = R.useState(selectedItem?.name || 'Select task');
+  const inputRef
+    = R.useRef<HTMLInputElement | null>(null);
 
   const toggleDropdown = () => setIsOpen(prev => !prev);
 
@@ -38,17 +55,38 @@ function FuncComponent({
     await onRemoveItem(itemId);
   };
 
-  const handleCreate = async () => {
-    const trimmedTitle = value.trim();
+  const handleSave = async () => {
+    const trimmedTitle = title.trim();
     if (!trimmedTitle) return;
 
-    await onCreateItem({ name: value.trim() });
+    switch (mode) {
+      case 'create': {
+        await onCreateItem({
+          name: trimmedTitle,
+        });
+
+        break;
+      }
+
+      case 'update': {
+        await onUpdateItem({
+          name: trimmedTitle,
+        });
+
+        break;
+      }
+
+      default:
+        break;
+    }
+
+    setMode('');
     setIsEditing(false);
   };
 
   const handleKeyDown = (event: R.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
-      handleCreate();
+      handleSave();
     }
   };
 
@@ -60,7 +98,8 @@ function FuncComponent({
 
   return (
     <div
-      className={cn('relative border border-yellow-300 rounded-md', {
+      className={cn(
+        'relative border border-yellow-300 rounded-md', {
         'is-active': isOpen,
       })}
     >
@@ -80,12 +119,16 @@ function FuncComponent({
               focus:outline-none focus:ring-2 focus:ring-blue-500
               transition ease-in-out duration-150'
             ref={inputRef}
-            value={isProcessing ? 'Processing...' : value}
-            onChange={(event) => setValue(event.target.value)}
+            value={isProcessing ? 'Processing...' : title}
+            onChange={(event) => setTitle(event.target.value)}
             onKeyDown={handleKeyDown}
-            onBlur={handleCreate}
-            disabled={isProcessing || !isEditing}
-            // disabled={isProcessing}
+            onBlur={handleSave}
+            onClick={() => {
+              setMode('update')
+              setIsEditing(true);
+            }}
+            // disabled={isProcessing || !isEditing}
+            disabled={isProcessing}
           />
 
           {isProcessing && (
@@ -127,6 +170,7 @@ function FuncComponent({
                 px-4 py-2 font-semibold text-sm
                 text-gray-700 cursor-pointer hover:bg-gray-100'
               onClick={() => {
+                setMode('create');
                 setIsEditing(true);
                 toggleDropdown();
               }}
@@ -139,7 +183,8 @@ function FuncComponent({
             {items.map((item) => (
               <div
                 key={item.id}
-                className={cn('px-4 py-2 font-semibold text-sm',
+                className={cn(
+                  'px-4 py-2 font-semibold text-sm',
                   'text-gray-700 cursor-pointer hover:bg-gray-100', {
                   'bg-blue-100': item.id === selectedItem?.id,
                 })}
@@ -149,7 +194,7 @@ function FuncComponent({
                     className='flex-grow'
                     onClick={() => {
                       onSelectItem(item.id);
-                      setValue(item.name);
+                      setTitle(item.name);
                       toggleDropdown();
                     }}
                   >

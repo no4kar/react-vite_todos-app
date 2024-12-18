@@ -70,6 +70,21 @@ function FuncComponent({
         }
       }, [author]);
 
+  const handleUpdateTask
+    = R.useCallback(
+      ({ name }: { name: TyTask.Item['name'] }) => {
+        if (selectedTask) {
+          dispatch(tasksSlice.updateThunk({
+            ...selectedTask,
+            name,
+          })).then((action) => {
+            if (tasksSlice.updateThunk.fulfilled.match(action)) {
+              dispatch(tasksSlice.select(action.payload.id));
+            }
+          });
+        }
+      }, [selectedTask]);
+
   const handleRemoveTask
     = R.useCallback(
       (taskId: TyTask.Item['id']) => {
@@ -146,6 +161,7 @@ function FuncComponent({
           isProcessing={tasksStatus === TyTask.Status.LOADING}
           onSelectItem={handleSelectTask}
           onCreateItem={handleCreateTask}
+          onUpdateItem={handleUpdateTask}
           onRemoveItem={handleRemoveTask}
         />
       </div>

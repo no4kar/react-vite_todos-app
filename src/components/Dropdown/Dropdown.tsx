@@ -1,7 +1,8 @@
-import * as R from 'react';
+import React from 'react';
 import cn from 'classnames';
 
 import { Spiner } from '../SVG/Spiner';
+import { TyEvt } from '../../types/Evt.type';
 
 type TyItem = {
   id: string;
@@ -9,7 +10,7 @@ type TyItem = {
   [key: string]: any;
 };
 
-export const Dropdown = R.memo(FuncComponent);
+export const Dropdown = React.memo(FuncComponent);
 
 function FuncComponent({
   items,
@@ -33,64 +34,68 @@ function FuncComponent({
   const [
     isOpen,
     setIsOpen,
-  ] = R.useState(false);
+  ] = React.useState(false);
   const [
     isEditing,
     setIsEditing,
-  ] = R.useState(false);
+  ] = React.useState(false);
   const [
     mode,
     setMode,
-  ] = R.useState<'' | 'update' | 'create'>('');
+  ] = React.useState<'' | 'update' | 'create'>('');
   const [
     title,
     setTitle,
-  ] = R.useState(selectedItem?.name || 'Select task');
+  ] = React.useState(selectedItem?.name || 'Select task');
   const inputRef
-    = R.useRef<HTMLInputElement | null>(null);
+    = React.useRef<HTMLInputElement | null>(null);
 
-  const toggleDropdown = () => setIsOpen(prev => !prev);
+  const toggleDropdown
+    = () => setIsOpen(prev => !prev);
 
-  const handleRemove = async (itemId: string) => {
-    await onRemoveItem(itemId);
-  };
+  const handleRemove
+    = async (itemId: string) => {
+      await onRemoveItem(itemId);
+    };
 
-  const handleSave = async () => {
-    const trimmedTitle = title.trim();
-    if (!trimmedTitle) return;
+  const handleSave
+    = async () => {
+      const trimmedTitle = title.trim();
+      if (!trimmedTitle) return;
 
-    switch (mode) {
-      case 'create': {
-        await onCreateItem({
-          name: trimmedTitle,
-        });
+      switch (mode) {
+        case 'create': {
+          await onCreateItem({
+            name: trimmedTitle,
+          });
 
-        break;
+          break;
+        }
+
+        case 'update': {
+          await onUpdateItem({
+            name: trimmedTitle,
+          });
+
+          break;
+        }
+
+        default:
+          break;
       }
 
-      case 'update': {
-        await onUpdateItem({
-          name: trimmedTitle,
-        });
+      setMode('');
+      setIsEditing(false);
+    };
 
-        break;
+  const handleKeyDown
+    = (event: TyEvt.Keybr.InputElmt) => {
+      if (event.key === 'Enter') {
+        handleSave();
       }
+    };
 
-      default:
-        break;
-    }
-
-    setMode('');
-    setIsEditing(false);
-  };
-
-  const handleKeyDown = (event: R.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') {
-      handleSave();
-    }
-  };
-
-  R.useEffect(() => {
+  React.useEffect(() => {
     if (inputRef.current) {
       inputRef.current.focus();
     }
@@ -152,7 +157,8 @@ function FuncComponent({
             hover:opacity-70'
           onClick={toggleDropdown}
         >
-          <i className={cn('w-4 aspect-square fa-solid fa-angle-down', {
+          <i className={cn(
+            'w-4 aspect-square fa-solid fa-angle-down', {
             '-scale-y-100': isOpen,
           })} />
         </button>

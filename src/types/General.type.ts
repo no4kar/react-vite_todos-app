@@ -1,4 +1,4 @@
-import * as R from 'react';
+import React from 'react';
 
 /* eslint @typescript-eslint/no-namespace: 'off' */
 export namespace TyGeneral {
@@ -17,6 +17,6 @@ export namespace TyGeneral {
   export type RequestMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE';
   export type Status = 'IDLE' | 'LOADING' | 'SUCCEEDED' | 'FAILED';
 
-  export type SetState<T> = R.Dispatch<R.SetStateAction<T>>;
+  export type SetState<T> = React.Dispatch<React.SetStateAction<T>>;
   export type UseState<T> = (initSt: T | (() => T)) => [T, SetState<T>];
 }

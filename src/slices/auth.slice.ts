@@ -128,6 +128,7 @@ export const {
             = action.error.message
             || TySlice.Error.REGISTERATION
           state.status = TySlice.Status.ERROR;
+          state.author = null;
         });
 
     builder // activationThunk
@@ -153,6 +154,7 @@ export const {
             = action.error.message
             || TySlice.Error.ACTIVATION; // Use the error message
           state.status = TySlice.Status.ERROR;
+          state.author = null;
         });
 
     builder // loginThunk
@@ -178,6 +180,7 @@ export const {
             = action.error.message
             || TySlice.Error.LOGIN; // Use the error message
           state.status = TySlice.Status.ERROR;
+          state.author = null;
         });
 
     builder // logoutThunk
@@ -203,6 +206,7 @@ export const {
             = action.error.message
             || TySlice.Error.LOGOUT; // Use the error message
           state.status = TySlice.Status.ERROR;
+          state.author = null;
         });
 
     builder // refreshThunk
@@ -228,6 +232,7 @@ export const {
             = action.error.message
             || TySlice.Error.REFRESH; // Use the error message
           state.status = TySlice.Status.ERROR;
+          state.author = null;
         });
   },
 });

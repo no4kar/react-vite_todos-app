@@ -1,4 +1,4 @@
-import * as R from 'react';
+import React from 'react';
 import cn from 'classnames';
 
 import { TyEvt } from '../../types/Evt.type';
@@ -11,7 +11,7 @@ import { Loader } from '../Loader';
 import { Dropdown } from '../Dropdown/Dropdown';
 import * as tasksSlice from '../../slices/tasks.slice';
 
-export const TodoHeader = R.memo(FuncComponent);
+export const TodoHeader = React.memo(FuncComponent);
 
 function FuncComponent({
   onCreate,
@@ -25,9 +25,9 @@ function FuncComponent({
   const [
     title,
     setTitle,
-  ] = R.useState('');
+  ] = React.useState('');
   const titleInput
-    = R.useRef<HTMLTextAreaElement>(null);
+    = React.useRef<HTMLTextAreaElement>(null);
   const {
     items: todos,
     status: todosStatus,
@@ -50,13 +50,13 @@ function FuncComponent({
   };
 
   const handleSelectTask
-    = R.useCallback(
+    = React.useCallback(
       (taskId: TyTask.Item['id']) => {
         dispatch(tasksSlice.select(taskId));
       }, []);
 
   const handleCreateTask
-    = R.useCallback(
+    = React.useCallback(
       ({ name }: { name: TyTask.Item['name'] }) => {
         if (author) {
           dispatch(tasksSlice.createThunk({
@@ -71,7 +71,7 @@ function FuncComponent({
       }, [author]);
 
   const handleUpdateTask
-    = R.useCallback(
+    = React.useCallback(
       ({ name }: { name: TyTask.Item['name'] }) => {
         if (selectedTask) {
           dispatch(tasksSlice.updateThunk({
@@ -86,12 +86,12 @@ function FuncComponent({
       }, [selectedTask]);
 
   const handleRemoveTask
-    = R.useCallback(
+    = React.useCallback(
       (taskId: TyTask.Item['id']) => {
         dispatch(tasksSlice.removeThunk(taskId));
       }, []);
 
-  const handleSubmit = (event: R.FormEvent) => {
+  const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     const trimedTitle = title.trim();
 
@@ -129,13 +129,13 @@ function FuncComponent({
     });
   };
 
-  R.useEffect(() => {
+  React.useEffect(() => {
     if (titleInput.current) {
       titleInput.current.focus();
     }
   }, [titleInput]);
 
-  R.useEffect(() => {
+  React.useEffect(() => {
     if (author) {
       dispatch(tasksSlice.getAllThunk({
         userId: author.id,

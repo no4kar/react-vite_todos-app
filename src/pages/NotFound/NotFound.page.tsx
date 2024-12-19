@@ -1,9 +1,9 @@
-import * as R from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Loader } from '../../components/Loader';
 
-export const NotFoundPage = R.memo(FuncComponent);
+export const NotFoundPage = React.memo(FuncComponent);
 
 function FuncComponent({
   title = 'Page not found',
@@ -25,7 +25,7 @@ function FuncComponent({
 
   const navigate = useNavigate();
 
-  R.useEffect(() => {
+  React.useEffect(() => {
     if (redirect?.to) {
       const timeoutId
         = setTimeout(() => {

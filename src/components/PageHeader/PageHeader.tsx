@@ -9,6 +9,7 @@ export const PageHeader = React.memo(FuncComponent);
 function FuncComponent() {
   const {
     author,
+    // status: authorStatus,
   } = useReduxSelector(selectFromStore('author'));
   const dispatch = useReduxDispatch();
   const navigate = useNavigate();
@@ -19,11 +20,14 @@ function FuncComponent() {
     custom-page-container 
     w-full py-4 sm:py-6 md:py-10 bg-gray-800'
     >
-      <div className='header__nav flex justify-between'>
+      <div
+        className='
+      header__nav flex justify-between
+      text-base sm:text-xl font-bold'
+      >
         <div
           className='
-        header__nav-start flex gap-4
-        text-lg sm:text-xl font-bold'
+        header__nav-start flex gap-4'
         >
           <Link
             to='/'
@@ -48,10 +52,9 @@ function FuncComponent() {
 
         <div
           className='
-        header__nav-end flex gap-4 justify-end
-        text-lg sm:text-xl font-bold'
+        header__nav-end flex gap-4 justify-end'
         >
-          {author ? (
+          {(author) ? (
             <button className='w-fit p-2 
           bg-red-400 text-white rounded hover:opacity-70'
               onClick={() => {
@@ -82,7 +85,7 @@ function FuncComponent() {
                 className='w-fit p-2 
           bg-system-success text-white rounded hover:opacity-70'
               >
-                <p className='w-fit flex items-center justify-center font-bold'>
+                <p className='w-fit flex items-center justify-center'>
                   Log in
                 </p>
               </Link>

@@ -1,20 +1,20 @@
-import * as R from 'react';
+import React from 'react';
 
 /* eslint @typescript-eslint/no-namespace: 'off' */
 export namespace TyEvt {
   export namespace Change {
-    export type InputElmt = R.ChangeEvent<HTMLInputElement>;
-    export type TextAreaElmt = R.ChangeEvent<HTMLTextAreaElement>;
-    export type ButtonElmt = R.ChangeEvent<HTMLButtonElement>;
-    export type SelectElmt = R.ChangeEvent<HTMLSelectElement>;
+    export type InputElmt = React.ChangeEvent<HTMLInputElement>;
+    export type TextAreaElmt = React.ChangeEvent<HTMLTextAreaElement>;
+    export type ButtonElmt = React.ChangeEvent<HTMLButtonElement>;
+    export type SelectElmt = React.ChangeEvent<HTMLSelectElement>;
   }
 
   export namespace Keybr {
-    export type InputElmt = R.KeyboardEvent<HTMLInputElement>;
-    export type TextAreaElmt = R.KeyboardEvent<HTMLTextAreaElement>;
+    export type InputElmt = React.KeyboardEvent<HTMLInputElement>;
+    export type TextAreaElmt = React.KeyboardEvent<HTMLTextAreaElement>;
   }
 
   export namespace Mouse {
-    export type ButtonElmt = R.MouseEvent<HTMLButtonElement>;
+    export type ButtonElmt = React.MouseEvent<HTMLButtonElement>;
   }
 }

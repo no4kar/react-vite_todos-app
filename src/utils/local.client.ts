@@ -24,15 +24,17 @@ const client = {
   init<T>(
     key: string,
     initialData: T,
-    isValid: (item: any) => boolean,
+    isValid: (item: object) => boolean,
   ): T {
     const storedData = client.read<T>(key);
     // check the saved data
-    if (Array.isArray(storedData) && storedData.every(isValid)) {
+    if (Array.isArray(storedData)
+      && storedData.every(isValid)) {
       return storedData;
     }
 
-    if (storedData && isValid(storedData)) {
+    if (storedData
+      && isValid(storedData)) {
       return storedData;
     }
 
@@ -51,7 +53,7 @@ export function getClient(postfix: string) {
     remove: (): void => client.remove(key),
     init: <T>(
       initialData: T,
-      isValid: (item: any) => boolean,
+      isValid: (item: object) => boolean,
     ): T => client.init(key, initialData, isValid),
   };
 }

@@ -18,10 +18,10 @@ function FuncComponent() {
     status: authStatus,
     errorMsg,
   } = useReduxSelector(selectFromStore('author'));
-  const { activationToken = 'unknown' } = useParams();
+  const {
+    activationToken = 'unknown',
+  } = useParams();
   const dispatch = useReduxDispatch();
-
-  console.info(activationToken);
 
   React.useEffect(() => {
     dispatch(authSlice.activationThunk(activationToken));
@@ -46,7 +46,8 @@ function FuncComponent() {
     );
   }
 
-  if (!errorMsg && authStatus === TyAuth.Status.ACTIVATED) {
+  if (!errorMsg
+    && authStatus === TyAuth.Status.ACTIVATED) {
     content = (
       <p>Your account is now active</p>
     );

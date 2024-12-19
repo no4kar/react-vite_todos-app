@@ -13,10 +13,12 @@ export namespace TyTodo {
     updatedAt: string;
   }
 
-  export type CreationAttributes = Omit<Item, 'id' | 'createdAt' | 'updatedAt'>;
+  export type CreationAttributes
+    = Omit<Item, 'id' | 'createdAt' | 'updatedAt'>;
 
   export namespace Request {
-    export interface GetAll extends Partial<Omit<Item, 'id' | 'userId'>> {
+    export interface GetAll
+      extends Partial<Omit<Item, 'id' | 'userId'>> {
       taskId: Item['taskId'],
       page?: number,
       size?: number,

@@ -20,9 +20,8 @@ export const onReq = {
 
     if (accessToken) {
       req.headers.Authorization = `Bearer ${accessToken}`;
+      req.withCredentials = true;
     }
-
-    req.withCredentials = true;
 
     return req;
   },

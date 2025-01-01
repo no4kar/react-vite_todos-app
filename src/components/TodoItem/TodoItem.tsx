@@ -151,12 +151,15 @@ export const TodoItem = React.memo(({
               {truncateString(todo.title, 11, '..')}
             </h2>
 
-            <p className='text-xs sm:text-sm font-light text-gray-400'>
+            <p className='text-xs sm:text-sm font-light
+            text-gray-400'>
               {(new Date(todo.createdAt))
                 .toLocaleString('ua-UA', { timeZone: 'UTC' })}
             </p>
 
-            <p className='text-xs sm:text-sm font-light text-gray-400'>
+            <p className='self-end
+              text-xs sm:text-sm font-light
+            text-gray-400'>
               {(new Date(todo.updatedAt))
                 .toLocaleString('ua-UA', { timeZone: 'UTC' })}
             </p>

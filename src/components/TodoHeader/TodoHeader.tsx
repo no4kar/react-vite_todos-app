@@ -188,17 +188,18 @@ function FuncComponent({
             </Loader>
           )}
 
-          <div className={cn('flex space-x-2 mb-4', {
+          <div className={cn('flex space-x-2 mb-4',
+            'min-h-16 sm:min-h-32', {
             'pointer-events-none blur-[2px]': !todos.length && isLoading,
           })}>
             <textarea
               ref={titleInput}
-              className='flex-1 p-2 min-h-full rounded 
+              className='flex-1 p-2 rounded min-h-full
             bg-gray-700 text-white placeholder-gray-400'
               value={title}
               onChange={handleInputChange}
               placeholder='What are you planning to do?'
-              rows={4}
+            //rows={4} // replaced by 'min-h-16'
             />
 
             <button

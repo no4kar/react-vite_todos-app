@@ -68,7 +68,6 @@ function FuncComponent() {
       h-full py-4 sm:py-6 md:py-10">
         <TodoHeader
           onCreate={addTodo}
-        //flex flex-col 
         />
 
         <div
@@ -86,30 +85,6 @@ function FuncComponent() {
             />
           ))}
         </div>
-
-        {/* <div className='flex-grow
-        border border-red-500
-        '>
-          <div
-            data-cy="TodoList"
-            className="max-h-[350px]
-            overflow-y-scroll"
-            // style={{
-            //   height: 'calc(100% - 2px)',
-            //   overflow: 'hidden',
-            // }}
-          >
-            {todos.map((todo) => (
-              <TodoItem
-                key={todo.id}
-                todo={todo}
-                onDelete={deleteTodo}
-                onUpdate={updateTodo}
-                isProcessed={processings.includes(todo.id)}
-              />
-            ))}
-          </div>
-        </div> */}
       </div>
     </div>
   );

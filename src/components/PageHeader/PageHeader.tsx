@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useReduxDispatch, useReduxSelector } from '../../store/hooks';
 import { selectFromStore } from '../../store/store';
 import * as authSlice from '../../slices/auth.slice';
+import * as tasksSlice from '../../slices/tasks.slice';
+import * as todosSlice from '../../slices/todos.slice';
 
 export const PageHeader = React.memo(FuncComponent);
 
@@ -60,6 +62,8 @@ function FuncComponent() {
               onClick={() => {
                 dispatch(authSlice.logoutThunk())
                   .then(() => {
+                    dispatch(tasksSlice.reset());
+                    dispatch(todosSlice.reset());
                     navigate('/');
                   })
               }}

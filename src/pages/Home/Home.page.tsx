@@ -13,7 +13,7 @@ function FuncComponent() {
           The Task Manager Home Page
         </h1>
 
-        <div className='space-y-4 text-justify'>
+        <div className='space-y-4 sm:space-y-6 text-justify'>
           <p>
             Welcome to the Task Manager project! This application is
             built using modern technologies including React, Vite,

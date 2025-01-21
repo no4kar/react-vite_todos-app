@@ -8,7 +8,7 @@ import { TyTask } from '../../types/Task.type';
 import { useReduxDispatch, useReduxSelector } from '../../store/hooks';
 import { selectFromStore } from '../../store/store';
 import { Loader } from '../Loader';
-import { Dropdown } from '../Dropdown/Dropdown';
+import { DropdownReusable as Dropdown } from '../Dropdown';
 import * as tasksSlice from '../../slices/tasks.slice';
 
 export const TodoHeader = React.memo(FuncComponent);
@@ -144,25 +144,27 @@ function FuncComponent({
   }, [author, dispatch]);
 
   return (
-    <header className='todo__header'>
+    <header className='todo__header space-y-2 sm:space-y-4'>
       <h1
-        className='mb-4 sm:mb-6 
-        font-robotomono-bold text-2xl sm:text-3xl font-bold text-center'
+        className='font-robotomono-bold font-bold 
+        text-2xl sm:text-3xl text-center'
       >
         The {author?.email}'s tasks
       </h1>
 
       <div
-        className='mb-4 sm:mb-6 text-center'
+        className='text-center'
       >
         <Dropdown
           items={tasks}
           selectedItem={selectedTask}
           isProcessing={tasksStatus === TyTask.Status.LOADING}
-          onSelectItem={handleSelectTask}
-          onCreateItem={handleCreateTask}
-          onUpdateItem={handleUpdateTask}
-          onRemoveItem={handleRemoveTask}
+          onItem={{
+            select: handleSelectTask,
+            create: handleCreateTask,
+            update: handleUpdateTask,
+            remove: handleRemoveTask,
+          }}
         />
       </div>
 
@@ -188,7 +190,7 @@ function FuncComponent({
             </Loader>
           )}
 
-          <div className={cn('flex space-x-2 mb-4',
+          <div className={cn('flex space-x-2',
             'min-h-16 sm:min-h-32', {
             'pointer-events-none blur-[2px]': !todos.length && isLoading,
           })}>
@@ -216,3 +218,7 @@ function FuncComponent({
     </header>
   );
 }
+
+
+{/* <div class="btn-icon btn-menu-toggle attach-file"><span class="tgico"></span></div> */ }
+{/* <input type="file" multiple="" style="display: none;"></input> */ }

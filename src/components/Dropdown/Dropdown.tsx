@@ -16,20 +16,24 @@ function FuncComponent({
   items,
   selectedItem = null,
   isProcessing = false,
-  onSelectItem = () => { },
-  onCreateItem = () => { },
-  onUpdateItem = () => { },
-  onRemoveItem = () => { },
+  onItem = {
+    select: () => { },
+    create: () => { },
+    update: () => { },
+    remove: () => { },
+  }
 }: {
   items: TyItem[],
   selectedItem?: TyItem | null,
   isProcessing?: boolean,
-  onSelectItem?: (itemId: TyItem['id']) => void,
-  onCreateItem?: ({ name }: { name: TyItem['name'] })
-    => Promise<void> | void,
-  onUpdateItem?: ({ name }: { name: TyItem['name'] })
-    => Promise<void> | void,
-  onRemoveItem?: (itemId: TyItem['id']) => Promise<void> | void,
+  onItem: {
+    select: (itemId: TyItem['id']) => void,
+    create: ({ name }: { name: TyItem['name'] })
+      => Promise<void> | void,
+    update: ({ name }: { name: TyItem['name'] })
+      => Promise<void> | void,
+    remove: (itemId: TyItem['id']) => Promise<void> | void,
+  }
 }) {
   const [
     isOpen,
@@ -55,7 +59,7 @@ function FuncComponent({
 
   const handleRemove
     = async (itemId: string) => {
-      await onRemoveItem(itemId);
+      await onItem.remove(itemId);
     };
 
   const handleSave
@@ -65,7 +69,7 @@ function FuncComponent({
 
       switch (mode) {
         case 'create': {
-          await onCreateItem({
+          await onItem.create({
             name: trimmedTitle,
           });
 
@@ -73,7 +77,7 @@ function FuncComponent({
         }
 
         case 'update': {
-          await onUpdateItem({
+          await onItem.update({
             name: trimmedTitle,
           });
 
@@ -199,7 +203,7 @@ function FuncComponent({
                   <div
                     className='flex-grow'
                     onClick={() => {
-                      onSelectItem(item.id);
+                      onItem.select(item.id);
                       setTitle(item.name);
                       toggleDropdown();
                     }}

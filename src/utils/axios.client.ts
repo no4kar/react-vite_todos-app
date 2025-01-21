@@ -37,7 +37,7 @@ export const onRes = {
     return res;
   },
 
-  handleError(
+  handleUnauthorizedError(
     client: AxiosInstance,
     refresh: () => Promise<TyAuth.Response.Refresh>,
   ) {

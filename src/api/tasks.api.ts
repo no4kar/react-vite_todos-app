@@ -57,4 +57,4 @@ export const tasksApi = {
 client.interceptors.request.use(onReq.stickAccessToken);
 client.interceptors.response.use(
   onRes.toConsoleInfo,
-  onRes.handleError(client, authApi.refresh));
+  onRes.handleUnauthorizedError(client, authApi.refresh));

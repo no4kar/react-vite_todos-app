@@ -16,5 +16,11 @@ export namespace TyEvt {
 
   export namespace Mouse {
     export type ButtonElmt = React.MouseEvent<HTMLButtonElement>;
+    export type DivElmt = React.MouseEvent<HTMLDivElement>;
+    export type InputElmt = React.MouseEvent<HTMLInputElement>;
+  }
+
+  export namespace Focus {
+    export type InputElmt = React.FocusEvent<HTMLInputElement>;
   }
 }

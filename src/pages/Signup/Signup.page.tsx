@@ -35,7 +35,7 @@ function FuncComponent() {
     return (
       <div className='custom-page-container py-4 sm:py-6 md:py-10'>
         <div className='w-full max-w-md p-8 mx-auto
-      bg-gray-800 text-gray-400 rounded-lg shadow-md space-y-6'>
+      bg-gray-800 text-gray-400 rounded-lg shadow-md space-y-4 sm:space-y-6'>
           <div
             className='flex items-center justify-center flex-col gap-4'
           >
@@ -63,7 +63,7 @@ function FuncComponent() {
   return (
     <div className='custom-page-container py-4 sm:py-6 md:py-10'>
       <div className='w-full max-w-md p-8 mx-auto
-      bg-gray-800 text-gray-400 rounded-lg shadow-md space-y-6'>
+      bg-gray-800 text-gray-400 rounded-lg shadow-md space-y-4 sm:space-y-6'>
         <div
           className='flex items-center justify-center'
         >
@@ -109,7 +109,9 @@ function FuncComponent() {
             type='submit'
             disabled={!isValid}
             title='You can leave default values'
-            className={cn('w-full py-2 bg-red-600 text-white rounded hover:opacity-70', {
+            className={cn(`
+              w-full py-2 rounded 
+              bg-red-600 text-white hover:opacity-70`, {
               'blur-[2px]': !isValid,
             })}
           >
@@ -121,7 +123,7 @@ function FuncComponent() {
           </button>
         </form>
 
-        <div className='text-center space-y-4'>
+        <div className='text-center space-y-4 sm:space-y-6'>
           <p>Signup via social networks</p>
 
           <button

@@ -44,4 +44,10 @@ export namespace TyTask {
     UNABLE_DELETE = 'Unable to delete a task',
     UNABLE_UPDATE = 'Unable to update a task',
   }
+
+  export enum SearchParams {
+    NAME = 'name',
+    ITEM_PER_PAGE = 'itemsPerPage',
+    PAGE = 'page',
+  }
 }

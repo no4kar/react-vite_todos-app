@@ -9,7 +9,7 @@ export function getClient(
 
   function request<T>(
     url: string,
-    method: TyGeneral.RequestMethod = 'GET',
+    method: TyGeneral.RequestMethod,
     data: any = null, // we can send any data to the server
   ): Promise<T> {
     const options: RequestInit = { method };
@@ -35,7 +35,7 @@ export function getClient(
   }
 
   return {
-    get: <T>(url: string) => request<T>(url),
+    get: <T>(url: string) => request<T>(url, 'GET'),
     post: <T>(url: string, data: any) => request<T>(url, 'POST', data),
     patch: <T>(url: string, data: any) => request<T>(url, 'PATCH', data),
     delete: <T>(url: string) => request<T>(url, 'DELETE'),

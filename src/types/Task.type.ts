@@ -46,6 +46,7 @@ export namespace TyTask {
   }
 
   export enum SearchParams {
+    ID = 'id',
     NAME = 'name',
     ITEM_PER_PAGE = 'itemsPerPage',
     PAGE = 'page',

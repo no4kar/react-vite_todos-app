@@ -87,10 +87,10 @@ function mergeSearchParams(
 }
 
 export function createSearchParamUpdater(
-  searchParams: URLSearchParams,
   setSearchParams: SetURLSearchParams,
 ) {
-  return (params: SearchParamsMap) => {
-    setSearchParams(mergeSearchParams(searchParams, params));
-  };
+  return (
+    searchParams: URLSearchParams,
+    paramsToUpdate: SearchParamsMap
+  ) => setSearchParams(mergeSearchParams(searchParams, paramsToUpdate));
 }

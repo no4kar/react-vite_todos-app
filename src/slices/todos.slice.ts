@@ -6,16 +6,6 @@ import { todosApi as sliceApi } from '../api/todos.api';
 
 const sliceName = 'todos';
 
-const initialState: {
-  items: TySlice.Item[];
-  status: TySlice.Status;
-  errorMsg: TySlice.Error,
-} = {
-  items: [] as TySlice.Item[],
-  status: TySlice.Status.NONE,
-  errorMsg: TySlice.Error.NONE,
-};
-
 export const getAllThunk: AsyncThunk<
   TySlice.Response.GetAll,
   TySlice.Request.GetAll,
@@ -52,6 +42,17 @@ export const updateThunk: AsyncThunk<
   sliceApi.update,
 );
 
+
+const initialState: {
+  items: TySlice.Item[];
+  status: TySlice.Status;
+  errorMsg: TySlice.Error,
+} = {
+  items: [] as TySlice.Item[],
+  status: TySlice.Status.NONE,
+  errorMsg: TySlice.Error.NONE,
+};
+
 export const {
   actions: { // export the actions
     errorReset,
@@ -66,6 +67,7 @@ export const {
       state.status = TySlice.Status.NONE;
       state.errorMsg = TySlice.Error.NONE;
     },
+
     reset(state) {
       state.items = [];
       state.status = TySlice.Status.NONE;

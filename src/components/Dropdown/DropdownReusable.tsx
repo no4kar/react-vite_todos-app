@@ -139,6 +139,7 @@ function FuncComponent({
           bg-white border rounded-md shadow-lg mt-2 w-full md:w-auto'
         >
           <OptionCreateNew
+            key={'OptionCreateNew'}
             handlersFor={{
               divCreate: {
                 onClick: () => {
@@ -153,6 +154,7 @@ function FuncComponent({
 
           {items.map((item) =>
             <Option
+              key={item.id}
               item={item}
               selectedItem={selectedItem}
               handlersFor={{
@@ -198,7 +200,6 @@ function Option({
 }) {
   return (
     <div
-      key={item.id}
       className={cn(
         `px-4 py-2 flex justify-between items-center
          font-semibold text-sm

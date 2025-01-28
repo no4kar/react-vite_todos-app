@@ -6,18 +6,6 @@ import { tasksApi as sliceApi } from '../api/tasks.api';
 
 const sliceName = 'tasks';
 
-const initialState: {
-  selected: TySlice.Item | null;
-  items: TySlice.Item[];
-  status: TySlice.Status;
-  errorMsg: TySlice.Error;
-} = {
-  selected: null,
-  items: [] as TySlice.Item[],
-  status: TySlice.Status.NONE,
-  errorMsg: TySlice.Error.NONE,
-};
-
 export const getAllThunk: AsyncThunk<
   TySlice.Response.GetAll,
   TySlice.Request.GetAll,
@@ -53,6 +41,18 @@ export const updateThunk: AsyncThunk<
   `${sliceName}/updateThunk`,
   sliceApi.update,
 );
+
+const initialState: {
+  selected: TySlice.Item | null;
+  items: TySlice.Item[];
+  status: TySlice.Status;
+  errorMsg: TySlice.Error;
+} = {
+  selected: null,
+  items: [] as TySlice.Item[],
+  status: TySlice.Status.NONE,
+  errorMsg: TySlice.Error.NONE,
+};
 
 export const {
   actions: { // export the actions

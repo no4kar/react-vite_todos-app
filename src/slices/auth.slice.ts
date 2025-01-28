@@ -8,16 +8,6 @@ import * as tasksSlice from './tasks.slice';
 
 const sliceName = 'author';
 
-const initialState: {
-  author: TySlice.Item | null;
-  status: TySlice.Status;
-  errorMsg: string;
-} = {
-  author: null,
-  status: TySlice.Status.UNAUTHENTICATED,
-  errorMsg: TySlice.Error.NONE,
-};
-
 export const registrationThunk: AsyncThunk<
   TySlice.Response.Registration,
   TySlice.Request.Registration,
@@ -89,9 +79,20 @@ export const refreshThunk: AsyncThunk<
   sliceApi.refresh,
 );
 
+const initialState: {
+  author: TySlice.Item | null;
+  status: TySlice.Status;
+  errorMsg: string;
+} = {
+  author: null,
+  status: TySlice.Status.UNAUTHENTICATED,
+  errorMsg: TySlice.Error.NONE,
+};
+
 export const {
   actions: {
     errorReset,
+    reset,
   },
   reducer,
 } = createSlice({
@@ -101,6 +102,12 @@ export const {
     errorReset(
       state,
     ) {
+      state.status = TySlice.Status.NONE;
+      state.errorMsg = TySlice.Error.NONE;
+    },
+
+    reset(state) {
+      state.author = null;
       state.status = TySlice.Status.NONE;
       state.errorMsg = TySlice.Error.NONE;
     },

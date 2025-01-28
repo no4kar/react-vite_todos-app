@@ -11,7 +11,8 @@ import { Loader } from '../Loader';
 import { DropdownReusable as Dropdown } from '../Dropdown';
 import * as tasksSlice from '../../slices/tasks.slice';
 
-export const TodoHeader = React.memo(FuncComponent);
+export const TodoHeader
+  = React.memo(FuncComponent);
 
 function FuncComponent({
   onCreate,

@@ -4,6 +4,7 @@ import { AxiosResponse } from 'axios';
 
 import { useReduxDispatch, useReduxSelector } from '../../store/hooks';
 import * as todosSlice from '../../slices/todos.slice';
+import * as tasksSlice from '../../slices/tasks.slice';
 import { selectFromStore } from '../../store/store';
 
 import { TyTodo } from '../../types/Todo.type';
@@ -15,9 +16,14 @@ import { createSearchParamUpdater } from '../../utils/helpers';
 import { TyTask } from '../../types/Task.type';
 import { TyEvt } from '../../types/Evt.type';
 
-export const TodoPage = React.memo(FuncComponent);
+export const TodoPage
+  = React.memo(FuncComponent);
 
 function FuncComponent() {
+  const [
+    totalItems,
+    setTotalItems
+  ] = React.useState<number>(0);
   const [
     processings,
     setProcessings
@@ -36,13 +42,17 @@ function FuncComponent() {
 
   const updateSearchParams
     = React.useCallback(
-      createSearchParamUpdater(searchParams, setSearchParams),
-      [searchParams, setSearchParams]
+      createSearchParamUpdater(setSearchParams),
+      [setSearchParams],
+      //[] // must be empty or strats doing wird things
     );
 
-  const totalItems = todos.length;
+  const selectedTaskId
+    = searchParams.get(TyTask.SearchParams.ID);
   const itemsPerPage
     = Number(searchParams.get(TyTask.SearchParams.ITEM_PER_PAGE));
+  const currentPage
+    = Number(searchParams.get(TyTask.SearchParams.PAGE));
 
   const addTodo = (newTodo: TyTodo.CreationAttributes) => {
     return dispatch(todosSlice.createThunk(newTodo))
@@ -68,22 +78,54 @@ function FuncComponent() {
           prev.filter(item => item !== updatedTodo.id)));
     }, [dispatch]);
 
-  React.useEffect(() => {
-    if (selectedTask) {
-      dispatch(todosSlice.getAllThunk({
-        taskId: selectedTask.id,
-      }));
-    }
-  }, [selectedTask, dispatch]);
 
+
+  // if URL without id, select null task and reset todos
+  React.useEffect(() => {
+    if (!selectedTaskId) {
+      updateSearchParams(searchParams, {
+        [TyTask.SearchParams.ID]: null,
+        [TyTask.SearchParams.PAGE]: null,
+        [TyTask.SearchParams.ITEM_PER_PAGE]: null,
+      });
+
+      dispatch(tasksSlice.select(''));
+      dispatch(todosSlice.reset());
+    }
+  }, [searchParams, selectedTaskId, updateSearchParams, dispatch]);
+
+  // defualt pagable sets and first request
   React.useEffect(() => {
     if (selectedTask) {
-      updateSearchParams({
-        [TyTask.SearchParams.ITEM_PER_PAGE]: '5',
-        [TyTask.SearchParams.PAGE]: '1',
+      const defaultParams = {
+        itemsPerPage: '5',
+        page: '1',
+        name: selectedTask.name,
+        id: selectedTask.id,
+      };
+
+      updateSearchParams(searchParams, {
+        [TyTask.SearchParams.ID]: defaultParams.id,
+        [TyTask.SearchParams.PAGE]: defaultParams.page,
+        [TyTask.SearchParams.ITEM_PER_PAGE]: defaultParams.itemsPerPage,
       });
     }
-  }, [selectedTask, updateSearchParams]);
+  }, [selectedTask]);
+
+  // tracking changes in search parameters
+  React.useEffect(() => {
+    if (selectedTaskId) {
+      dispatch(todosSlice.getAllThunk({
+        taskId: selectedTaskId || '',
+        page: currentPage,
+        size: itemsPerPage,
+      })).then((action) => {
+        if (todosSlice.getAllThunk.fulfilled.match(action)) {
+          setTotalItems(action.payload.total);
+        }
+      });
+    }
+  }, [selectedTaskId, currentPage, itemsPerPage, dispatch]);
 
   return (
     <div
@@ -101,47 +143,71 @@ function FuncComponent() {
           onCreate={addTodo}
         />
 
-        <div
-          className="p-4 
+        {selectedTaskId && (
+          <>
+            <div
+              className="p-4 
           flex flex-col sm:flex-row items-center justify-between gap-4
         bg-gray-700 rounded-md shadow-md"
-        >
-          <ItemsPerPage
-            selected={itemsPerPage}
-            options={[5, 10, 20]}
-            handlersFor={{
-              select: {
-                onChange: (event: TyEvt.Change.SelectElmt) => {
-                  updateSearchParams({
-                    [TyTask.SearchParams.ITEM_PER_PAGE]: event.target.value,
-                  })
-                }
-              }
-            }}
-          />
+            >
+              <ItemsPerPage
+                selected={itemsPerPage}
+                options={[5, 10, 20]}
+                handlersFor={{
+                  select: {
+                    onChange: (event: TyEvt.Change.SelectElmt) => {
+                      updateSearchParams(searchParams, {
+                        [TyTask.SearchParams.ITEM_PER_PAGE]: event.target.value,
+                        [TyTask.SearchParams.PAGE]: '1',
+                      })
+                    }
+                  }
+                }}
+              />
 
-          <Pagination
-            currentPage={1}
-            totalPages={Math.ceil(totalItems / itemsPerPage)}
-            onPageChange={() => { }}
-          />
-        </div>
+              <Pagination
+                currentPage={currentPage}
+                totalPages={Math.ceil(totalItems / itemsPerPage)}
+                handlersFor={{
+                  btnPrev: {
+                    onClick: () => updateSearchParams(searchParams, {
+                      [TyTask.SearchParams.PAGE]: String(currentPage - 1),
+                    })
+                  },
+                  btnPage: {
+                    onClick: (event) => {
+                      updateSearchParams(searchParams, {
+                        [TyTask.SearchParams.PAGE]:
+                          (event.target as HTMLButtonElement).dataset.page || null,
+                      })
+                    }
+                  },
+                  btnNext: {
+                    onClick: () => updateSearchParams(searchParams, {
+                      [TyTask.SearchParams.PAGE]: String(currentPage + 1),
+                    })
+                  },
+                }}
+              />
+            </div>
 
-        <div
-          data-cy="TodoList"
-          className="max-h-80 sm:max-h-96
+            <div
+              data-cy="TodoList"
+              className="max-h-80 sm:max-h-96
             overflow-y-scroll no-scrollbar"
-        >
-          {todos.map((todo) => (
-            <TodoItem
-              key={todo.id}
-              todo={todo}
-              onDelete={deleteTodo}
-              onUpdate={updateTodo}
-              isProcessed={processings.includes(todo.id)}
-            />
-          ))}
-        </div>
+            >
+              {todos.map((todo) => (
+                <TodoItem
+                  key={todo.id}
+                  todo={todo}
+                  onDelete={deleteTodo}
+                  onUpdate={updateTodo}
+                  isProcessed={processings.includes(todo.id)}
+                />
+              ))}
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

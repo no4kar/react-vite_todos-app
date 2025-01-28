@@ -1,6 +1,7 @@
 /* eslint @typescript-eslint/no-namespace: 'off' */
 
 import type { TyGeneral } from './General.type';
+import { TyTask } from './Task.type';
 
 export namespace TyTodo {
   export type Item = {
@@ -20,6 +21,7 @@ export namespace TyTodo {
     export interface GetAll
       extends Partial<Omit<Item, 'id' | 'userId'>> {
       taskId: Item['taskId'],
+      taskName?: TyTask.Item['name'],
       page?: number,
       size?: number,
     }

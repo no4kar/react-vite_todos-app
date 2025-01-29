@@ -1,8 +1,10 @@
 export const env: {
+  DEV_MODE: boolean,
   API_URL: string;
   CORS_PROXY_URL: string;
   LOCAL_CLIENT_PREFIX: string;
 } = Object.freeze({
+  DEV_MODE: import.meta.env.MODE === 'development',
   API_URL: {
     development: 'http://localhost:3005',
     production: import.meta.env.VITE_API_URL,

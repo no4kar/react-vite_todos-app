@@ -10,7 +10,8 @@ type TyItem = {
   [key: string]: any;
 };
 
-export const Dropdown = React.memo(FuncComponent);
+export const Dropdown
+  = React.memo(FuncComponent);
 
 function FuncComponent({
   items,

@@ -7,6 +7,7 @@ import axios, {
 } from 'axios';
 import { accessTokenApi } from '../api/accessToken.api';
 import { TyAuth } from '../types/Auth.type';
+import { env } from '../constants/varsFromEnv';
 
 export function getClient(
   config: CreateAxiosDefaults<any>)
@@ -33,7 +34,8 @@ export const onRes = {
   },
 
   toConsoleInfo<T>(res: T) {
-    console.info(res);
+    if (env.DEV_MODE) console.info(res);
+
     return res;
   },
 

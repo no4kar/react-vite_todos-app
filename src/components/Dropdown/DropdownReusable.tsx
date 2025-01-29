@@ -60,13 +60,6 @@ function FuncComponent({
   const toggleDropdown
     = () => setIsOpen(prev => !prev);
 
-  const handleRemove
-    = async (itemId: string) => {
-      await onItem.remove(itemId);
-    };
-  const handleTitleInputChange
-    = (event: TyEvt.Change.InputElmt) => setTitle(event.target.value);
-
   const handleSave
     = async () => {
       const trimmedTitle = title.trim();
@@ -97,13 +90,6 @@ function FuncComponent({
       setIsEditing(false);
     };
 
-  const handleKeyDown
-    = (event: TyEvt.Keybr.InputElmt) => {
-      if (event.key === 'Enter') {
-        handleSave();
-      }
-    };
-
   return (
     <div
       className={cn(
@@ -121,8 +107,14 @@ function FuncComponent({
             onClick: toggleDropdown,
           },
           input: {
-            onChange: handleTitleInputChange,
-            onKeyDown: handleKeyDown,
+            onChange: (event: TyEvt.Change.InputElmt) => {
+              setTitle(event.target.value)
+            },
+            onKeyDown: (event: TyEvt.Keybr.InputElmt) => {
+              if (event.key === 'Enter') {
+                handleSave();
+              }
+            },
             onBlur: handleSave,
             onClick: () => {
               setMode('update')
@@ -161,7 +153,7 @@ function FuncComponent({
                 btnXmark: {
                   onClick: (event) => {
                     event.stopPropagation(); // Prevent triggering item selection
-                    handleRemove(item.id);
+                    onItem.remove(item.id);
                   },
                 },
                 divName: {

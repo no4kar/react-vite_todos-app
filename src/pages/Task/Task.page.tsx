@@ -4,20 +4,24 @@ import { AxiosResponse } from 'axios';
 
 import { useReduxDispatch, useReduxSelector } from '../../store/hooks';
 import * as todosSlice from '../../slices/todos.slice';
-import * as tasksSlice from '../../slices/tasks.slice';
+// import * as tasksSlice from '../../slices/tasks.slice';
 import { selectFromStore } from '../../store/store';
 
 import { TyTodo } from '../../types/Todo.type';
-import { TodoHeader } from '../../components/TodoHeader';
+import { TaskHeader } from '../../components/TaskHeader';
 import { TodoItem } from '../../components/TodoItem';
 import { Pagination } from '../../components/Pagination';
 import { ItemsPerPage } from '../../components/ItemsPerPage';
 import { createSearchParamUpdater } from '../../utils/helpers';
 import { TyTask } from '../../types/Task.type';
 import { TyEvt } from '../../types/Evt.type';
+import { env } from '../../constants/varsFromEnv';
 
-export const TodoPage
+export const TaskPage
   = React.memo(FuncComponent);
+
+const optionsPerPage = [5, 10, 20];
+const defualtPage = '1';
 
 function FuncComponent() {
   const [
@@ -28,31 +32,36 @@ function FuncComponent() {
     processings,
     setProcessings
   ] = React.useState<TyTodo.Item['id'][]>([]);
+
+  // Redux
   const {
     items: todos,
   } = useReduxSelector(selectFromStore('todos'));
   const {
-    selected: selectedTask,
+    items: tasks,
   } = useReduxSelector(selectFromStore('tasks'));
   const dispatch = useReduxDispatch();
+
+  // RRD
   const [
     searchParams,
     setSearchParams,
   ] = ReactRouterDom.useSearchParams();
-
-  const updateSearchParams
-    = React.useCallback(
-      createSearchParamUpdater(setSearchParams),
-      [setSearchParams],
-      //[] // must be empty or strats doing wird things
-    );
-
+  const updateSearchParams = React.useCallback(
+    createSearchParamUpdater(setSearchParams),
+    [setSearchParams],
+  );
   const selectedTaskId
     = searchParams.get(TyTask.SearchParams.ID);
   const itemsPerPage
     = Number(searchParams.get(TyTask.SearchParams.ITEM_PER_PAGE));
   const currentPage
     = Number(searchParams.get(TyTask.SearchParams.PAGE));
+
+  const selectedTask
+    = tasks.find(task => task.id === selectedTaskId) || null;
+  const totalPages
+    = Math.ceil(totalItems / itemsPerPage);
 
   const addTodo = (newTodo: TyTodo.CreationAttributes) => {
     return dispatch(todosSlice.createThunk(newTodo))
@@ -89,28 +98,20 @@ function FuncComponent() {
         [TyTask.SearchParams.ITEM_PER_PAGE]: null,
       });
 
-      dispatch(tasksSlice.select(''));
       dispatch(todosSlice.reset());
+      setTotalItems(0);
     }
   }, [searchParams, selectedTaskId, updateSearchParams, dispatch]);
 
   // defualt pagable sets and first request
   React.useEffect(() => {
-    if (selectedTask) {
-      const defaultParams = {
-        itemsPerPage: '5',
-        page: '1',
-        name: selectedTask.name,
-        id: selectedTask.id,
-      };
-
+    if (selectedTaskId) {
       updateSearchParams(searchParams, {
-        [TyTask.SearchParams.ID]: defaultParams.id,
-        [TyTask.SearchParams.PAGE]: defaultParams.page,
-        [TyTask.SearchParams.ITEM_PER_PAGE]: defaultParams.itemsPerPage,
+        [TyTask.SearchParams.PAGE]: defualtPage,
+        [TyTask.SearchParams.ITEM_PER_PAGE]: String(optionsPerPage[0]),
       });
     }
-  }, [selectedTask]);
+  }, [selectedTaskId]);
 
   // tracking changes in search parameters
   React.useEffect(() => {
@@ -127,6 +128,14 @@ function FuncComponent() {
     }
   }, [selectedTaskId, currentPage, itemsPerPage, dispatch]);
 
+  if (env.DEV_MODE) console.info(`
+    selectedTaskId = ${selectedTaskId}
+    selectedTask = ${selectedTask}
+    totalItems = ${totalItems}
+    itemsPerPage = ${itemsPerPage}
+    totalPages = ${totalPages}
+    `);
+
   return (
     <div
       className="
@@ -139,11 +148,11 @@ function FuncComponent() {
       py-4 sm:py-6 md:py-10
       space-y-4 sm:space-y-6"
       >
-        <TodoHeader
+        <TaskHeader
           onCreate={addTodo}
         />
-
-        {selectedTaskId && (
+        {/* while todos are loading, totalItems is '0' and totalPages, as derivative, is 'infinity' */}
+        {selectedTask && totalItems && (
           <>
             <div
               className="p-4 
@@ -152,13 +161,13 @@ function FuncComponent() {
             >
               <ItemsPerPage
                 selected={itemsPerPage}
-                options={[5, 10, 20]}
+                options={optionsPerPage}
                 handlersFor={{
                   select: {
                     onChange: (event: TyEvt.Change.SelectElmt) => {
                       updateSearchParams(searchParams, {
                         [TyTask.SearchParams.ITEM_PER_PAGE]: event.target.value,
-                        [TyTask.SearchParams.PAGE]: '1',
+                        [TyTask.SearchParams.PAGE]: defualtPage,
                       })
                     }
                   }
@@ -167,7 +176,7 @@ function FuncComponent() {
 
               <Pagination
                 currentPage={currentPage}
-                totalPages={Math.ceil(totalItems / itemsPerPage)}
+                totalPages={totalPages}
                 handlersFor={{
                   btnPrev: {
                     onClick: () => updateSearchParams(searchParams, {

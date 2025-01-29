@@ -43,12 +43,12 @@ export const updateThunk: AsyncThunk<
 );
 
 const initialState: {
-  selected: TySlice.Item | null;
+  // selected: TySlice.Item | null;
   items: TySlice.Item[];
   status: TySlice.Status;
   errorMsg: TySlice.Error;
 } = {
-  selected: null,
+  // selected: null,
   items: [] as TySlice.Item[],
   status: TySlice.Status.NONE,
   errorMsg: TySlice.Error.NONE,
@@ -57,7 +57,7 @@ const initialState: {
 export const {
   actions: { // export the actions
     errorReset,
-    select,
+    // select,
     reset,
   },
   reducer,
@@ -70,15 +70,15 @@ export const {
       state.errorMsg = TySlice.Error.NONE;
     },
 
-    select(state, action: { payload: TySlice.Item['id'] }) {
-      state.selected
-        = state.items.find((item) =>
-          item.id === action.payload)
-        || null;
-    },
+    // select(state, action: { payload: TySlice.Item['id'] }) {
+    //   state.selected
+    //     = state.items.find((item) =>
+    //       item.id === action.payload)
+    //     || null;
+    // },
 
     reset(state) {
-      state.selected = null;
+      // state.selected = null;
       state.items = [];
       state.status = TySlice.Status.NONE;
       state.errorMsg = TySlice.Error.NONE;

@@ -1,4 +1,5 @@
 import React from 'react';
+import * as ReactRouterDom from 'react-router-dom';
 import cn from 'classnames';
 
 import { TyEvt } from '../../types/Evt.type';
@@ -10,8 +11,9 @@ import { selectFromStore } from '../../store/store';
 import { Loader } from '../Loader';
 import { DropdownReusable as Dropdown } from '../Dropdown';
 import * as tasksSlice from '../../slices/tasks.slice';
+import { createSearchParamUpdater } from '../../utils/helpers';
 
-export const TodoHeader
+export const TaskHeader
   = React.memo(FuncComponent);
 
 function FuncComponent({
@@ -37,24 +39,38 @@ function FuncComponent({
     author,
   } = useReduxSelector(selectFromStore('author'));
   const {
-    selected: selectedTask,
     items: tasks,
     status: tasksStatus,
   } = useReduxSelector(selectFromStore('tasks'));
   const dispatch
     = useReduxDispatch();
+  const [
+    searchParams,
+    setSearchParams,
+  ] = ReactRouterDom.useSearchParams();
+
+  const updateSearchParams
+    = React.useCallback(
+      createSearchParamUpdater(setSearchParams),
+      [setSearchParams],
+    );
 
   const isLoading = todosStatus === TyTodo.Status.LOADING;
+  const selectedTaskId
+    = searchParams.get(TyTask.SearchParams.ID);
+  const selectedTask
+    = tasks.find(task => task.id === selectedTaskId) || null;
 
   const handleInputChange = (event: TyEvt.Change.TextAreaElmt) => {
     setTitle(event.target.value);
   };
 
   const handleSelectTask
-    = React.useCallback(
-      (taskId: TyTask.Item['id']) => {
-        dispatch(tasksSlice.select(taskId));
-      }, []);
+    = (taskId: TyTask.Item['id']) => {
+      updateSearchParams(searchParams, {
+        [TyTask.SearchParams.ID]: taskId,
+      })
+    };
 
   const handleCreateTask
     = React.useCallback(
@@ -65,7 +81,10 @@ function FuncComponent({
             userId: author.id,
           })).then((action) => {
             if (tasksSlice.createThunk.fulfilled.match(action)) {
-              dispatch(tasksSlice.select(action.payload.id));
+              // dispatch(tasksSlice.select(action.payload.id));
+              updateSearchParams(searchParams, {
+                [TyTask.SearchParams.ID]: action.payload.id,
+              });
             }
           });
         }
@@ -80,7 +99,10 @@ function FuncComponent({
             name,
           })).then((action) => {
             if (tasksSlice.updateThunk.fulfilled.match(action)) {
-              dispatch(tasksSlice.select(action.payload.id));
+              // dispatch(tasksSlice.select(action.payload.id));
+              updateSearchParams(searchParams, {
+                [TyTask.SearchParams.ID]: action.payload.id,
+              });
             }
           });
         }

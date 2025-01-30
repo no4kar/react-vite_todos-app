@@ -17,13 +17,11 @@ export const TaskHeader
   = React.memo(FuncComponent);
 
 function FuncComponent({
-  onCreate,
-  onError = () => { },
+  onTodoCreate,
+  onTodoError = () => { },
 }: {
-  onCreate: (todo: TyTodo.CreationAttributes) => Promise<TyTodo.Item | void>;
-  onToggleAll?: () => void;
-  onError?: (errMsg: TyTodo.Error) => void;
-  isEachTodoComplete?: boolean;
+  onTodoCreate: (todo: TyTodo.CreationAttributes) => Promise<TyTodo.Item | void>;
+  onTodoError?: (errMsg: TyTodo.Error) => void;
 }) {
   const [
     title,
@@ -31,6 +29,8 @@ function FuncComponent({
   ] = React.useState('');
   const titleInput
     = React.useRef<HTMLTextAreaElement>(null);
+
+  // Redux
   const {
     items: todos,
     status: todosStatus,
@@ -44,22 +44,24 @@ function FuncComponent({
   } = useReduxSelector(selectFromStore('tasks'));
   const dispatch
     = useReduxDispatch();
+
+  // RRD
   const [
     searchParams,
     setSearchParams,
   ] = ReactRouterDom.useSearchParams();
-
   const updateSearchParams
     = React.useCallback(
       createSearchParamUpdater(setSearchParams),
       [setSearchParams],
     );
-
-  const isLoading = todosStatus === TyTodo.Status.LOADING;
   const selectedTaskId
     = searchParams.get(TyTask.SearchParams.ID);
   const selectedTask
     = tasks.find(task => task.id === selectedTaskId) || null;
+
+  const isTodosLoading
+    = todosStatus === TyTodo.Status.LOADING;
 
   const handleInputChange = (event: TyEvt.Change.TextAreaElmt) => {
     setTitle(event.target.value);
@@ -81,7 +83,6 @@ function FuncComponent({
             userId: author.id,
           })).then((action) => {
             if (tasksSlice.createThunk.fulfilled.match(action)) {
-              // dispatch(tasksSlice.select(action.payload.id));
               updateSearchParams(searchParams, {
                 [TyTask.SearchParams.ID]: action.payload.id,
               });
@@ -99,7 +100,6 @@ function FuncComponent({
             name,
           })).then((action) => {
             if (tasksSlice.updateThunk.fulfilled.match(action)) {
-              // dispatch(tasksSlice.select(action.payload.id));
               updateSearchParams(searchParams, {
                 [TyTask.SearchParams.ID]: action.payload.id,
               });
@@ -119,7 +119,7 @@ function FuncComponent({
     const trimedTitle = title.trim();
 
     if (trimedTitle === '') {
-      onError(TyTodo.Error.EMPTY_TITLE);
+      onTodoError(TyTodo.Error.EMPTY_TITLE);
       return;
     }
 
@@ -133,11 +133,11 @@ function FuncComponent({
 
     if (!author
       || !selectedTask) {
-      onError(TyTodo.Error.UNABLE_ADD);
+      onTodoError(TyTodo.Error.UNABLE_ADD);
       return;
     }
 
-    onCreate({
+    onTodoCreate({
       userId: author.id,
       taskId: selectedTask.id,
       title: trimedTitle,
@@ -196,7 +196,7 @@ function FuncComponent({
           className='relative'
           onSubmit={handleSubmit}
         >
-          {!todos.length && isLoading && (
+          {!todos.length && isTodosLoading && (
             <Loader
               style={{
                 container: `absolute inset-0 z-[1] 
@@ -215,7 +215,7 @@ function FuncComponent({
 
           <div className={cn('flex space-x-2',
             'min-h-16 sm:min-h-32', {
-            'pointer-events-none blur-[2px]': !todos.length && isLoading,
+            'pointer-events-none blur-[2px]': !todos.length && isTodosLoading,
           })}>
             <textarea
               ref={titleInput}

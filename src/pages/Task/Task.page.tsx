@@ -4,17 +4,18 @@ import { AxiosResponse } from 'axios';
 
 import { useReduxDispatch, useReduxSelector } from '../../store/hooks';
 import * as todosSlice from '../../slices/todos.slice';
-// import * as tasksSlice from '../../slices/tasks.slice';
 import { selectFromStore } from '../../store/store';
 
 import { TyTodo } from '../../types/Todo.type';
+import { TyTask } from '../../types/Task.type';
+import { TyEvt } from '../../types/Evt.type';
+
 import { TaskHeader } from '../../components/TaskHeader';
 import { TodoItem } from '../../components/TodoItem';
 import { Pagination } from '../../components/Pagination';
 import { ItemsPerPage } from '../../components/ItemsPerPage';
 import { createSearchParamUpdater } from '../../utils/helpers';
-import { TyTask } from '../../types/Task.type';
-import { TyEvt } from '../../types/Evt.type';
+import { Loader } from '../../components/Loader';
 import { env } from '../../constants/varsFromEnv';
 
 export const TaskPage
@@ -36,10 +37,8 @@ function FuncComponent() {
   // Redux
   const {
     items: todos,
+    status: todosStatus,
   } = useReduxSelector(selectFromStore('todos'));
-  const {
-    items: tasks,
-  } = useReduxSelector(selectFromStore('tasks'));
   const dispatch = useReduxDispatch();
 
   // RRD
@@ -58,10 +57,10 @@ function FuncComponent() {
   const currentPage
     = Number(searchParams.get(TyTask.SearchParams.PAGE));
 
-  const selectedTask
-    = tasks.find(task => task.id === selectedTaskId) || null;
-  const totalPages
-    = Math.ceil(totalItems / itemsPerPage);
+  const isTodosLoading
+    = todosStatus === TyTodo.Status.LOADING;
+  // const totalPages
+  //   = Math.ceil(totalItems / itemsPerPage);
 
   const addTodo = (newTodo: TyTodo.CreationAttributes) => {
     return dispatch(todosSlice.createThunk(newTodo))
@@ -130,16 +129,13 @@ function FuncComponent() {
 
   if (env.DEV_MODE) console.info(`
     selectedTaskId = ${selectedTaskId}
-    selectedTask = ${selectedTask}
     totalItems = ${totalItems}
     itemsPerPage = ${itemsPerPage}
-    totalPages = ${totalPages}
     `);
 
   return (
     <div
-      className="
-      h-full
+      className="h-full
       bg-gray-800 text-white font-robotomono-normal"
     // border border-red-500
     >
@@ -149,10 +145,26 @@ function FuncComponent() {
       space-y-4 sm:space-y-6"
       >
         <TaskHeader
-          onCreate={addTodo}
+          onTodoCreate={addTodo}
         />
-        {/* while todos are loading, totalItems is '0' and totalPages, as derivative, is 'infinity' */}
-        {selectedTask && totalItems && (
+
+        {isTodosLoading && (
+          <Loader
+            style={{
+              container: `flex items-center justify-center`,
+            }}
+          >
+            <h1
+              className='text-lg sm:text-xl font-bold 
+                          bg-transparent text-white animate-bounce'
+            >
+              Todos is loading...
+            </h1>
+          </Loader>
+        )}
+
+        {/* while todos are loading, totalItems is '0' or itemsPerPage is '0', totalPages, as derivative, is 'Infinity' or 'NaN'*/}
+        {(!isTodosLoading && !!totalItems && !!itemsPerPage) && (
           <>
             <div
               className="p-4 
@@ -176,7 +188,7 @@ function FuncComponent() {
 
               <Pagination
                 currentPage={currentPage}
-                totalPages={totalPages}
+                totalPages={Math.ceil(totalItems / itemsPerPage)}
                 handlersFor={{
                   btnPrev: {
                     onClick: () => updateSearchParams(searchParams, {

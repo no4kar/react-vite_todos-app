@@ -78,7 +78,6 @@ export const {
     // },
 
     reset(state) {
-      // state.selected = null;
       state.items = [];
       state.status = TySlice.Status.NONE;
       state.errorMsg = TySlice.Error.NONE;
